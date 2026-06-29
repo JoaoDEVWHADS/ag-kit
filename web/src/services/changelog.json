@@ -1,5 +1,26 @@
 [
     {
+        "version": "2026.6.29",
+        "date": "2026-06-29",
+        "summary": "Design module overhaul. Replaced the in-house design skill with the taste-skill framework, added a frontend-architecture skill, and introduced a mandatory DESIGN.md design-token gate before any UI work.",
+        "changes": {
+            "Added": [
+                "design-spec skill + DESIGN.md gate: machine-readable design-token format (YAML schema, type system, section order). A hard gate now requires DESIGN.md at the project root before any UI; /create gained a matching design step. Format from the DESIGN.md spec (Google Labs, Apache-2.0).",
+                "design-spec/collection.md: 70+ real-world DESIGN.md references (Airbnb, Stripe, Linear, Vercel, Apple…) the workflow reads before authoring a DESIGN.md.",
+                "frontend-architecture skill: code-organization rules for React/Next and Vue (separation of concerns, state tiers, API services, server-first Next, composable-first Vue)."
+            ],
+            "Changed": [
+                "frontend-design rebuilt on taste-skill ('anti-slop frontend'): brief inference, design dials, design-system map, em-dash ban, pre-flight checks, plus minimalist/brutalist/redesign variants. Credited to taste-skill by Leonxlnx (MIT). Skill name kept so wiring stays intact.",
+                "Skill count 45 → 47 synced across ARCHITECTURE, AGENT_FLOW, agents, and the web catalog. mobile-design, tailwind-patterns, web-design-guidelines unchanged.",
+                "Bumped root, web, and cli to 2026.6.29."
+            ],
+            "Fixed": [
+                "Removed 7 obsolete frontend-design sub-files and repointed 5 references in frontend-specialist.",
+                "Clarified that the blocks/ library is a not-yet-created schema so agents don't try to read it."
+            ]
+        }
+    },
+    {
         "version": "2026.6.23",
         "date": "2026-06-23",
         "summary": "Rules modularization: split GEMINI.md into 6 focused rule files with conditional loading. Also cleaned up README support sections.",

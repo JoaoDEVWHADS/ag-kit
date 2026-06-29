@@ -1,7 +1,17 @@
 [
     {
+        "name": "design-spec",
+        "description": "DESIGN.md token format — required design source-of-truth before UI",
+        "category": "Frontend & UI"
+    },
+    {
         "name": "nextjs-react-expert",
         "description": "Next.js & React performance optimization (Vercel - 58 rules)",
+        "category": "Frontend & UI"
+    },
+    {
+        "name": "frontend-architecture",
+        "description": "Frontend code organization — layers, state tiers, services (React/Vue)",
         "category": "Frontend & UI"
     },
     {

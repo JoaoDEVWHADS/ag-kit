@@ -151,6 +151,7 @@ Request Domain → Agent Mapping:
 │ Domain               │ Primary Agent       │ Skills Loaded            │
 ├──────────────────────┼─────────────────────┼──────────────────────────┤
 │ UI/UX Design         │ frontend-specialist │ nextjs-react-expert      │
+│                      │                     │ frontend-architecture    │
 │                      │                     │ frontend-design          │
 │                      │                     │ tailwind-patterns        │
 |                      │                     │ web-design-guidelines    │
@@ -519,7 +520,7 @@ User Request: "Build a Next.js dashboard with authentication"
 │                    SYSTEM CAPABILITIES                    │
 ├──────────────────────────────────────────────────────────┤
 │ Total Agents:              20                            │
-│ Total Skills:              45                            │
+│ Total Skills:              47                            │
 │ Total Workflows:           13                            │
 │ Master Scripts:            2 (checklist, verify_all)     │
 │ Skill-Level Scripts:       16                            │

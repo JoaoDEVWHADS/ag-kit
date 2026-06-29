@@ -9,6 +9,24 @@ Starting with `2026.5.13`, this project uses calendar versioning in `YYYY.M.D` f
 
 No unreleased changes.
 
+## [2026.6.29] - 2026-06-29
+
+> Design module overhaul. Replaced the in-house design skill with the taste-skill framework, added a frontend-architecture skill, and introduced a mandatory DESIGN.md design-token gate before any UI work. Audited the whole design module for conflicts.
+
+### Added
+- **`design-spec` skill + DESIGN.md gate**: documents the machine-readable DESIGN.md token format (YAML schema, type system, canonical section order, consumer behavior). A hard gate in `rules/design-rules.md` now requires a `DESIGN.md` at the project root before writing any UI (web or mobile); `/create` gained a matching "Design Source-of-Truth" step. Format adapted from the DESIGN.md spec (Google Labs, Apache-2.0).
+- **`design-spec/collection.md`**: 70+ real-world DESIGN.md references (Airbnb, Stripe, Linear, Vercel, Apple…) linked to the VoltAgent/awesome-design-md repo; the skill workflow now requires reading it before authoring a DESIGN.md.
+- **`frontend-architecture` skill**: frontend code-organization rules for React/Next and Vue — separation of concerns (UI/logic/data/type), file responsibility, state tiers, API services, schema validation, server-first Next, composable-first Vue. Deliberately defers directory layout to `app-builder/scaffolding.md` to avoid a feature-vs-layer conflict.
+
+### Changed
+- **`frontend-design` skill rebuilt on taste-skill** ("anti-slop frontend"): brief inference, three design dials, design-system map, strict em-dash ban, and pre-flight checks. Added three style variants (`style-minimalist`, `style-brutalist`, `redesign`) as sub-files; kept the `ux_audit.py` + `accessibility_checker.py` scripts. Source credited (taste-skill by Leonxlnx, MIT). Skill name/folder kept so all wiring stays intact.
+- **Skill count 45 → 47** synced across ARCHITECTURE.md, AGENT_FLOW.md, agent frontmatter, and the web docs catalog. Kept `mobile-design`, `tailwind-patterns`, and `web-design-guidelines` unchanged.
+- Bumped root, web, and cli package versions to `2026.6.29`.
+
+### Fixed
+- Removed 7 obsolete `frontend-design` sub-files and repointed 5 references in `frontend-specialist.md`.
+- Clarified that the `blocks/` library in `frontend-design` is a not-yet-created schema so agents don't try to read it.
+
 ## [2026.6.23] - 2026-06-23
 
 > Rules modularization, README cleanup, and version bump.
