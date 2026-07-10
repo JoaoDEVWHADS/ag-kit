@@ -1,6 +1,6 @@
 # AG Kit Architecture
 
-> Comprehensive AI Agent Capability Expansion Toolkit — 2026.5.31
+> Comprehensive AI Agent Capability Expansion Toolkit — 2026.7.10
 
 ---
 
@@ -18,7 +18,10 @@ AG Kit is a modular system consisting of:
 
 ```plaintext
 .agents/
-├── ARCHITECTURE.md          # This file
+├── README.md                # Quick start and operating guide
+├── ARCHITECTURE.md          # Capability inventory and design
+├── CHANGELOG.md             # Version history
+├── VERSION                  # Toolkit version
 ├── agent/                  # 20 Specialist Agents
 ├── skills/                  # 47 Skills (with conditional loading)
 ├── workflows/               # 13 Slash Commands
@@ -235,48 +238,46 @@ allowed-tools: Read, Grep, Glob
 
 ---
 
-## 🛠️ Scripts (2)
+## 🛠️ Runtime Scripts
 
-Master validation scripts that orchestrate skill-level scripts.
+AG Kit includes **5 user-facing top-level utilities**, **1 internal runner module**, and **18 skill-level scripts**.
 
-### Master Scripts
+### Top-level utilities
 
-| Script          | Purpose                                 | When to Use              |
-| --------------- | --------------------------------------- | ------------------------ |
-| `checklist.py`  | Priority-based validation (Core checks) | Development, pre-commit  |
-| `verify_all.py` | Comprehensive verification (All checks) | Pre-deployment, releases |
+| Script | Purpose | Typical use |
+|---|---|---|
+| `scripts/checklist.py` | Fast, priority-ordered validation | During development and pre-commit |
+| `scripts/verify_all.py` | Complete verification suite | Before release or deployment |
+| `scripts/validate_kit.py` | Self-check the toolkit structure and references | After editing `.agents/` |
+| `scripts/session_manager.py` | Summarize project/session context | At session start or status checks |
+| `scripts/auto_preview.py` | Start, stop, and inspect local preview servers | UI development |
+| `scripts/validation_runner.py` | Shared process runner used by checklist/verify | Internal module; do not invoke directly |
 
 ### Usage
 
 ```bash
-# Quick validation during development
+# Validate the toolkit itself
+python .agents/scripts/validate_kit.py
+
+# Fast project checks; runtime checks are skipped when no URL is supplied
 python .agents/scripts/checklist.py .
 
-# Full verification before deployment
-python .agents/scripts/verify_all.py . --url http://localhost:3000
+# Full verification with a running app and machine-readable report
+python .agents/scripts/verify_all.py . \
+  --url http://localhost:3000 \
+  --report .agents/reports/verification.json
 ```
 
-### What They Check
+### Verification coverage
 
-**checklist.py** (Core checks):
+- Security and secret scanning with blocking exit codes
+- Offline dependency/lock-file hygiene
+- Linting, type coverage, schema validation, and tests
+- UX, accessibility, SEO, GEO, API, mobile, and i18n audits
+- Build asset/bundle sizing
+- Lighthouse and Playwright runtime checks when a URL is available
 
-- Security (vulnerabilities, secrets)
-- Code Quality (lint, types)
-- Schema Validation
-- Test Suite
-- UX Audit
-- SEO Check
-
-**verify_all.py** (Full suite):
-
-- Everything in checklist.py PLUS:
-- Lighthouse (Core Web Vitals)
-- Playwright E2E
-- Bundle Analysis
-- Mobile Audit
-- i18n Check
-
-For details, see [scripts/README.md](scripts/README.md)
+For command details and prerequisites, see [scripts/README.md](scripts/README.md).
 
 ---
 
@@ -287,8 +288,9 @@ For details, see [scripts/README.md](scripts/README.md)
 | **Total Agents**    | 20 (1 major upgrade in 2026.5.13) |
 | **Total Skills**    | 47                                |
 | **Total Workflows** | 13 (+2 new in 2026.5.13)          |
-| **Total Scripts**   | 2 (master) + 16 (skill-level)     |
-| **Coverage**        | ~95% web/mobile + orchestration   |
+| **Top-level Utilities** | 5 user-facing + 1 internal module |
+| **Total Skill Scripts** | 18                              |
+| **Coverage**        | Web, API, mobile, security, quality, runtime, orchestration |
 | **Token Efficiency**| Reduced via conditional skill loading |
 
 ---

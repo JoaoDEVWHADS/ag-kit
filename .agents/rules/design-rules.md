@@ -1,6 +1,6 @@
 ---
 trigger: glob
-globs: **/*.{tsx,jsx,vue,svelte,css,scss},**/components/**,**/app/**/page.tsx
+globs: "**/*.{tsx,jsx,vue,svelte,css,scss},**/components/**,**/app/**/page.tsx"
 ---
 
 # Design Rules (TIER 2) - AG Kit

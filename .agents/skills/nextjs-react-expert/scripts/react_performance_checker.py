@@ -226,24 +226,25 @@ class PerformanceChecker:
         self.check_image_optimization()
 
         self.generate_report()
+        return len(self.issues) == 0
 
 
 def main():
-    import sys
+    import argparse
 
-    if len(sys.argv) < 2:
-        print("Usage: python react_performance_checker.py <project_path>")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Audit React/Next.js performance patterns")
+    parser.add_argument("project_path", nargs="?", default=".")
+    parser.add_argument("--fail-on-warnings", action="store_true", help="Treat advisory warnings as blocking")
+    args = parser.parse_args()
 
-    project_path = sys.argv[1]
+    if not os.path.isdir(args.project_path):
+        parser.error(f"Path not found: {args.project_path}")
 
-    if not os.path.exists(project_path):
-        print(f"[ERROR] Path not found: {project_path}")
-        sys.exit(1)
-
-    checker = PerformanceChecker(project_path)
-    checker.run()
+    checker = PerformanceChecker(args.project_path)
+    critical_passed = checker.run()
+    passed = critical_passed and (not args.fail_on_warnings or not checker.warnings)
+    return 0 if passed else 1
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

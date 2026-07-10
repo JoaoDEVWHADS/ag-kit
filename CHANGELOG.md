@@ -9,6 +9,35 @@ Starting with `2026.5.13`, this project uses calendar versioning in `YYYY.M.D` f
 
 No unreleased changes.
 
+## [2026.7.10] - 2026-07-10
+
+> Toolkit self-validator, shared runner, offline dependency hygiene analyzer, bundle-size analyzer, and regression/correctness fixes across agents, schemas, and configurations.
+
+### Fixed
+- Made `mcp_config.json` valid JSON.
+- Corrected invalid YAML frontmatter in `lint-and-validate` and `design-rules`.
+- Added the missing `allowed-tools` contract to `intelligent-routing`.
+- Fixed `verify_all.py` using an uninitialized `results` variable.
+- Fixed toolkit-root discovery and URL argument routing in validation runners.
+- Removed orchestration deadlocks caused by mandatory missing plan/CODEBASE files.
+- Prevented the security scanner from flagging its own regex definitions.
+- Made high/critical security findings return a failing exit code.
+- Registered Playwright error listeners before navigation and corrected empty-label checks.
+- Ensured Lighthouse temporary files are cleaned up and thresholds affect exit status.
+
+### Added
+- Shared validation runner with JSON reporting and duration/error capture.
+- Offline dependency hygiene analyzer.
+- Build bundle-size analyzer.
+- Toolkit self-validator for configuration, frontmatter, links, references, inventory, and Python syntax.
+- Root quick-start guide and runtime-script documentation.
+- Regression tests for the highest-impact failures.
+
+### Changed
+- Runtime checks are optional when no URL is supplied.
+- Full verification can run in static-only mode with `--no-runtime`.
+- Architecture inventory and script counts now match the package contents.
+
 ## [2026.6.29] - 2026-06-29
 
 > Design module overhaul. Replaced the in-house design skill with the taste-skill framework, added a frontend-architecture skill, and introduced a mandatory DESIGN.md design-token gate before any UI work. Audited the whole design module for conflicts.
@@ -212,7 +241,9 @@ No unreleased changes.
 - CLI tool for easy installation and updates.
 - Comprehensive documentation and architecture guide.
 
-[Unreleased]: https://github.com/vudovn/ag-kit/compare/v2026.6.23...HEAD
+[Unreleased]: https://github.com/vudovn/ag-kit/compare/v2026.7.10...HEAD
+[2026.7.10]: https://github.com/vudovn/ag-kit/compare/v2026.6.29...v2026.7.10
+[2026.6.29]: https://github.com/vudovn/ag-kit/compare/v2026.6.23...v2026.6.29
 [2026.6.23]: https://github.com/vudovn/ag-kit/compare/v2026.6.7...v2026.6.23
 [2026.6.7]: https://github.com/vudovn/ag-kit/compare/v2026.6.2...v2026.6.7
 [2026.6.2]: https://github.com/vudovn/ag-kit/compare/v2026.5.31...v2026.6.2
