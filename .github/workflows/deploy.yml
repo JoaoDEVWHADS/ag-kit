@@ -29,8 +29,10 @@ jobs:
       - name: Deploy to Dokploy
         env:
           DOKPLOY_AUTH_TOKEN: ${{ secrets.DOKPLOY_TOKEN }}
-          DOKPLOY_URL: ${{ secrets.DOKPLOY_URL }}
+          DOKPLOY_URL_RAW: ${{ secrets.DOKPLOY_URL }}
           DOKPLOY_APPLICATION_ID: ${{ secrets.DOKPLOY_APPLICATION_ID }}
         run: |
           set -euo pipefail
+          # Strip trailing slash from URL if present
+          export DOKPLOY_URL="${DOKPLOY_URL_RAW%/}"
           npx --yes @dokploy/cli application deploy --applicationId "$DOKPLOY_APPLICATION_ID"
