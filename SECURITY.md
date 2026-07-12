@@ -24,9 +24,8 @@ The repository expects:
 - least-privilege `GITHUB_TOKEN` permissions,
 - protected `production` and `npm` environments,
 - npm Trusted Publishing through OIDC rather than a long-lived npm token,
-- TLS certificate verification for CapRover deployments,
-- dependency review, production dependency audits, toolkit validation, CLI tests, and web build checks before release,
-- Docker provenance and SBOM generation for published images.
+- Secure OIDC and API-token authentication for CLI and Dokploy deployments,
+- dependency review, production dependency audits, toolkit validation, CLI tests, and web build checks before release.
 
 ## Local update safety
 

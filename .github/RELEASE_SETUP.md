@@ -26,12 +26,9 @@ The publish workflow requires `id-token: write` and does not consume a long-live
 
 Create a GitHub Environment named `production` and store:
 
-- `CAPROVER_SERVER`
-- `APP_TOKEN`
-- `APP_NAME`
-- optional `CAPROVER_CA_CERT_B64` for a private/custom certificate authority
-
-Do not restore `NODE_TLS_REJECT_UNAUTHORIZED=0`. For private PKI, base64-encode the CA certificate and use `CAPROVER_CA_CERT_B64`.
+- `DOKPLOY_TOKEN` (Dokploy API Token, e.g., `oxhdrmbBpuleom...`)
+- `DOKPLOY_URL` (Dokploy dashboard URL, e.g., `http://74.208.5.225/`)
+- `DOKPLOY_APPLICATION_ID` (Dokploy application ID, e.g., `5blqIiB_TIHY2ZPzDDIK-`)
 
 ## GitHub security settings
 
