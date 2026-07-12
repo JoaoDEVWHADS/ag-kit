@@ -51,9 +51,14 @@ export default function Toc() {
       text: node.textContent ?? "",
       level: Number(node.tagName[1]),
     }));
-    setHeadings(items);
 
-    if (items.length === 0) return;
+    const frameId = window.requestAnimationFrame(() => {
+      setHeadings(items);
+    });
+
+    if (items.length === 0) {
+      return () => window.cancelAnimationFrame(frameId);
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -67,12 +72,15 @@ export default function Toc() {
     );
 
     nodes.forEach((node) => observer.observe(node));
-    return () => observer.disconnect();
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      observer.disconnect();
+    };
   }, [pathname, locale]);
 
   if (headings.length === 0) {
     return (
-      <div className="text-xs text-zinc-500 dark:text-zinc-500">
+      <div className="text-xs text-muted-foreground">
         {t.toc.empty}
       </div>
     );
@@ -80,10 +88,10 @@ export default function Toc() {
 
   return (
     <nav>
-      <div className="font-semibold text-zinc-900 dark:text-zinc-50 mb-3">
+      <div className="font-semibold text-foreground mb-3">
         {t.toc.onThisPage}
       </div>
-      <ul className="space-y-2 text-sm border-l border-zinc-200 dark:border-zinc-800">
+      <ul className="space-y-2 text-sm border-l border-border">
         {headings.map((h) => (
           <li key={h.id} style={{ paddingLeft: h.level === 3 ? "1.25rem" : "0.75rem" }}>
             <a
@@ -91,8 +99,8 @@ export default function Toc() {
               className={cn(
                 "block -ml-px border-l-2 pl-3 py-0.5 transition-colors",
                 activeId === h.id
-                  ? "border-term-cyan text-term-cyan font-medium"
-                  : "border-transparent text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
+                  ? "border-brand text-brand font-medium"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
               {h.text}

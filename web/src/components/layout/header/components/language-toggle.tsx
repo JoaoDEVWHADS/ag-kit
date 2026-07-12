@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Button } from '../../../ui/button';
 import {
     DropdownMenu,
@@ -27,9 +28,11 @@ export default function LanguageToggle() {
             <DropdownMenuTrigger
                 render={
                     <Button variant="ghost" size="icon" aria-label="Select language">
-                        <img
+                        <Image
                             src={current.flag}
                             alt={current.label}
+                            width={20}
+                            height={14}
                             className="w-5 h-auto rounded-[2px]"
                         />
                     </Button>
@@ -43,7 +46,13 @@ export default function LanguageToggle() {
                     {LOCALES.map((l) => (
                         <DropdownMenuRadioItem key={l.value} value={l.value}>
                             <span className="flex items-center gap-2">
-                                <img src={l.flag} alt="" className="w-5 h-auto rounded-[2px] shrink-0" />
+                                <Image
+                                    src={l.flag}
+                                    alt=""
+                                    width={20}
+                                    height={14}
+                                    className="w-5 h-auto rounded-[2px] shrink-0"
+                                />
                                 {l.label}
                             </span>
                         </DropdownMenuRadioItem>

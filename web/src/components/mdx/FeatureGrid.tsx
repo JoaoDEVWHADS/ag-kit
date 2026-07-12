@@ -9,12 +9,12 @@ interface FeatureProps {
 
 export function Feature({ title, description, children }: FeatureProps) {
   return (
-    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 text-center transition-colors hover:border-term-cyan/40">
-      <div className="font-mono text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+    <div className="rounded-lg border border-border bg-card p-4 text-center transition-colors hover:border-brand/40">
+      <div className="font-mono text-sm font-semibold text-foreground">
         {title}
       </div>
       {description && (
-        <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+        <div className="mt-1 text-xs text-muted-foreground">
           {description}
         </div>
       )}
@@ -36,7 +36,7 @@ export function FeatureGrid({ cols = 4, children }: FeatureGridProps) {
   };
 
   return (
-    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 p-4 mb-6">
+    <div className="rounded-lg border border-border bg-muted/50 p-4 mb-6">
       <div className={cn("grid gap-3", colsClass[cols])}>{children}</div>
     </div>
   );

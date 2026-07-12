@@ -1,28 +1,30 @@
 #!/usr/bin/env node
-import { Command } from "commander";
+import { Command, Option } from "commander";
 import chalk from "chalk";
 import ora from "ora";
 import { downloadTemplate } from "giget";
-import path from "path";
+import path from "node:path";
 import fse from "fs-extra";
-import readline from "readline";
-import { fileURLToPath } from "url";
+import readline from "node:readline";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import {
+    applyUpdatePlan,
+    createRunId,
+    createUpdatePlan,
+    installFreshTree,
+    listBackups,
+    loadManifest,
+    restoreBackup,
+    snapshotTree,
+} from "../lib/managed-tree.js";
 
-// Get package.json for version
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const pkg = await fse.readJson(path.join(__dirname, "..", "package.json"));
 
-// ============================================================================
-// CONSTANTS
-// ============================================================================
 const REPO = "github:vudovn/ag-kit";
 const AGENT_FOLDER = ".agents";
 const TEMP_FOLDER = ".temp_ag_kit";
-
-// ============================================================================
-// UTILITIES
-// ============================================================================
 
 const showBanner = (quiet = false) => {
     if (quiet) return;
@@ -40,28 +42,18 @@ const log = (message, quiet = false) => {
 };
 
 const confirm = (question) => {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-    });
-
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     return new Promise((resolve) => {
-        rl.on("SIGINT", async () => {
-            rl.close();
-            console.log(chalk.gray("\nOperation aborted by user."));
-            const tempDir = path.join(path.resolve(process.cwd()), TEMP_FOLDER);
-            if (await fse.pathExists(tempDir)) {
-                await fse.remove(tempDir);
-            }
-            process.exit(0);
-        });
-
         rl.question(chalk.yellow(`? ${question} (y/N) `), (answer) => {
             rl.close();
-            const val = answer.trim().toLowerCase();
-            resolve(val === "y" || val === "yes");
+            const normalized = answer.trim().toLowerCase();
+            resolve(normalized === "y" || normalized === "yes");
         });
     });
+};
+
+const cleanup = async (tempDir) => {
+    if (tempDir) await fse.remove(tempDir);
 };
 
 const checkUpdate = async (quiet = false) => {
@@ -69,22 +61,16 @@ const checkUpdate = async (quiet = false) => {
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 1500);
-
-        const res = await fetch("https://registry.npmjs.org/@vudovn/ag-kit/latest", {
+        const response = await fetch("https://registry.npmjs.org/@vudovn/ag-kit/latest", {
             signal: controller.signal,
         });
         clearTimeout(timeoutId);
-
-        if (res.ok) {
-            const data = await res.json();
-            if (data.version && data.version !== pkg.version) {
-                return data.version;
-            }
-        }
-    } catch (e) {
-        // Silently ignore update check errors
+        if (!response.ok) return null;
+        const data = await response.json();
+        return data.version && data.version !== pkg.version ? data.version : null;
+    } catch {
+        return null;
     }
-    return null;
 };
 
 const showUpdateNotification = (latestVersion) => {
@@ -92,191 +78,261 @@ const showUpdateNotification = (latestVersion) => {
     console.log(
         chalk.yellow(`
   ┌────────────────────────────────────────────────────────┐
-  │  Update available: ${chalk.red(pkg.version)} → ${chalk.green(latestVersion)}               │
-  │  Run: ${chalk.cyan("npm install -g @vudovn/ag-kit")}                 │
+  │  Update available: ${chalk.red(pkg.version)} → ${chalk.green(latestVersion)}
+  │  Run: ${chalk.cyan("npm install -g @vudovn/ag-kit")}
   └────────────────────────────────────────────────────────┘
-  `)
+  `),
     );
 };
 
-// Global SIGINT Handler for graceful cleanup
-process.on("SIGINT", async () => {
-    console.log(chalk.gray("\n\nOperation aborted by user. Cleaning up..."));
-    const targetDir = process.cwd();
-    const tempDir = path.join(path.resolve(targetDir), TEMP_FOLDER);
-    if (await fse.pathExists(tempDir)) {
-        await fse.remove(tempDir);
+const readIncomingVersion = async (tempDir) => {
+    try {
+        const packageJson = await fse.readJson(path.join(tempDir, "package.json"));
+        return packageJson.version || pkg.version;
+    } catch {
+        return pkg.version;
     }
-    process.exit(0);
-});
-
-const cleanup = async (tempDir) => {
-    await fse.remove(tempDir);
 };
 
-const copyAgentFolder = async (tempDir, destDir) => {
-    const sourceAgent = path.join(tempDir, AGENT_FOLDER);
+const downloadToolkit = async ({ tempDir, branch, spinner }) => {
+    await cleanup(tempDir);
+    const repoSource = branch ? `${REPO}#${branch}` : REPO;
+    if (spinner) spinner.text = `Downloading ${repoSource}...`;
+    await downloadTemplate(repoSource, { dir: tempDir, force: true });
 
-    if (!(await fse.pathExists(sourceAgent))) {
-        throw new Error(
-            `Could not find ${AGENT_FOLDER} folder in source repository!`,
-        );
+    const incomingDir = path.join(tempDir, AGENT_FOLDER);
+    if (!(await fse.pathExists(incomingDir))) {
+        throw new Error(`Could not find ${AGENT_FOLDER} in the downloaded repository`);
     }
-
-    await fse.copy(sourceAgent, destDir, { overwrite: true });
+    return incomingDir;
 };
 
-// ============================================================================
-// COMMANDS
-// ============================================================================
+const printPlan = (plan, { dryRun = false, quiet = false } = {}) => {
+    if (quiet) return;
+    const prefix = dryRun ? "[Dry Run] " : "";
+    console.log(chalk.gray("────────────────────────────────────────"));
+    console.log(`${prefix}Strategy:  ${chalk.cyan(plan.strategy)}`);
+    console.log(`${prefix}Changes:   ${chalk.green(plan.actions.length)}`);
+    console.log(`${prefix}Preserved: ${chalk.yellow(plan.preserved.length)}`);
+    console.log(`${prefix}Conflicts: ${plan.conflicts.length ? chalk.red(plan.conflicts.length) : chalk.green(0)}`);
+    console.log(`${prefix}Unchanged: ${chalk.gray(plan.unchanged.length)}`);
+    console.log(chalk.gray("────────────────────────────────────────"));
 
-const initCommand = async (options) => {
-    const quiet = options.quiet || false;
-    const dryRun = options.dryRun || false;
+    if (dryRun && plan.conflicts.length) {
+        console.log(chalk.yellow("Files requiring manual review:"));
+        for (const conflict of plan.conflicts.slice(0, 20)) {
+            console.log(`  - ${conflict.file}: ${conflict.reason}`);
+        }
+        if (plan.conflicts.length > 20) {
+            console.log(chalk.gray(`  ...and ${plan.conflicts.length - 20} more`));
+        }
+    }
+};
 
-    showBanner(quiet);
+const requireConfirmation = async ({ exists, strategy, force, quiet, dryRun }) => {
+    if (dryRun || !exists || force) return true;
+    if (quiet) {
+        throw new Error("Existing installation requires --force when --quiet is used");
+    }
 
-    // Run non-blocking check update in parallel background
-    const updatePromise = checkUpdate(quiet);
+    const question = strategy === "replace"
+        ? `Replace the entire ${AGENT_FOLDER} folder? A backup will be created.`
+        : `Apply a merge-aware update to ${AGENT_FOLDER}? Local changes will be preserved.`;
+    return confirm(question);
+};
 
+export const installOrUpdate = async (options = {}, mode = "init") => {
+    const quiet = Boolean(options.quiet);
+    const dryRun = Boolean(options.dryRun);
+    const strategy = options.strategy || "merge";
+    const backup = options.backup !== false;
     const targetDir = path.resolve(options.path || process.cwd());
     const tempDir = path.join(targetDir, TEMP_FOLDER);
     const agentDir = path.join(targetDir, AGENT_FOLDER);
+    const exists = await fse.pathExists(agentDir);
 
-    if (dryRun) {
-        console.log(chalk.blueBright("\n[Dry Run] No changes will be made\n"));
-        console.log(chalk.white("Would perform the following actions:"));
-        console.log(chalk.gray("────────────────────────────────────────"));
-        console.log(
-            `  1. Download from: ${chalk.cyan(REPO)}${options.branch ? "#" + options.branch : ""}`,
-        );
-        console.log(`  2. Install to: ${chalk.cyan(agentDir)}`);
-
-        if (await fse.pathExists(agentDir)) {
-            console.log(`  3. ${chalk.yellow("Overwrite existing .agents folder")}`);
-        }
-
-        console.log(chalk.gray("────────────────────────────────────────\n"));
-        return;
+    if (mode === "update" && !exists) {
+        throw new Error(`Could not find ${AGENT_FOLDER} at ${targetDir}. Run ag-kit init first.`);
     }
 
-    if (await fse.pathExists(agentDir)) {
-        if (!options.force) {
-            log(
-                chalk.yellow(
-                    `Warning: Folder ${AGENT_FOLDER} already exists at: ${agentDir}`,
-                ),
-                quiet,
-            );
-            const shouldOverwrite = await confirm("Do you want to overwrite it?");
-
-            if (!shouldOverwrite) {
-                log(chalk.gray("Operation cancelled."), quiet);
-                process.exit(0);
-            }
-        }
-        log(chalk.gray(`Overwriting ${AGENT_FOLDER} folder...`), quiet);
+    const approved = await requireConfirmation({
+        exists,
+        strategy,
+        force: Boolean(options.force),
+        quiet,
+        dryRun,
+    });
+    if (!approved) {
+        log(chalk.gray("Operation cancelled."), quiet);
+        return { cancelled: true };
     }
 
     const spinner = quiet
         ? null
-        : ora({
-            text: "Downloading...",
-            color: "cyan",
-        }).start();
+        : ora({ text: "Preparing...", color: "cyan" }).start();
 
     try {
-        const repoSource = options.branch ? `${REPO}#${options.branch}` : REPO;
-        await downloadTemplate(repoSource, {
-            dir: tempDir,
-            force: true,
+        const incomingDir = await downloadToolkit({
+            tempDir,
+            branch: options.branch,
+            spinner,
+        });
+        const toolkitVersion = await readIncomingVersion(tempDir);
+        const runId = createRunId();
+
+        if (!exists) {
+            const incomingSnapshot = await snapshotTree(incomingDir);
+            if (dryRun) {
+                if (spinner) spinner.stop();
+                printPlan(
+                    {
+                        strategy: "install",
+                        actions: Object.keys(incomingSnapshot).map((file) => ({ type: "add", file })),
+                        conflicts: [],
+                        preserved: [],
+                        unchanged: [],
+                    },
+                    { dryRun, quiet },
+                );
+                return { dryRun: true, toolkitVersion };
+            }
+
+            if (spinner) spinner.text = "Installing toolkit...";
+            const report = await installFreshTree({
+                projectDir: targetDir,
+                incomingDir,
+                currentDir: agentDir,
+                toolkitVersion,
+                runId,
+            });
+            if (spinner) spinner.succeed(chalk.green("Installation successful!"));
+            return report;
+        }
+
+        const manifest = await loadManifest(agentDir);
+        const plan = await createUpdatePlan({
+            currentDir: agentDir,
+            incomingDir,
+            strategy,
+            manifest,
         });
 
-        if (spinner) spinner.text = "Installing...";
+        if (dryRun) {
+            if (spinner) spinner.stop();
+            printPlan(plan, { dryRun, quiet });
+            return { dryRun: true, plan, toolkitVersion };
+        }
 
-        // fse.remove handles Windows locks gracefully
-        await fse.remove(agentDir);
-
-        await copyAgentFolder(tempDir, agentDir);
-        await cleanup(tempDir);
+        if (spinner) spinner.text = "Applying safe update...";
+        const report = await applyUpdatePlan({
+            projectDir: targetDir,
+            currentDir: agentDir,
+            incomingDir,
+            plan,
+            toolkitVersion,
+            backup,
+            runId,
+            conflictReportPath: options.conflictReport,
+        });
 
         if (spinner) {
-            spinner.succeed(chalk.green("Installation successful!"));
+            if (report.summary.conflicts) {
+                spinner.warn(chalk.yellow("Update completed with conflicts preserved for review."));
+            } else {
+                spinner.succeed(chalk.green("Update successful!"));
+            }
         }
+        printPlan(plan, { quiet });
 
         if (!quiet) {
-            console.log(chalk.gray("\n────────────────────────────────────────"));
-            console.log(chalk.white("Result:"));
-            console.log(`   ${chalk.cyan(AGENT_FOLDER)} → ${chalk.gray(agentDir)}`);
-            console.log(chalk.gray("────────────────────────────────────────"));
-            console.log(chalk.green("\nHappy coding!\n"));
+            if (report.backupDir) console.log(`Backup: ${chalk.cyan(report.backupDir)}`);
+            console.log(`Report: ${chalk.cyan(report.reportPath)}`);
+            if (report.summary.conflicts) {
+                console.log(
+                    chalk.yellow(
+                        `Incoming conflict copies are stored under ${AGENT_FOLDER}/.ag-kit/conflicts/${runId}`,
+                    ),
+                );
+            }
         }
 
-        // Show update notification if available
+        return report;
+    } finally {
+        await cleanup(tempDir);
+    }
+};
+
+export const initCommand = async (options) => {
+    const quiet = Boolean(options.quiet);
+    showBanner(quiet);
+    const updatePromise = checkUpdate(quiet);
+
+    try {
+        const result = await installOrUpdate(options, "init");
         const latestVersion = await updatePromise;
         showUpdateNotification(latestVersion);
+        if (result?.summary?.conflicts) process.exitCode = 2;
     } catch (error) {
-        let errorMsg = error.message;
-        if (error.code === "ENOTFOUND" || error.message.includes("fetch failed")) {
-            errorMsg = "Network connection failed. Please check your internet connection and try again.";
-        } else if (error.message.includes("Could not find")) {
-            errorMsg = `Source repository mismatch. Ensure the branch or repo exists. Details: ${error.message}`;
-        }
-
-        if (spinner) {
-            spinner.fail(chalk.red(`Error: ${errorMsg}`));
-        } else {
-            console.error(chalk.red(`Error: ${errorMsg}`));
-        }
-
-        await cleanup(tempDir);
-        process.exit(1);
+        console.error(chalk.red(`Error: ${error.message}`));
+        process.exitCode = 1;
     }
 };
 
-const updateCommand = async (options) => {
-    const quiet = options.quiet || false;
-
+export const updateCommand = async (options) => {
+    const quiet = Boolean(options.quiet);
     showBanner(quiet);
-
-    const targetDir = path.resolve(options.path || process.cwd());
-    const agentDir = path.join(targetDir, AGENT_FOLDER);
-
-    if (!(await fse.pathExists(agentDir))) {
-        console.log(
-            chalk.red(
-                `Error: Could not find ${AGENT_FOLDER} folder at: ${targetDir}`,
-            ),
-        );
-        console.log(
-            chalk.yellow(`Tip: Run ${chalk.cyan("ag-kit init")} to install first.`),
-        );
-        process.exit(1);
+    try {
+        const result = await installOrUpdate(options, "update");
+        if (result?.summary?.conflicts) process.exitCode = 2;
+    } catch (error) {
+        console.error(chalk.red(`Error: ${error.message}`));
+        process.exitCode = 1;
     }
-
-    if (!options.force && !quiet) {
-        log(
-            chalk.yellow(
-                `Warning: Update will overwrite the entire ${AGENT_FOLDER} folder`,
-            ),
-            quiet,
-        );
-        const shouldUpdate = await confirm("Are you sure you want to continue?");
-
-        if (!shouldUpdate) {
-            log(chalk.gray("Operation cancelled."), quiet);
-            process.exit(0);
-        }
-    }
-
-    await initCommand({ ...options, force: true });
 };
 
-const statusCommand = async (options) => {
+export const rollbackCommand = async (options) => {
+    const quiet = Boolean(options.quiet);
+    showBanner(quiet);
     const targetDir = path.resolve(options.path || process.cwd());
     const agentDir = path.join(targetDir, AGENT_FOLDER);
 
-    // Kick off the update check in parallel with local fs work
+    try {
+        const backups = await listBackups(targetDir);
+        const selected = options.backup
+            ? backups.find((item) => item.id === options.backup)
+            : backups[0];
+
+        if (!selected) throw new Error(options.backup ? `Backup not found: ${options.backup}` : "No backups found");
+
+        if (options.dryRun) {
+            console.log(chalk.blueBright("[Dry Run] No changes will be made"));
+            console.log(`Would restore: ${chalk.cyan(selected.path)}`);
+            return;
+        }
+
+        if (!options.force) {
+            if (quiet) throw new Error("Rollback requires --force when --quiet is used");
+            const approved = await confirm(`Restore backup ${selected.id}?`);
+            if (!approved) return;
+        }
+
+        const result = await restoreBackup({
+            projectDir: targetDir,
+            agentDir,
+            backupId: selected.id,
+            keepCurrent: options.keepCurrent !== false,
+        });
+        log(chalk.green(`Restored backup ${result.restoredBackupId}`), quiet);
+        if (result.safetyBackupDir) log(`Pre-rollback backup: ${result.safetyBackupDir}`, quiet);
+    } catch (error) {
+        console.error(chalk.red(`Error: ${error.message}`));
+        process.exitCode = 1;
+    }
+};
+
+export const statusCommand = async (options) => {
+    const targetDir = path.resolve(options.path || process.cwd());
+    const agentDir = path.join(targetDir, AGENT_FOLDER);
     const updatePromise = checkUpdate(options.quiet);
 
     console.log(chalk.blueBright("\nAntigravity Kit Status\n"));
@@ -284,67 +340,103 @@ const statusCommand = async (options) => {
 
     if (await fse.pathExists(agentDir)) {
         const stats = await fse.stat(agentDir);
-        const files = await fse.readdir(agentDir);
-
+        const manifest = await loadManifest(agentDir);
+        const backups = await listBackups(targetDir);
         console.log(chalk.green("[OK] Installed"));
         console.log(chalk.gray("────────────────────────────────────────"));
-        console.log(`Path:     ${chalk.cyan(agentDir)}`);
-        console.log(`Modified: ${chalk.gray(stats.mtime.toLocaleString("en-US"))}`);
-        console.log(`Files:    ${chalk.yellow(files.length)} items at root`);
+        console.log(`Path:        ${chalk.cyan(agentDir)}`);
+        console.log(`Modified:    ${chalk.gray(stats.mtime.toLocaleString("en-US"))}`);
+        console.log(`Managed:     ${manifest ? chalk.green("yes") : chalk.yellow("legacy/no manifest")}`);
+        console.log(`Kit version: ${chalk.cyan(manifest?.toolkitVersion || "unknown")}`);
+        console.log(`Backups:     ${chalk.yellow(backups.length)}`);
         console.log(chalk.gray("────────────────────────────────────────\n"));
     } else {
         console.log(chalk.red("[X] Not installed"));
         console.log(chalk.yellow(`Run ${chalk.cyan("ag-kit init")} to install.\n`));
     }
 
-    // Show update notification if a newer version is available
     const latestVersion = await updatePromise;
-    if (latestVersion) {
-        showUpdateNotification(latestVersion);
-    } else if (!options.quiet) {
-        console.log(chalk.green("[OK] You are on the latest version.\n"));
-    }
+    if (latestVersion) showUpdateNotification(latestVersion);
+    else if (!options.quiet) console.log(chalk.green("[OK] CLI is on the latest version.\n"));
 };
 
-// ============================================================================
-// CLI DEFINITION
-// ============================================================================
-const program = new Command();
+export const buildProgram = () => {
+    const program = new Command();
+    const strategyOption = () => new Option(
+        "--strategy <mode>",
+        "Update strategy: merge preserves local changes; replace restores the upstream tree",
+    ).choices(["merge", "replace"]).default("merge");
 
-program
-    .name("ag-kit")
-    .description("CLI tool to install and manage Antigravity Kit")
-    .version(pkg.version, "-v, --version", "Display version number");
+    program
+        .name("ag-kit")
+        .description("CLI tool to install and safely manage Antigravity Kit")
+        .version(pkg.version, "-v, --version", "Display version number");
 
-program
-    .command("init")
-    .description("Install .agents folder into your project")
-    .option("-f, --force", "Overwrite if folder already exists", false)
-    .option("-p, --path <dir>", "Path to the project directory", process.cwd())
-    .option("-b, --branch <name>", "Select repository branch")
-    .option("-q, --quiet", "Suppress output (for CI/CD)", false)
-    .option("--dry-run", "Show what would be done without executing", false)
-    .action(initCommand);
+    program
+        .command("init")
+        .description("Install .agents into a project; safely merges when it already exists")
+        .option("-f, --force", "Skip confirmation prompt", false)
+        .option("-p, --path <dir>", "Path to the project directory", process.cwd())
+        .option("-b, --branch <name>", "Select repository branch")
+        .option("-q, --quiet", "Suppress non-error output", false)
+        .option("--dry-run", "Download and calculate changes without applying them", false)
+        .option("--no-backup", "Do not create a pre-update backup")
+        .option("--conflict-report <file>", "Write the update report to a custom path")
+        .addOption(strategyOption())
+        .action(initCommand);
 
-program
-    .command("update")
-    .description("Update .agents folder to the latest version")
-    .option("-f, --force", "Skip confirmation prompt", false)
-    .option("-p, --path <dir>", "Path to the project directory", process.cwd())
-    .option("-b, --branch <name>", "Select repository branch")
-    .option("-q, --quiet", "Suppress output (for CI/CD)", false)
-    .option("--dry-run", "Show what would be done without executing", false)
-    .action(updateCommand);
+    program
+        .command("update")
+        .description("Safely update .agents while preserving local changes")
+        .option("-f, --force", "Skip confirmation prompt", false)
+        .option("-p, --path <dir>", "Path to the project directory", process.cwd())
+        .option("-b, --branch <name>", "Select repository branch")
+        .option("-q, --quiet", "Suppress non-error output", false)
+        .option("--dry-run", "Download and calculate changes without applying them", false)
+        .option("--no-backup", "Do not create a pre-update backup")
+        .option("--conflict-report <file>", "Write the update report to a custom path")
+        .addOption(strategyOption())
+        .action(updateCommand);
 
-program
-    .command("status")
-    .description("Check installation status and check for updates")
-    .option("-p, --path <dir>", "Path to the project directory", process.cwd())
-    .option("-q, --quiet", "Suppress update check (for CI/CD)", false)
-    .action(statusCommand);
+    program
+        .command("rollback")
+        .description("Restore a pre-update .agents backup")
+        .option("--backup <id>", "Backup ID; defaults to the newest backup")
+        .option("-f, --force", "Skip confirmation prompt", false)
+        .option("-p, --path <dir>", "Path to the project directory", process.cwd())
+        .option("-q, --quiet", "Suppress non-error output", false)
+        .option("--dry-run", "Show which backup would be restored", false)
+        .option("--no-keep-current", "Do not back up the current tree before rollback")
+        .action(rollbackCommand);
 
-program.parse(process.argv);
+    program
+        .command("status")
+        .description("Check installation, managed-tree status, backups, and CLI updates")
+        .option("-p, --path <dir>", "Path to the project directory", process.cwd())
+        .option("-q, --quiet", "Suppress network update check", false)
+        .action(statusCommand);
 
-if (!process.argv.slice(2).length) {
-    program.outputHelp();
+    return program;
+};
+
+export const runCli = async (argv = process.argv) => {
+    const program = buildProgram();
+    if (!argv.slice(2).length) {
+        program.outputHelp();
+        return;
+    }
+    await program.parseAsync(argv);
+};
+
+const isDirectRun = process.argv[1]
+    && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url;
+
+if (isDirectRun) {
+    process.on("SIGINT", async () => {
+        const tempDir = path.join(process.cwd(), TEMP_FOLDER);
+        await cleanup(tempDir);
+        console.log(chalk.gray("\nOperation aborted by user."));
+        process.exit(130);
+    });
+    await runCli();
 }

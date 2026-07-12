@@ -22,7 +22,7 @@ export default function ThemeToggle() {
 
     if (!mounted) {
         return (
-            <div className="w-9 h-9 rounded-md border border-zinc-200 dark:border-zinc-800" />
+            <div className="w-9 h-9 rounded-md border border-border" />
         );
     }
 
@@ -40,7 +40,7 @@ export default function ThemeToggle() {
                     height={24}
                     viewBox="0 0 24 24"
                     fill="none"
-                    className="-rotate-45 size-4 text-zinc-700 dark:text-zinc-300"
+                    className="-rotate-45 size-4 text-muted-foreground"
                     strokeWidth={2}
                     stroke="currentColor"
                 >
@@ -69,7 +69,7 @@ export default function ThemeToggle() {
                     height={24}
                     viewBox="0 0 24 24"
                     fill="none"
-                    className="-rotate-225 size-4 text-zinc-700 dark:text-zinc-300"
+                    className="-rotate-225 size-4 text-muted-foreground"
                     strokeWidth={2}
                     stroke="currentColor"
                 >

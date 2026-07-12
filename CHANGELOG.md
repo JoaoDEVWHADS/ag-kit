@@ -9,6 +9,63 @@ Starting with `2026.5.13`, this project uses calendar versioning in `YYYY.M.D` f
 
 No unreleased changes.
 
+## [2026.7.12] - 2026-07-12
+
+> Release-safety upgrade: non-destructive CLI updates, rollback support, mandatory CI, dependency review, hardened deployment, and npm Trusted Publishing. Also ships a full marketing landing page and web UI redesign.
+
+### Added
+- Managed-tree manifest with SHA-256 baselines for files installed by AG Kit.
+- Merge-aware CLI updates that preserve user-owned files and local modifications.
+- Three-way conflict detection with incoming copies and machine-readable update reports.
+- Automatic pre-update backups and the new `ag-kit rollback` command.
+- Pull-request CI for toolkit validation, CLI tests/package checks, web lint/typecheck/build, and production dependency audits.
+- Dependency Review and Dependabot configuration for CLI, web, and GitHub Actions.
+- Docker build cache, SBOM generation, and provenance metadata in the deployment workflow.
+- Baseline web security headers for CSP frame protection, HSTS, referrer policy, permissions policy, and MIME sniffing protection.
+- Marketing landing page at `/` adapted from [shadcn-landing-page](https://github.com/nobruf/shadcn-landing-page): hero, stack marquee, benefits, features, workflows, testimonials, sponsored, contribute, FAQ, and footer.
+- Web design source of truth in `web/DESIGN.md` with semantic tokens (zinc neutrals, teal brand accent, code surfaces) for light/dark consistency.
+- Landing i18n (en / vi / zh / ja) with a language switcher on the landing header.
+- Sponsored section featuring Unikorn and become-a-sponsor CTAs.
+- Contribute section that loads live GitHub contributors (avatar, login, commit count).
+- Live GitHub star count on the hero CTA, with a shared 60s cache and compact labels (for example `7.8k`).
+- X profile link (`@vudovn354`) on the landing header next to GitHub.
+
+### Changed
+- `ag-kit init` now safely merges into an existing `.agents` tree by default instead of deleting it.
+- `ag-kit update` defaults to `--strategy merge`; destructive replacement requires explicit `--strategy replace`.
+- npm publishing now uses OIDC Trusted Publishing and verifies that the Git tag matches the package version.
+- Release workflows use least-privilege permissions, protected environments, timeouts, concurrency controls, and immutable action SHAs.
+- Documentation now consistently uses `.agents` and reports the current 47-skill inventory.
+- Web builds now use the stable webpack path and system font stacks for deterministic, offline-friendly production builds.
+- Upgraded `giget` to 3.3.0 and Next.js/MDX/ESLint integration to 16.2.10; pinned patched PostCSS transitively.
+- Replaced the minimal home page (logo and two buttons) with a full product marketing experience.
+- Docs and marketing UI now share semantic color tokens (`background`, `foreground`, `muted`, `border`, `brand`) instead of mixed zinc/black hardcodes; a single teal brand-mark replaces multi-color highlights.
+- Testimonials use a masonry columns layout with a bottom fade gradient.
+- Feature cards use a stable centered layout instead of the broken CardHeader grid.
+- Web copy positions AG Kit for Gemini CLI and Google Antigravity only.
+
+### Removed
+- Minimal home layout.
+- Platinum-sponsor badge chip on the Unikorn card.
+- Landing community-join block.
+- Star-count badges on docs and landing headers (star count remains on the hero CTA only).
+
+### Fixed
+- Prevented upgrades from silently deleting project memory, overrides, custom skills, and locally modified toolkit files.
+- Included CLI runtime library files in the published npm package.
+- Updated the security scanner to recognize nested TypeScript Next.js security-header configuration.
+- Corrected GEO route discovery to follow localized MDX/content modules without treating layouts or components as pages.
+- Corrected React performance scanning to ignore generated `.next` output and unrelated repository files.
+- Removed all web lint warnings and made CI fail on future warnings.
+- Added regression coverage for GEO route resolution and generated-output exclusion.
+- Guide MDX headings no longer render as brand-colored links (`heading-anchor` inherits foreground).
+- Landing sections are centered under Tailwind v4 (`container` with horizontal padding).
+
+### Security
+- Removed the deployment-wide `NODE_TLS_REJECT_UNAUTHORIZED=0` bypass.
+- Added optional custom CA installation for private CapRover deployments without weakening TLS verification.
+- Pinned the CapRover CLI version and all referenced GitHub Actions.
+
 ## [2026.7.10] - 2026-07-10
 
 > Toolkit self-validator, shared runner, offline dependency hygiene analyzer, bundle-size analyzer, and regression/correctness fixes across agents, schemas, and configurations.
@@ -241,7 +298,8 @@ No unreleased changes.
 - CLI tool for easy installation and updates.
 - Comprehensive documentation and architecture guide.
 
-[Unreleased]: https://github.com/vudovn/ag-kit/compare/v2026.7.10...HEAD
+[Unreleased]: https://github.com/vudovn/ag-kit/compare/v2026.7.12...HEAD
+[2026.7.12]: https://github.com/vudovn/ag-kit/compare/v2026.7.10...v2026.7.12
 [2026.7.10]: https://github.com/vudovn/ag-kit/compare/v2026.6.29...v2026.7.10
 [2026.6.29]: https://github.com/vudovn/ag-kit/compare/v2026.6.23...v2026.6.29
 [2026.6.23]: https://github.com/vudovn/ag-kit/compare/v2026.6.7...v2026.6.23

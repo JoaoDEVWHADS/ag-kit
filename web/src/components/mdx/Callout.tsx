@@ -30,9 +30,9 @@ const calloutStyles: Record<
     iconColor: "text-destructive",
   },
   tip: {
-    wrap: "border-term-green/30 bg-term-green/5",
+    wrap: "border-brand/30 bg-brand/5",
     icon: Lightbulb,
-    iconColor: "text-term-green",
+    iconColor: "text-brand",
   },
 };
 
@@ -51,11 +51,11 @@ export function Callout({ type = "info", title, children }: CalloutProps) {
         <Icon className={cn("w-5 h-5 mt-0.5 shrink-0", styles.iconColor)} />
         <div className="flex-1 min-w-0">
           {title && (
-            <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50 mb-1">
+            <h4 className="text-sm font-semibold text-foreground mb-1">
               {title}
             </h4>
           )}
-          <div className="text-sm text-zinc-700 dark:text-zinc-300 [&>p]:mb-0">
+          <div className="text-sm text-muted-foreground [&>p]:mb-0">
             {children}
           </div>
         </div>

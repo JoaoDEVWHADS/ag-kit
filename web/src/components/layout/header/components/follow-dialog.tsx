@@ -36,7 +36,7 @@ export default function FollowDialog() {
                     <Button variant="ghost" size="icon" aria-label="Follow on X" />
                 }
             >
-                <XIcon className="w-4 h-4 text-zinc-700 dark:text-zinc-300" />
+                <XIcon className="w-4 h-4 text-muted-foreground" />
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
@@ -56,16 +56,16 @@ export default function FollowDialog() {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => handleOpenChange(false)}
-                        className="flex items-center gap-3 p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all group"
+                        className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-border hover:bg-muted transition-all group"
                     >
-                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-900 dark:bg-zinc-100">
-                            <XIcon className="w-5 h-5 text-white dark:text-zinc-900" />
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary">
+                            <XIcon className="w-5 h-5 text-primary-foreground" />
                         </div>
                         <div className="flex-1">
-                            <div className="font-semibold text-zinc-900 dark:text-zinc-50 mb-0.5">@vudovn354</div>
-                            <div className="text-sm text-zinc-600 dark:text-zinc-400">Follow on X (Twitter)</div>
+                            <div className="font-semibold text-foreground mb-0.5">@vudovn354</div>
+                            <div className="text-sm text-muted-foreground">Follow on X (Twitter)</div>
                         </div>
-                        <svg className="w-5 h-5 text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                     </a>

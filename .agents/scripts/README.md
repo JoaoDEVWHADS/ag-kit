@@ -66,3 +66,11 @@ Missing URL-based tools produce a failed runtime check rather than a false pass.
 - `2`: invalid command usage or missing input path
 
 The master runners use subprocess exit codes as the source of truth and can emit a full JSON report with commands, durations, stdout, stderr, and status.
+
+## Regression tests
+
+Toolkit scripts include standard-library regression tests for self-validation, security scanning, dependency and bundle analysis, and toolkit-root discovery.
+
+```bash
+python -m unittest discover -s .agents/scripts/tests -v
+```

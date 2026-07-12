@@ -1,5 +1,39 @@
 [
     {
+        "version": "2026.7.12",
+        "date": "2026-07-12",
+        "summary": "Full marketing landing page for AG Kit, design-token color system, multi-language landing chrome, live GitHub contributors and stars, plus Sponsored / Contribute sections.",
+        "changes": {
+            "Added": [
+                "Marketing landing page at / adapted from shadcn-landing-page: hero, stack marquee, benefits, features, workflows, testimonials, sponsored, contribute, FAQ, and footer.",
+                "Web design source of truth in web/DESIGN.md with semantic tokens (zinc neutrals, teal brand accent, code surfaces) for light/dark consistency.",
+                "Landing i18n (en / vi / zh / ja) with a language switcher on the landing header.",
+                "Sponsored section featuring Unikorn and become-a-sponsor CTAs.",
+                "Contribute section that loads live GitHub contributors (avatar, login, commit count).",
+                "Live GitHub star count on the hero CTA, with a shared 60s cache and compact labels (for example 7.8k).",
+                "X profile link (@vudovn354) on the landing header next to GitHub."
+            ],
+            "Changed": [
+                "Replaced the minimal home page (logo and two buttons) with a full product marketing experience.",
+                "Docs and marketing UI now share semantic color tokens instead of mixed zinc/black hardcodes; a single teal brand-mark replaces multi-color highlights.",
+                "Testimonials use a masonry columns layout with a bottom fade gradient.",
+                "Feature cards use a stable centered layout instead of the broken CardHeader grid.",
+                "Web copy positions AG Kit for Gemini CLI and Google Antigravity only."
+            ],
+            "Removed": [
+                "Minimal home layout.",
+                "Platinum-sponsor badge chip on the Unikorn card.",
+                "Landing community-join block.",
+                "Star-count badges on docs and landing headers (star count remains on the hero CTA only)."
+            ],
+            "Fixed": [
+                "Guide MDX headings no longer render as brand-colored links (heading-anchor inherits foreground).",
+                "Landing sections are centered under Tailwind v4 (container with horizontal padding).",
+                "Removed multi-color blue/cyan/orange brand highlights in favor of a single teal brand-mark."
+            ]
+        }
+    },
+    {
         "version": "2026.7.10",
         "date": "2026-07-10",
         "summary": "Toolkit self-validator, shared runner, offline dependency hygiene analyzer, bundle-size analyzer, and regression/correctness fixes across agents, schemas, and configurations.",

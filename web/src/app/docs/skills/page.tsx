@@ -36,31 +36,31 @@ export default function SkillsPage() {
     return (
         <div className="max-w-3xl">
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 mb-6">
-                <Link href="/docs" className="hover:text-zinc-900 dark:hover:text-zinc-50">{t.skillsPage.breadcrumbDocs}</Link>
+            <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+                <Link href="/docs" className="hover:text-foreground">{t.skillsPage.breadcrumbDocs}</Link>
                 <span>/</span>
-                <span className="text-zinc-900 dark:text-zinc-50">{t.skillsPage.breadcrumbCurrent}</span>
+                <span className="text-foreground">{t.skillsPage.breadcrumbCurrent}</span>
             </nav>
 
             {/* Page Header */}
-            <div className="mb-8 pb-8 border-b border-zinc-200 dark:border-zinc-800">
-                <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-4">
+            <div className="mb-8 pb-8 border-b border-border">
+                <h1 className="text-4xl font-bold tracking-tight text-foreground mb-4">
                     {t.skillsPage.title}
                 </h1>
-                <p className="text-lg text-zinc-600 dark:text-zinc-400">
+                <p className="text-lg text-muted-foreground">
                     {t.skillsPage.subtitle}
                 </p>
             </div>
 
             {/* What are Skills */}
             <section className="mb-12">
-                <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-4">
+                <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4">
                     {t.skillsPage.whatTitle}
                 </h2>
-                <p className="text-base text-zinc-600 dark:text-zinc-400 mb-4">
+                <p className="text-base text-muted-foreground mb-4">
                     {t.skillsPage.whatP1}
                 </p>
-                <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6">
+                <p className="text-base text-muted-foreground mb-6">
                     {t.skillsPage.whatP2a}<em>{t.skillsPage.whatP2Em}</em>{t.skillsPage.whatP2b}
                 </p>
                 <div className="mt-2 p-4 rounded-lg border border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-950/20 mb-6">
@@ -73,32 +73,32 @@ export default function SkillsPage() {
 
             {/* How Skills Work */}
             <section className="mb-12">
-                <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-4">
+                <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4">
                     {t.skillsPage.howTitle}
                 </h2>
-                <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6">
+                <p className="text-base text-muted-foreground mb-6">
                     {t.skillsPage.howP}
                 </p>
 
                 <ul className="space-y-3 mb-6">
-                    <li className="flex items-start gap-3 text-base text-zinc-600 dark:text-zinc-400">
-                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 text-xs font-bold shrink-0 mt-0.5">1</span>
+                    <li className="flex items-start gap-3 text-base text-muted-foreground">
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold shrink-0 mt-0.5">1</span>
                         <div>
-                            <strong className="font-semibold text-zinc-900 dark:text-zinc-50">{t.skillsPage.step1Title}</strong>
+                            <strong className="font-semibold text-foreground">{t.skillsPage.step1Title}</strong>
                             <p className="text-sm mt-1">{t.skillsPage.step1Desc}</p>
                         </div>
                     </li>
-                    <li className="flex items-start gap-3 text-base text-zinc-600 dark:text-zinc-400">
-                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 text-xs font-bold shrink-0 mt-0.5">2</span>
+                    <li className="flex items-start gap-3 text-base text-muted-foreground">
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold shrink-0 mt-0.5">2</span>
                         <div>
-                            <strong className="font-semibold text-zinc-900 dark:text-zinc-50">{t.skillsPage.step2Title}</strong>
+                            <strong className="font-semibold text-foreground">{t.skillsPage.step2Title}</strong>
                             <p className="text-sm mt-1">{t.skillsPage.step2Desc}</p>
                         </div>
                     </li>
-                    <li className="flex items-start gap-3 text-base text-zinc-600 dark:text-zinc-400">
-                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 text-xs font-bold shrink-0 mt-0.5">3</span>
+                    <li className="flex items-start gap-3 text-base text-muted-foreground">
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold shrink-0 mt-0.5">3</span>
                         <div>
-                            <strong className="font-semibold text-zinc-900 dark:text-zinc-50">{t.skillsPage.step3Title}</strong>
+                            <strong className="font-semibold text-foreground">{t.skillsPage.step3Title}</strong>
                             <p className="text-sm mt-1">{t.skillsPage.step3Desc}</p>
                         </div>
                     </li>
@@ -107,10 +107,10 @@ export default function SkillsPage() {
 
             {/* Skill Categories */}
             <section className="mb-12">
-                <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-4">
+                <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4">
                     {t.skillsPage.categoriesTitle}
                 </h2>
-                <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6">
+                <p className="text-base text-muted-foreground mb-6">
                     {skillsData.length}{t.skillsPage.categoriesPb}
                 </p>
 
@@ -121,16 +121,16 @@ export default function SkillsPage() {
 
                         return (
                             <div key={category}>
-                                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50 mb-4 border-b border-zinc-100 dark:border-zinc-800 pb-2 inline-block">
+                                <h3 className="text-lg font-semibold text-foreground mb-4 border-b border-border pb-2 inline-block">
                                     {category}
                                 </h3>
                                 <div className="grid gap-3 sm:grid-cols-2">
                                     {skills.map((skill) => (
-                                        <div key={skill.name} className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors">
-                                            <code className="text-sm font-mono text-zinc-900 dark:text-zinc-50 font-semibold block mb-1">
+                                        <div key={skill.name} className="p-4 rounded-lg border border-border bg-card hover:border-border transition-colors">
+                                            <code className="text-sm font-mono text-foreground font-semibold block mb-1">
                                                 {skill.name}
                                             </code>
-                                            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                                            <p className="text-xs text-muted-foreground">
                                                 {skill.description}
                                             </p>
                                         </div>
@@ -144,16 +144,16 @@ export default function SkillsPage() {
 
             {/* Skill Structure */}
             <section className="mb-12">
-                <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-4">
+                <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4">
                     {t.skillsPage.structureTitle}
                 </h2>
-                <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6">
+                <p className="text-base text-muted-foreground mb-6">
                     {t.skillsPage.structureP}
                 </p>
 
                 <div className="relative group mb-6">
-                    <pre className="p-4 rounded-lg bg-zinc-900 dark:bg-zinc-900 overflow-x-auto border border-zinc-800 font-mono text-sm">
-                        <code className="text-zinc-100">{`skills/
+                    <pre className="p-4 rounded-lg bg-code overflow-x-auto border border-code-border font-mono text-sm">
+                        <code className="text-code-foreground">{`skills/
 └── nextjs-react-expert/
     ├── SKILL.md         # Main documentation
     ├── sections/        # Detailed guides
@@ -165,25 +165,25 @@ export default function SkillsPage() {
 
             {/* Next Steps */}
             <section className="mb-12">
-                <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-4">
+                <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4">
                     {t.skillsPage.nextTitle}
                 </h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                     <Link
                         href="/docs/workflows"
-                        className="group p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all"
+                        className="group p-6 rounded-lg border border-border hover:border-border hover:bg-muted transition-all"
                     >
-                        <h3 className="font-semibold text-zinc-900 dark:text-zinc-50 mb-2">{t.skillsPage.workflowsArrow}</h3>
-                        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                        <h3 className="font-semibold text-foreground mb-2">{t.skillsPage.workflowsArrow}</h3>
+                        <p className="text-sm text-muted-foreground">
                             {t.skillsPage.workflowsArrowDesc}
                         </p>
                     </Link>
                     <Link
                         href="/docs/cli"
-                        className="group p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all"
+                        className="group p-6 rounded-lg border border-border hover:border-border hover:bg-muted transition-all"
                     >
-                        <h3 className="font-semibold text-zinc-900 dark:text-zinc-50 mb-2">{t.skillsPage.cliArrow}</h3>
-                        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                        <h3 className="font-semibold text-foreground mb-2">{t.skillsPage.cliArrow}</h3>
+                        <p className="text-sm text-muted-foreground">
                             {t.skillsPage.cliArrowDesc}
                         </p>
                     </Link>
@@ -191,10 +191,10 @@ export default function SkillsPage() {
             </section>
 
             {/* Footer Navigation */}
-            <div className="pt-8 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+            <div className="pt-8 border-t border-border flex items-center justify-between">
                 <Link
                     href="/docs/agents"
-                    className="text-sm font-medium text-zinc-900 dark:text-zinc-50 hover:underline flex items-center gap-1"
+                    className="text-sm font-medium text-foreground hover:underline flex items-center gap-1"
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -203,7 +203,7 @@ export default function SkillsPage() {
                 </Link>
                 <Link
                     href="/docs/workflows"
-                    className="text-sm font-medium text-zinc-900 dark:text-zinc-50 hover:underline flex items-center gap-1"
+                    className="text-sm font-medium text-foreground hover:underline flex items-center gap-1"
                 >
                     {t.skillsPage.footerWorkflows}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

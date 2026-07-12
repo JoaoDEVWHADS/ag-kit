@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -51,7 +50,7 @@ export default function DocsSidebar() {
         <nav className="space-y-1">
             {navSections.map((section) => (
                 <div key={section.title} className="pb-6">
-                    <h3 className="mb-3 px-2 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+                    <h3 className="mb-3 px-2 text-sm font-semibold text-foreground">
                         {section.title}
                     </h3>
                     <div className="space-y-0.5">
@@ -64,8 +63,8 @@ export default function DocsSidebar() {
                                     className={`
                     block px-2 py-1.5 text-sm rounded-md transition-colors
                     ${isActive
-                                            ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 font-medium'
-                                            : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                                            ? 'bg-brand/10 text-brand font-medium'
+                                            : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                                         }
                   `}
                                 >

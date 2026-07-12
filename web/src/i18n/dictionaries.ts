@@ -1,4 +1,11 @@
 import type { Locale } from "./locale-store";
+import type { LandingDictionary } from "./landing-dictionaries";
+import {
+    landingEn,
+    landingJa,
+    landingVi,
+    landingZh,
+} from "./landing-dictionaries";
 
 type Dict = {
     nav: {
@@ -56,6 +63,7 @@ type Dict = {
         github: string;
         documentation: string;
     };
+    landing: LandingDictionary;
     docsHome: {
         title: string;
         welcomePre: string;
@@ -355,6 +363,7 @@ export const dictionaries: Record<Locale, Dict> = {
             github: "GitHub",
             documentation: "Documentation",
         },
+        landing: landingEn,
         docsHome: {
             title: "Documentation",
             welcomePre: "Welcome to the ",
@@ -641,6 +650,7 @@ export const dictionaries: Record<Locale, Dict> = {
             github: "GitHub",
             documentation: "Tài liệu",
         },
+        landing: landingVi,
         docsHome: {
             title: "Tài liệu",
             welcomePre: "Chào mừng bạn đến với tài liệu ",
@@ -927,6 +937,7 @@ export const dictionaries: Record<Locale, Dict> = {
             github: "GitHub",
             documentation: "文档",
         },
+        landing: landingZh,
         docsHome: {
             title: "文档",
             welcomePre: "欢迎使用 ",
@@ -1213,6 +1224,7 @@ export const dictionaries: Record<Locale, Dict> = {
             github: "GitHub",
             documentation: "ドキュメント",
         },
+        landing: landingJa,
         docsHome: {
             title: "ドキュメント",
             welcomePre: "",

@@ -10,9 +10,9 @@ interface StatusItemProps {
 }
 
 const statusDot: Record<Status, string> = {
-  running: "bg-term-cyan animate-pulse",
-  done: "bg-term-green",
-  pending: "bg-zinc-500",
+  running: "bg-brand animate-pulse",
+  done: "bg-brand",
+  pending: "bg-muted-foreground",
 };
 
 export function StatusItem({ status = "running", label, children }: StatusItemProps) {

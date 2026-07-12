@@ -15,7 +15,7 @@ export default function DocsLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+        <div className="min-h-screen bg-background flex flex-col">
             {/* Header */}
             <Header />
 
@@ -27,7 +27,7 @@ export default function DocsLayout({
                     </aside>
 
                     {/* Main Content Area */}
-                    <main className="flex-1 min-w-0 py-8 lg:py-10 max-w-4xl">
+                    <main id="main-content" tabIndex={-1} className="flex-1 min-w-0 py-8 lg:py-10 max-w-4xl">
                         {children}
                     </main>
 

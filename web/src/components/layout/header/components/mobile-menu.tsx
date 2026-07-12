@@ -52,7 +52,7 @@ export default function MobileMenu() {
         <>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="lg:hidden p-2 rounded-md text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                className="lg:hidden p-2 rounded-md text-muted-foreground hover:bg-muted transition-colors"
                 aria-label="Toggle menu"
             >
                 {isOpen ? (
@@ -67,12 +67,12 @@ export default function MobileMenu() {
             </button>
 
             {isOpen && (
-                <div className="lg:hidden absolute left-0 right-0 top-full border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-lg animate-in slide-in-from-top-2 max-h-[calc(100vh-3.5rem)] overflow-y-auto">
+                <div className="lg:hidden absolute left-0 right-0 top-full border-t border-border bg-background shadow-lg animate-in slide-in-from-top-2 max-h-[calc(100vh-3.5rem)] overflow-y-auto">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
                         <nav className="space-y-6">
                             {navSections.map((section) => (
                                 <div key={section.titleKey}>
-                                    <h3 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+                                    <h3 className="mb-3 text-sm font-semibold text-foreground">
                                         {t.search[section.titleKey]}
                                     </h3>
                                     <div className="space-y-1">
@@ -86,8 +86,8 @@ export default function MobileMenu() {
                                                     className={`
                                                         block px-3 py-2 text-sm rounded-md transition-colors
                                                         ${isActive
-                                                            ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 font-medium'
-                                                            : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                                                            ? 'bg-brand/10 text-brand font-medium'
+                                                            : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                                                         }
                                                     `}
                                                 >
@@ -100,7 +100,7 @@ export default function MobileMenu() {
                             ))}
                         </nav>
 
-                        <div className="mt-6 pt-6 border-t border-zinc-200 dark:border-zinc-800 flex gap-3">
+                        <div className="mt-6 pt-6 border-t border-border flex gap-3">
                             <DonateDialog className="" />
                             <Link href="https://github.com/vudovn/ag-kit" target="_blank" rel="noopener noreferrer">
                                 <Button variant="outline" className="w-full justify-start">

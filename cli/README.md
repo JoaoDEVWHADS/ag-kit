@@ -1,6 +1,6 @@
-# AG-Kit CLI
+# AG Kit CLI
 
-CLI tool to install [Antigravity Kit](https://github.com/vudovn/ag-kit) - AI Agent templates with Skills, Agents, and Workflows.
+CLI for installing and safely updating [AG Kit](https://github.com/vudovn/ag-kit), a collection of agents, skills, workflows, rules, memory conventions, and validation tools for Google Antigravity.
 
 ## Installation
 
@@ -18,27 +18,61 @@ ag-kit init
 ## Commands
 
 | Command | Description |
-|---------|-------------|
-| `ag-kit init` | Install `.agents` folder into your project |
-| `ag-kit update` | Update to the latest version |
-| `ag-kit status` | Check installation status |
+|---|---|
+| `ag-kit init` | Install `.agents`; safely merges when an installation already exists |
+| `ag-kit update` | Update managed files while preserving local changes |
+| `ag-kit rollback` | Restore the newest or a selected pre-update backup |
+| `ag-kit status` | Show installation, manifest, toolkit version, backups, and CLI status |
 
-## Options
+## Safe update model
+
+AG Kit records SHA-256 baselines in `.agents/.ag-kit/manifest.json`. During an update it compares the previous upstream version, the current local file, and the new upstream file.
+
+- Clean managed files are updated automatically.
+- Files changed only locally are preserved.
+- User-created files are preserved.
+- Files changed both locally and upstream are reported as conflicts.
+- Incoming conflict copies are written under `.agents/.ag-kit/conflicts/`.
+- A full pre-update backup is stored under `.ag-kit-backups/` by default.
 
 ```bash
-ag-kit init --force        # Overwrite existing .agents folder
-ag-kit init --path ./myapp # Install in specific directory
-ag-kit init --branch dev   # Use specific branch
-ag-kit init --quiet        # Suppress output (for CI/CD)
-ag-kit init --dry-run      # Preview actions without executing
+ag-kit update --dry-run
+ag-kit update --strategy merge
+ag-kit update --strategy replace
+ag-kit rollback
+ag-kit rollback --backup 20260712-090000-000
 ```
 
-## What it does
+`merge` is the default strategy. `replace` is intentionally explicit and still creates a backup unless `--no-backup` is supplied.
 
-Downloads and installs the `.agents` folder from [ag-kit](https://github.com/vudovn/ag-kit) containing:
-- **20 Specialist Agents** - Role-based AI personas
-- **45 Skills** - Domain-specific knowledge modules
-- **13 Workflows** - Slash command procedures
+## Common options
+
+```bash
+ag-kit init --path ./myapp
+ag-kit init --branch dev
+ag-kit update --force
+ag-kit update --quiet --force
+ag-kit update --conflict-report ./ag-kit-update.json
+ag-kit rollback --dry-run
+```
+
+When `--quiet` is used against an existing installation, `--force` is required because the CLI cannot safely ask for confirmation.
+
+## Included toolkit
+
+- **20 specialist agents**
+- **47 skills**
+- **13 workflows**
+- Shared rules, persistent memory conventions, MCP configuration, and validation scripts
+
+## Exit codes
+
+| Code | Meaning |
+|---:|---|
+| `0` | Success or no changes required |
+| `1` | Download, validation, filesystem, or configuration failure |
+| `2` | Update completed, but one or more conflicts require manual review |
+| `130` | Interrupted by the user |
 
 ## License
 

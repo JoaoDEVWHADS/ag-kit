@@ -24,18 +24,18 @@ export default function ChangelogPage() {
     return (
         <div className="max-w-3xl">
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 mb-6">
-                <Link href="/docs" className="hover:text-zinc-900 dark:hover:text-zinc-50">{c.breadcrumbDocs}</Link>
+            <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+                <Link href="/docs" className="hover:text-foreground">{c.breadcrumbDocs}</Link>
                 <span>/</span>
-                <span className="text-zinc-900 dark:text-zinc-50">{c.breadcrumbCurrent}</span>
+                <span className="text-foreground">{c.breadcrumbCurrent}</span>
             </nav>
 
             {/* Page Header */}
-            <div className="mb-8 pb-8 border-b border-zinc-200 dark:border-zinc-800">
-                <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-4">
+            <div className="mb-8 pb-8 border-b border-border">
+                <h1 className="text-4xl font-bold tracking-tight text-foreground mb-4">
                     {c.title}
                 </h1>
-                <p className="text-lg text-zinc-600 dark:text-zinc-400">
+                <p className="text-lg text-muted-foreground">
                     {c.subtitle}
                 </p>
             </div>
@@ -45,16 +45,16 @@ export default function ChangelogPage() {
                 {changelog.map((release) => (
                     <section key={release.version} className="scroll-mt-20" id={`v${release.version}`}>
                         <div className="flex items-baseline gap-3 mb-3">
-                            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+                            <h2 className="text-2xl font-bold tracking-tight text-foreground">
                                 {release.version}
                             </h2>
-                            <time className="text-sm font-mono text-zinc-500 dark:text-zinc-400">
+                            <time className="text-sm font-mono text-muted-foreground">
                                 {release.date}
                             </time>
                         </div>
 
                         {release.summary && (
-                            <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6 border-l-2 border-zinc-200 dark:border-zinc-800 pl-4">
+                            <p className="text-base text-muted-foreground mb-6 border-l-2 border-border pl-4">
                                 {release.summary}
                             </p>
                         )}
@@ -65,7 +65,7 @@ export default function ChangelogPage() {
                                     <span className={`inline-block text-xs font-semibold px-2 py-0.5 rounded border mb-2 ${SECTION_STYLE[section] ?? ""}`}>
                                         {sectionLabel[section] ?? section}
                                     </span>
-                                    <ul className="list-disc list-outside pl-5 space-y-1.5 text-sm text-zinc-700 dark:text-zinc-300 marker:text-zinc-400 dark:marker:text-zinc-600">
+                                    <ul className="list-disc list-outside pl-5 space-y-1.5 text-sm text-muted-foreground marker:text-muted-foreground">
                                         {(items as string[]).map((item, i) => (
                                             <li key={i} className="pl-1">{item}</li>
                                         ))}
@@ -78,12 +78,12 @@ export default function ChangelogPage() {
             </div>
 
             {/* Footer link */}
-            <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <div className="mt-12 pt-8 border-t border-border">
                 <a
                     href="https://github.com/vudovn/ag-kit/releases"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 underline underline-offset-4"
+                    className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4"
                 >
                     {c.fullOnGithub} →
                 </a>

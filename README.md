@@ -39,6 +39,21 @@ ag-kit init
 
 ---
 
+## 🛡️ Safe Updates and Rollback
+
+AG Kit updates are merge-aware by default. Files you created or changed locally are preserved, while clean managed files receive upstream updates.
+
+```bash
+ag-kit update --dry-run          # Preview the exact update plan
+ag-kit update                    # Safe merge with backup and conflict report
+ag-kit update --strategy replace # Explicit full replacement, with backup
+ag-kit rollback                  # Restore the newest pre-update backup
+```
+
+Update metadata is stored in `.agents/.ag-kit/`. Backups are stored outside the toolkit at `.ag-kit-backups/`, so an interrupted or conflicting update can be reviewed or rolled back safely.
+
+---
+
 ## 🌍 Global Shared Setup (Symlinks)
 
 If you work across multiple repositories and want to avoid duplicating the `.agents/` folder in every single project, you can centralize AG Kit and use symbolic links.
@@ -52,7 +67,7 @@ If you work across multiple repositories and want to avoid duplicating the `.age
 2. **Link it locally** from inside your project root:
    - **macOS / Linux:**
      ```bash
-     ln -s ~/.ag-kit/.agents .agent
+     ln -s ~/.ag-kit/.agents .agents
      ```
    - **Windows (CMD - Run as Administrator):**
      ```cmd
@@ -83,7 +98,7 @@ AG Kit packages domain-specific knowledge, specialized agent personas, and autom
 | Component | Count | Description |
 | :--- | :--- | :--- |
 | **Agents** | 20 | Specialist AI personas (Frontend, Backend, Security, PM, QA, etc.) |
-| **Skills** | 45 | Domain-specific context modules with conditional loading rules |
+| **Skills** | 47 | Domain-specific context modules with conditional loading rules |
 | **Workflows** | 13 | Pre-configured interactive developer procedures (slash commands) |
 
 ---

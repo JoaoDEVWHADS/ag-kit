@@ -1,20 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { I18nProvider } from "@/i18n/provider";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains",
-  display: "swap",
-});
 
 export const viewport: Viewport = {
   themeColor: [
@@ -28,7 +15,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "AG Kit - AI Agent Capability Expansion Toolkit",
   description:
-    "A comprehensive collection of skills, rules, and workflows for modern AI coding assistants. 35+ skills, 57 UI Styles, production-ready workflows.",
+    "A comprehensive collection of 47 skills, 20 specialist agents, rules, and production-ready workflows for modern AI coding assistants.",
   metadataBase: new URL("https://ag-kit.unikorn.vn/"),
   icons: {
     icon: [
@@ -56,10 +43,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" suppressHydrationWarning>
       <body
         className="antialiased"
       >
+        <a
+          href="#main-content"
+          className="sr-only fixed left-4 top-4 z-[100] rounded-md bg-primary px-4 py-2 text-primary-foreground shadow focus:not-sr-only"
+        >
+          Skip to main content
+        </a>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

@@ -39,6 +39,21 @@ ag-kit init
 
 ---
 
+## 🛡️ Cập nhật an toàn và khôi phục
+
+AG Kit mặc định cập nhật theo cơ chế merge. Các file bạn tự tạo hoặc chỉnh sửa cục bộ được giữ nguyên, còn những file do AG Kit quản lý và chưa bị sửa sẽ nhận bản cập nhật mới.
+
+```bash
+ag-kit update --dry-run          # Xem trước kế hoạch cập nhật
+ag-kit update                    # Merge an toàn, tự backup và tạo báo cáo xung đột
+ag-kit update --strategy replace # Thay toàn bộ một cách tường minh, vẫn có backup
+ag-kit rollback                  # Khôi phục bản backup gần nhất
+```
+
+Metadata cập nhật được lưu trong `.agents/.ag-kit/`. Backup được lưu riêng tại `.ag-kit-backups/`, nhờ đó có thể kiểm tra xung đột hoặc rollback mà không làm mất dữ liệu dự án.
+
+---
+
 ## 🌍 Cấu hình Symlink Toàn cục (Global Shared Setup)
 
 Nếu bạn làm việc trên nhiều dự án khác nhau và muốn tránh sao chép thư mục `.agents/` lặp đi lặp lại, bạn có thể tập trung hóa cấu hình AG Kit và sử dụng các liên kết tượng trưng (Symbolic Links).
@@ -52,7 +67,7 @@ Nếu bạn làm việc trên nhiều dự án khác nhau và muốn tránh sao 
 2. **Liên kết cục bộ** từ thư mục gốc của dự án bạn đang làm việc:
    - **macOS / Linux:**
      ```bash
-     ln -s ~/.ag-kit/.agents .agent
+     ln -s ~/.ag-kit/.agents .agents
      ```
    - **Windows (CMD - Chạy với quyền Administrator):**
      ```cmd
@@ -83,7 +98,7 @@ AG Kit đóng gói sẵn kho tri thức chuyên sâu cho từng domain cụ th�
 | Thành phần | Số lượng | Mô tả |
 | :--- | :--- | :--- |
 | **Agents** | 20 | Các chuyên gia AI độc lập (Frontend, Backend, Security, PM, QA, v.v.) |
-| **Skills** | 45 | Các mô-đun tri thức chuyên sâu đi kèm các quy tắc kích hoạt tự động |
+| **Skills** | 47 | Các mô-đun tri thức chuyên sâu đi kèm các quy tắc kích hoạt tự động |
 | **Workflows** | 13 | Quy trình tương tác tự động hóa lập trình viên (lệnh Slash) |
 
 ---
