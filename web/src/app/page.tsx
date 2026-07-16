@@ -14,7 +14,7 @@ import {
 
 export default function Home() {
   return (
-    <div className="min-h-[100dvh] bg-background">
+    <div className="min-h-[100dvh] bg-background overflow-x-hidden">
       <LandingNavbar />
       <main id="main-content" tabIndex={-1}>
         <LandingHero />

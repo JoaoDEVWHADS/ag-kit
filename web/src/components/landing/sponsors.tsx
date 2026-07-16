@@ -31,13 +31,13 @@ export function LandingSponsors() {
   return (
     <section
       id="stack"
-      className="mx-auto max-w-[90%] pb-16 sm:max-w-[75%] sm:pb-24"
+      className="mx-auto w-full max-w-[90%] pb-16 sm:max-w-[75%] sm:pb-24"
     >
       <h2 className="mb-8 text-center text-lg text-muted-foreground md:text-xl">
         {stack.title}
       </h2>
 
-      <div className="relative overflow-hidden">
+      <div className="relative w-full overflow-hidden">
         <div className="landing-marquee flex w-max gap-12">
           {[...items, ...items].map(({ icon: Icon, name }, i) => (
             <div
