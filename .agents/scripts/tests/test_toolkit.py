@@ -22,6 +22,8 @@ def load_module(name: str, path: Path):
 
 
 validate_kit = load_module("agkit_validate_kit", SCRIPTS / "validate_kit.py")
+component_registry = sys.modules["component_registry"]
+dependency_graph = sys.modules["dependency_graph"]
 security_scan = load_module("agkit_security_scan", TOOLKIT / "skills/vulnerability-scanner/scripts/security_scan.py")
 dependency_analyzer = load_module("agkit_dependency_analyzer", TOOLKIT / "skills/vulnerability-scanner/scripts/dependency_analyzer.py")
 bundle_analyzer = load_module("agkit_bundle_analyzer", TOOLKIT / "skills/performance-profiling/scripts/bundle_analyzer.py")
@@ -160,6 +162,54 @@ class ToolkitRegressionTests(unittest.TestCase):
             located = validation_runner.locate_toolkit_root(project, str(SCRIPTS / "checklist.py"))
             self.assertEqual(TOOLKIT, located)
 
+
+
+    def test_all_components_use_strict_semver(self):
+        manifest = component_registry.build_manifest(TOOLKIT)
+        for group in ("agents", "skills", "workflows", "rules"):
+            with self.subTest(group=group):
+                invalid = {
+                    name: data["version"]
+                    for name, data in manifest[group].items()
+                    if not component_registry.is_semver(data["version"])
+                }
+                self.assertEqual({}, invalid)
+
+    def test_component_registry_and_lock_are_synchronized(self):
+        manifest = component_registry.build_manifest(TOOLKIT)
+        lock = component_registry.build_lock(TOOLKIT, manifest)
+        self.assertEqual(manifest, json.loads((TOOLKIT / "manifest.json").read_text("utf-8")))
+        self.assertEqual(lock, json.loads((TOOLKIT / "manifest.lock.json").read_text("utf-8")))
+
+    def test_dependency_graph_is_synchronized(self):
+        expected = dependency_graph.render(TOOLKIT)
+        self.assertEqual(expected, (TOOLKIT / "DEPENDENCY_GRAPH.md").read_text("utf-8"))
+
+    def test_workflow_dependencies_resolve(self):
+        manifest = component_registry.build_manifest(TOOLKIT)
+        agents = set(manifest["agents"])
+        skills = set(manifest["skills"])
+        for name, workflow in manifest["workflows"].items():
+            with self.subTest(workflow=name):
+                self.assertLessEqual(set(workflow["requires"]["agents"]), agents)
+                self.assertLessEqual(set(workflow["requires"]["skills"]), skills)
+                self.assertTrue(workflow["artifactOutputs"])
+
+    def test_caret_semver_resolution(self):
+        self.assertTrue(component_registry.version_satisfies("1.4.2", "^1.2.0"))
+        self.assertFalse(component_registry.version_satisfies("2.0.0", "^1.2.0"))
+        self.assertTrue(component_registry.version_satisfies("0.3.5", "^0.3.1"))
+        self.assertFalse(component_registry.version_satisfies("0.4.0", "^0.3.1"))
+
+    def test_memory_topics_are_present(self):
+        topics = {
+            "project-conventions.md",
+            "user-preferences.md",
+            "tech-decisions.md",
+            "feedback-history.md",
+        }
+        self.assertLessEqual(topics, {path.name for path in (TOOLKIT / "memory").glob("*.md")})
+        self.assertLessEqual(len((TOOLKIT / "memory/MEMORY.md").read_text("utf-8").splitlines()), 200)
 
 if __name__ == "__main__":
     unittest.main()

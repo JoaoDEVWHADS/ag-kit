@@ -103,6 +103,20 @@ AG Kit packages domain-specific knowledge, specialized agent personas, and autom
 
 ---
 
+
+## 🔐 Versioned Agent Components
+
+Starting with `2026.7.18`, every agent, skill, workflow, and rule has a strict SemVer contract. The `.agents/manifest.json` registry and `.agents/manifest.lock.json` integrity lock make dependencies machine-readable and prevent documentation/configuration drift.
+
+```bash
+npm run generate:agents # regenerate registry, lock, and dependency graph
+npm run check:agents    # non-mutating release/CI verification
+```
+
+The generated `.agents/DEPENDENCY_GRAPH.md` shows workflow → agent → skill relationships. Official runtime support remains Gemini CLI and Google Antigravity; the registry format is portable by design.
+
+---
+
 ## 🛠️ Usage
 
 ### 1. Zero-Setup Agent Auto-Routing

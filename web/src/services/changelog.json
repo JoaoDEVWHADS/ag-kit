@@ -1,5 +1,23 @@
 [
     {
+        "version": "2026.7.18",
+        "date": "2026-07-18",
+        "summary": "Managed .agents components with SemVer, deterministic dependency registry and lock, generated orchestration graph, memory contracts, and drift-proof validation.",
+        "changes": {
+            "Added": [
+                "SemVer metadata for all agents, skills, workflows, and rules.",
+                "Machine-readable manifest.json and SHA-256 manifest.lock.json.",
+                "Generated workflow-to-agent-to-skill dependency graph.",
+                "JSON schemas and standardized memory topic files.",
+                "Registry and graph generators with CI-safe check modes."
+            ],
+            "Changed": [
+                "Self-validation now enforces dependency compatibility, generated-file synchronization, and memory contracts.",
+                "Root, CLI, web, and toolkit versions are aligned at 2026.7.18."
+            ]
+        }
+    },
+    {
         "version": "2026.7.12",
         "date": "2026-07-12",
         "summary": "Full marketing landing page for AG Kit, design-token color system, multi-language landing chrome, live GitHub contributors and stars, plus Sponsored / Contribute sections.",

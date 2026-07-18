@@ -1,6 +1,19 @@
 # 🔄 Agent Flow Architecture
 
-> **AG Kit 2026.5.31** — Comprehensive AI Agent Workflow Documentation
+> **AG Kit 2026.7.18** — Comprehensive AI Agent Workflow Documentation
+
+---
+
+
+## 🔐 Version Resolution Layer
+
+Before an agent is invoked, AG Kit resolves the component contract recorded in `.agents/manifest.json`, verifies the selected skill version against the agent's SemVer range, and rejects stale registry/lock state during validation. Workflow metadata declares required agents, required skills, and expected artifacts, enabling deterministic orchestration without changing the existing Markdown-first runtime.
+
+```text
+Request → Workflow metadata → Agent version → Skill range → Tool boundary → Verification artifact
+```
+
+The generated dependency graph is available at `.agents/DEPENDENCY_GRAPH.md`.
 
 ---
 

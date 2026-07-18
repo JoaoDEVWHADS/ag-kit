@@ -9,6 +9,24 @@ Starting with `2026.5.13`, this project uses calendar versioning in `YYYY.M.D` f
 
 No unreleased changes.
 
+## [2026.7.18] - 2026-07-18
+
+> Managed-component release for `.agents`: strict component SemVer, deterministic registry and lock files, generated dependency graph, memory schema, and stronger validation against drift.
+
+### Added
+- Component SemVer for all agents, skills, workflows, and rules.
+- `manifest.json` as a machine-readable component/dependency registry.
+- `manifest.lock.json` with SHA-256 hashes for component metadata, schemas, scripts, and memory topics.
+- Generated `DEPENDENCY_GRAPH.md` covering workflow → agent → skill relationships.
+- JSON schemas for manifest, lock, component frontmatter, and memory topics.
+- Standard memory topic files for preferences, technical decisions, and feedback.
+- `generate_manifest.py` and `dependency_graph.py`, each with a CI-safe `--check` mode.
+
+### Changed
+- Self-validator now enforces SemVer, workflow references, dependency compatibility, registry/lock synchronization, graph synchronization, and memory index contracts.
+- Root, CLI, web, and toolkit versions are aligned at `2026.7.18`.
+- CI verifies generated `.agents` metadata before running regression tests.
+
 ## [2026.7.12] - 2026-07-12
 
 > Release-safety upgrade: non-destructive CLI updates, rollback support, mandatory CI, dependency review, hardened deployment, and npm Trusted Publishing. Also ships a full marketing landing page and web UI redesign.
@@ -298,7 +316,8 @@ No unreleased changes.
 - CLI tool for easy installation and updates.
 - Comprehensive documentation and architecture guide.
 
-[Unreleased]: https://github.com/vudovn/ag-kit/compare/v2026.7.12...HEAD
+[Unreleased]: https://github.com/vudovn/ag-kit/compare/v2026.7.18...HEAD
+[2026.7.18]: https://github.com/vudovn/ag-kit/compare/v2026.7.12...v2026.7.18
 [2026.7.12]: https://github.com/vudovn/ag-kit/compare/v2026.7.10...v2026.7.12
 [2026.7.10]: https://github.com/vudovn/ag-kit/compare/v2026.6.29...v2026.7.10
 [2026.6.29]: https://github.com/vudovn/ag-kit/compare/v2026.6.23...v2026.6.29

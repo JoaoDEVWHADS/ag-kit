@@ -1,4 +1,7 @@
 ---
+name: design-rules
+version: 1.0.0
+priority: P0
 trigger: glob
 globs: "**/*.{tsx,jsx,vue,svelte,css,scss},**/components/**,**/app/**/page.tsx"
 ---

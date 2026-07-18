@@ -1,6 +1,6 @@
 {
   "name": "@vudovn/ag-kit",
-  "version": "2026.7.12",
+  "version": "2026.7.18",
   "description": "CLI tool to install Antigravity Kit - AI Agent templates",
   "main": "bin/index.js",
   "type": "module",

@@ -174,3 +174,18 @@ CA: Gjpatn3d24dCRhUng7F37K6xJba4R8SDBC18xs1Apump
 ## 📄 Giấy phép
 
 Được phát hành dưới [Giấy phép MIT](LICENSE) © [Vudovn](https://github.com/vudovn).
+
+
+## 🔐 Thành phần Agent có phiên bản
+
+Từ phiên bản `2026.7.18`, mọi agent, skill, workflow và rule đều có hợp đồng SemVer nghiêm ngặt. Registry `.agents/manifest.json` và khóa toàn vẹn `.agents/manifest.lock.json` giúp dependency có thể đọc bằng máy và ngăn tài liệu/cấu hình bị lệch nhau.
+
+```bash
+npm run generate:agents # tạo lại registry, lock và dependency graph
+npm run check:agents    # kiểm tra release/CI mà không sửa file
+```
+
+File sinh tự động `.agents/DEPENDENCY_GRAPH.md` thể hiện quan hệ workflow → agent → skill. Nền tảng runtime được hỗ trợ chính thức vẫn là Gemini CLI và Google Antigravity; định dạng registry được thiết kế để có thể chuyển đổi.
+
+---
+

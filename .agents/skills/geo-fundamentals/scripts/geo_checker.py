@@ -16,6 +16,7 @@ WHAT IT CHECKS:
 Usage:
     python geo_checker.py <project_path>
 """
+from __future__ import annotations
 import sys
 import re
 import json

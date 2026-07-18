@@ -1,6 +1,6 @@
 {
   "name": "ag-kit",
-  "version": "2026.7.12",
+  "version": "2026.7.18",
   "description": "AI Agent templates - Skills, Agents, and Workflows for enhanced coding assistance",
   "repository": {
     "type": "git",
@@ -25,6 +25,8 @@
     "node": ">=22"
   },
   "scripts": {
+    "generate:agents": "python .agents/scripts/generate_manifest.py .agents && python .agents/scripts/dependency_graph.py .agents",
+    "check:agents": "python .agents/scripts/generate_manifest.py .agents --check && python .agents/scripts/dependency_graph.py .agents --check && python .agents/scripts/validate_kit.py .agents",
     "validate:toolkit": "python .agents/scripts/validate_kit.py .agents",
     "test:toolkit": "python -m unittest discover -s .agents/scripts/tests -v",
     "test:cli": "npm --prefix cli test",

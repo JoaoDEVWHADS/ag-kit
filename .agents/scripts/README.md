@@ -4,11 +4,30 @@
 
 ### `validate_kit.py`
 
-Self-validates the `.agents/` package. It checks JSON, YAML frontmatter, required metadata, agent-to-skill references, local Markdown links, Python syntax, referenced script paths, and documented inventory counts.
+Self-validates the `.agents/` package. It checks JSON, strict SemVer frontmatter, workflow/agent/skill references, manifest and lock synchronization, generated dependency docs, memory contracts, local Markdown links, Python syntax, referenced script paths, and documented inventory counts.
 
 ```bash
 python .agents/scripts/validate_kit.py
 python .agents/scripts/validate_kit.py --json
+```
+
+
+### `generate_manifest.py`
+
+Builds deterministic `manifest.json` and `manifest.lock.json` files from component frontmatter. Use `--check` in CI to fail on registry drift.
+
+```bash
+python .agents/scripts/generate_manifest.py
+python .agents/scripts/generate_manifest.py --check
+```
+
+### `dependency_graph.py`
+
+Builds `DEPENDENCY_GRAPH.md` from workflow and agent dependencies. Use `--check` to verify that the generated graph is current.
+
+```bash
+python .agents/scripts/dependency_graph.py
+python .agents/scripts/dependency_graph.py --check
 ```
 
 ### `checklist.py`
@@ -69,7 +88,7 @@ The master runners use subprocess exit codes as the source of truth and can emit
 
 ## Regression tests
 
-Toolkit scripts include standard-library regression tests for self-validation, security scanning, dependency and bundle analysis, and toolkit-root discovery.
+Toolkit scripts include regression tests for self-validation, component SemVer, manifest/lock integrity, dependency graph synchronization, memory contracts, security scanning, dependency and bundle analysis, and toolkit-root discovery.
 
 ```bash
 python -m unittest discover -s .agents/scripts/tests -v

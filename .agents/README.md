@@ -19,19 +19,24 @@ For release verification:
 python .agents/scripts/verify_all.py . --url http://localhost:3000
 ```
 
-To verify AG Kit itself after editing agents, skills, rules, scripts, or links:
+To verify AG Kit itself after editing agents, skills, workflows, rules, scripts, or links:
 
 ```bash
+python .agents/scripts/generate_manifest.py
+python .agents/scripts/dependency_graph.py
 python .agents/scripts/validate_kit.py
 ```
 
+Use `--check` with the first two commands in CI to detect stale generated files without rewriting them.
+
 ## Core concepts
 
-- **Agents** define role, boundaries, tools, and skill dependencies.
-- **Skills** contain selectively loaded domain knowledge and optional executable scripts.
+- **Agents** define role, boundaries, tools, SemVer, and skill dependencies.
+- **Skills** contain selectively loaded domain knowledge, SemVer contracts, and optional executable scripts.
 - **Rules** define workspace-wide precedence and routing behavior.
 - **Workflows** provide reusable slash-command procedures.
 - **Memory** stores durable project conventions and decisions.
+- **Registry and lock files** make dependencies machine-readable and detect drift.
 - **Runtime scripts** turn guidance into repeatable evidence.
 
 ## Configuration
@@ -41,6 +46,8 @@ python .agents/scripts/validate_kit.py
 ## Documentation
 
 - [Architecture and inventory](ARCHITECTURE.md)
+- [Generated dependency graph](DEPENDENCY_GRAPH.md)
 - [Runtime scripts](scripts/README.md)
-- [Change history](../CHANGELOG.md)
+- [Toolkit change history](CHANGELOG.md)
+- [Repository change history](../CHANGELOG.md)
 - [Quick routing reference](rules/quick-reference.md)

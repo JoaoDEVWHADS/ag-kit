@@ -1,4 +1,7 @@
 ---
+name: core-protocol
+version: 1.0.0
+priority: P0
 trigger: always_on
 ---
 

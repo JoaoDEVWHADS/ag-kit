@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Self-validate an AG Kit installation.
 
-Checks machine-readable configuration, frontmatter contracts, cross references,
-local Markdown links, Python syntax, and architecture inventory counts.
+Checks machine-readable configuration, versioned frontmatter contracts,
+cross references, generated registries, local Markdown links, memory schema,
+Python syntax, and architecture inventory counts.
 """
 from __future__ import annotations
 
@@ -20,6 +21,16 @@ try:
 except ImportError:  # pragma: no cover - optional enhancement
     yaml = None
 
+from component_registry import (
+    build_lock,
+    build_manifest,
+    canonical_json,
+    is_semver,
+    normalize_list,
+    version_satisfies,
+)
+from dependency_graph import render as render_dependency_graph
+
 
 @dataclass
 class Finding:
@@ -31,9 +42,17 @@ class Finding:
 
 
 REQUIRED_FIELDS = {
-    "agent": {"name", "description", "tools", "model", "skills"},
-    "skill": {"name", "description", "when_to_use", "allowed-tools"},
-    "rule": {"trigger"},
+    "agent": {"name", "description", "tools", "model", "skills", "version"},
+    "skill": {"name", "description", "when_to_use", "allowed-tools", "version"},
+    "workflow": {
+        "name",
+        "description",
+        "version",
+        "requires_agents",
+        "requires_skills",
+        "artifact_outputs",
+    },
+    "rule": {"name", "trigger", "version", "priority"},
 }
 
 
@@ -60,11 +79,7 @@ def fallback_frontmatter(raw: str) -> dict[str, object]:
         if not match:
             continue
         key, value = match.groups()
-        value = value.strip().strip('"\'')
-        if key == "skills":
-            data[key] = [part.strip() for part in value.split(",") if part.strip()]
-        else:
-            data[key] = value
+        data[key] = value.strip().strip('"\'')
     return data
 
 
@@ -98,62 +113,143 @@ def validate_json(root: Path, findings: list[Finding]) -> None:
             add(findings, "error", "json.invalid", path.relative_to(root), str(exc), line)
 
 
-def validate_frontmatter(root: Path, findings: list[Finding]) -> tuple[dict[str, dict[str, object]], dict[str, dict[str, object]]]:
+def validate_kit_version(root: Path, findings: list[Finding]) -> None:
+    version_path = root / "VERSION"
+    if not version_path.is_file():
+        add(findings, "error", "version.missing", Path("VERSION"), "VERSION is missing")
+        return
+    value = version_path.read_text("utf-8").strip()
+    if not re.fullmatch(r"\d{4}\.\d{1,2}\.\d{1,2}", value):
+        add(findings, "error", "version.invalid_calver", Path("VERSION"), f"Expected YYYY.M.D CalVer, got {value!r}")
+
+
+def validate_frontmatter(
+    root: Path, findings: list[Finding]
+) -> tuple[
+    dict[str, dict[str, object]],
+    dict[str, dict[str, object]],
+    dict[str, dict[str, object]],
+    dict[str, dict[str, object]],
+]:
     agents: dict[str, dict[str, object]] = {}
     skills: dict[str, dict[str, object]] = {}
+    workflows: dict[str, dict[str, object]] = {}
+    rules: dict[str, dict[str, object]] = {}
     groups = (
         ("agent", sorted((root / "agent").glob("*.md"))),
         ("skill", sorted((root / "skills").glob("*/SKILL.md"))),
+        ("workflow", sorted((root / "workflows").glob("*.md"))),
         ("rule", sorted((root / "rules").glob("*.md"))),
     )
+    registries = {"agent": agents, "skill": skills, "workflow": workflows, "rule": rules}
     for kind, paths in groups:
         names_seen: set[str] = set()
         for path in paths:
             rel = path.relative_to(root)
-            data = parse_frontmatter(rel if False else path, findings)
+            data = parse_frontmatter(path, findings)
             if data is None:
                 continue
             missing = REQUIRED_FIELDS[kind] - set(data)
             for field in sorted(missing):
                 add(findings, "error", "frontmatter.required_field", rel, f"Missing required field: {field}")
             name = str(data.get("name", ""))
-            expected = path.stem if kind == "agent" else path.parent.name if kind == "skill" else ""
-            if expected and name != expected:
+            expected = path.parent.name if kind == "skill" else path.stem
+            if name != expected:
                 add(findings, "error", "frontmatter.name_mismatch", rel, f"name={name!r}, expected {expected!r}")
             if name:
                 if name in names_seen:
                     add(findings, "error", "frontmatter.duplicate_name", rel, f"Duplicate {kind} name: {name}")
                 names_seen.add(name)
-            if kind == "agent":
-                agents[expected] = data
-            elif kind == "skill":
-                skills[expected] = data
-    return agents, skills
+            version = data.get("version")
+            if version is not None and not is_semver(str(version)):
+                add(findings, "error", "frontmatter.invalid_semver", rel, f"Invalid SemVer: {version!r}")
+            registries[kind][expected] = data
+    return agents, skills, workflows, rules
 
 
-def normalize_skills(value: object) -> list[str]:
-    if isinstance(value, list):
-        return [str(item).strip() for item in value if str(item).strip()]
-    if isinstance(value, str):
-        return [item.strip() for item in value.split(",") if item.strip()]
-    return []
-
-
-def validate_references(root: Path, agents: dict[str, dict[str, object]], skills: dict[str, dict[str, object]], findings: list[Finding]) -> None:
+def validate_references(
+    root: Path,
+    agents: dict[str, dict[str, object]],
+    skills: dict[str, dict[str, object]],
+    workflows: dict[str, dict[str, object]],
+    findings: list[Finding],
+) -> None:
     for agent_name, data in agents.items():
         path = Path("agent") / f"{agent_name}.md"
-        for skill in normalize_skills(data.get("skills")):
+        for skill in normalize_list(data.get("skills")):
             if skill not in skills:
                 add(findings, "error", "reference.unknown_skill", path, f"Agent references missing skill: {skill}")
+
+    for workflow_name, data in workflows.items():
+        path = Path("workflows") / f"{workflow_name}.md"
+        for agent in normalize_list(data.get("requires_agents")):
+            if agent not in agents:
+                add(findings, "error", "reference.unknown_agent", path, f"Workflow references missing agent: {agent}")
+        for skill in normalize_list(data.get("requires_skills")):
+            if skill not in skills:
+                add(findings, "error", "reference.unknown_skill", path, f"Workflow references missing skill: {skill}")
+        if not normalize_list(data.get("artifact_outputs")):
+            add(findings, "warning", "workflow.no_outputs", path, "Workflow declares no artifact outputs")
 
     script_pattern = re.compile(r'["\']((?:skills|scripts)/[^"\']+?\.py)["\']')
     for path in (root / "scripts").glob("*.py"):
         text = path.read_text("utf-8", errors="replace")
         for match in script_pattern.finditer(text):
+            if any(char in match.group(1) for char in "*?["):
+                continue
             target = root / match.group(1)
             if not target.is_file():
                 line = text.count("\n", 0, match.start()) + 1
                 add(findings, "error", "reference.missing_script", path.relative_to(root), f"Referenced script does not exist: {match.group(1)}", line)
+
+
+def validate_manifest(root: Path, findings: list[Finding]) -> None:
+    manifest_path = root / "manifest.json"
+    lock_path = root / "manifest.lock.json"
+    if not manifest_path.is_file():
+        add(findings, "error", "manifest.missing", Path("manifest.json"), "Run scripts/generate_manifest.py")
+        return
+    if not lock_path.is_file():
+        add(findings, "error", "manifest.lock_missing", Path("manifest.lock.json"), "Run scripts/generate_manifest.py")
+        return
+    try:
+        actual_manifest = json.loads(manifest_path.read_text("utf-8"))
+        actual_lock = json.loads(lock_path.read_text("utf-8"))
+    except json.JSONDecodeError:
+        return
+    try:
+        expected_manifest = build_manifest(root)
+        expected_lock = build_lock(root, expected_manifest)
+    except Exception as exc:
+        add(findings, "error", "manifest.generation_failed", Path("manifest.json"), str(exc))
+        return
+    if actual_manifest != expected_manifest:
+        add(findings, "error", "manifest.stale", Path("manifest.json"), "Registry differs from component frontmatter; regenerate it")
+    if actual_lock != expected_lock:
+        add(findings, "error", "manifest.lock_stale", Path("manifest.lock.json"), "Lock differs from current component files; regenerate it")
+
+    skill_versions = {name: data["version"] for name, data in expected_manifest["skills"].items()}
+    for agent_name, agent in expected_manifest["agents"].items():
+        for skill_name, constraint in agent["requires"]["skills"].items():
+            version = skill_versions.get(skill_name)
+            if version and not version_satisfies(version, constraint):
+                add(
+                    findings,
+                    "error",
+                    "manifest.incompatible_dependency",
+                    Path(agent["path"]),
+                    f"{skill_name} {version} does not satisfy {constraint}",
+                )
+
+
+def validate_generated_docs(root: Path, findings: list[Finding]) -> None:
+    path = root / "DEPENDENCY_GRAPH.md"
+    if not path.is_file():
+        add(findings, "error", "graph.missing", Path("DEPENDENCY_GRAPH.md"), "Run scripts/dependency_graph.py")
+        return
+    expected = render_dependency_graph(root)
+    if path.read_text("utf-8") != expected:
+        add(findings, "error", "graph.stale", Path("DEPENDENCY_GRAPH.md"), "Dependency graph is stale")
 
 
 def validate_markdown_links(root: Path, findings: list[Finding]) -> None:
@@ -175,12 +271,47 @@ def validate_markdown_links(root: Path, findings: list[Finding]) -> None:
                 target.relative_to(root.resolve())
             except ValueError:
                 continue
-            # Documentation template links are examples, not toolkit dependencies.
             if path.relative_to(root).as_posix() == "skills/documentation-templates/SKILL.md" and target_text.startswith("./docs/"):
                 continue
             if not target.exists():
                 line = text.count("\n", 0, match.start()) + 1
                 add(findings, "error", "markdown.missing_link", path.relative_to(root), f"Missing local target: {target_text}", line)
+
+
+def validate_memory(root: Path, findings: list[Finding]) -> None:
+    memory_root = root / "memory"
+    index = memory_root / "MEMORY.md"
+    required_topics = {"project-conventions.md", "user-preferences.md", "tech-decisions.md", "feedback-history.md"}
+    if not index.is_file():
+        add(findings, "error", "memory.index_missing", Path("memory/MEMORY.md"), "Memory index is missing")
+        return
+    lines = index.read_text("utf-8").splitlines()
+    if len(lines) > 200:
+        add(findings, "error", "memory.index_too_large", Path("memory/MEMORY.md"), f"Memory index has {len(lines)} lines; maximum is 200")
+    entry_pattern = re.compile(r"^- \[(user|feedback|project|reference)\] .+ → ([A-Za-z0-9._-]+\.md)$")
+    for line_no, line in enumerate(lines, 1):
+        if not line.startswith("- ["):
+            continue
+        match = entry_pattern.fullmatch(line)
+        if not match:
+            add(findings, "error", "memory.invalid_entry", Path("memory/MEMORY.md"), "Invalid memory index entry", line_no)
+            continue
+        target = memory_root / match.group(2)
+        if not target.is_file():
+            add(findings, "error", "memory.missing_topic", Path("memory/MEMORY.md"), f"Missing topic file: {match.group(2)}", line_no)
+    for topic in sorted(required_topics):
+        path = memory_root / topic
+        if not path.is_file():
+            add(findings, "error", "memory.required_topic", Path("memory") / topic, "Required memory topic is missing")
+            continue
+        data = parse_frontmatter(path, findings)
+        if data is None:
+            continue
+        missing = {"type", "created", "updated"} - set(data)
+        for field in sorted(missing):
+            add(findings, "error", "memory.required_field", path.relative_to(root), f"Missing required field: {field}")
+        if str(data.get("type", "")) not in {"user", "feedback", "project", "reference"}:
+            add(findings, "error", "memory.invalid_type", path.relative_to(root), f"Invalid memory type: {data.get('type')!r}")
 
 
 def validate_python(root: Path, findings: list[Finding]) -> None:
@@ -222,9 +353,13 @@ def validate_architecture_counts(root: Path, findings: list[Finding]) -> None:
 def validate(root: Path) -> list[Finding]:
     findings: list[Finding] = []
     validate_json(root, findings)
-    agents, skills = validate_frontmatter(root, findings)
-    validate_references(root, agents, skills, findings)
+    validate_kit_version(root, findings)
+    agents, skills, workflows, _rules = validate_frontmatter(root, findings)
+    validate_references(root, agents, skills, workflows, findings)
+    validate_manifest(root, findings)
+    validate_generated_docs(root, findings)
     validate_markdown_links(root, findings)
+    validate_memory(root, findings)
     validate_python(root, findings)
     validate_architecture_counts(root, findings)
     return findings

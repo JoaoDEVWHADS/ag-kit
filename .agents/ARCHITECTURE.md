@@ -1,6 +1,6 @@
 # AG Kit Architecture
 
-> Comprehensive AI Agent Capability Expansion Toolkit — 2026.7.12
+> Comprehensive AI Agent Capability Expansion Toolkit — 2026.7.18
 
 ---
 
@@ -14,14 +14,41 @@ AG Kit is a modular system consisting of:
 
 ---
 
+
+## 🔐 Managed Component Registry (2026.7.18)
+
+AG Kit now uses dual-track versioning:
+
+- Toolkit releases keep **CalVer** in `VERSION` (`YYYY.M.D`).
+- Agents, skills, workflows, and rules use strict **SemVer** in frontmatter.
+- `manifest.json` records component paths, versions, tools, and dependencies.
+- `manifest.lock.json` records deterministic SHA-256 hashes for managed metadata and scripts.
+- `DEPENDENCY_GRAPH.md` is generated from the registry and must not be edited manually.
+
+The registry is synchronized by executable checks:
+
+```bash
+python .agents/scripts/generate_manifest.py --check
+python .agents/scripts/dependency_graph.py --check
+python .agents/scripts/validate_kit.py
+```
+
+Any component change that is not followed by registry regeneration fails validation and CI. Official runtime support remains Gemini CLI and Google Antigravity; the metadata format is intentionally portable.
+
+---
+
 ## 🏗️ Directory Structure
 
 ```plaintext
 .agents/
 ├── README.md                # Quick start and operating guide
 ├── ARCHITECTURE.md          # Capability inventory and design
-├── CHANGELOG.md             # Version history
-├── VERSION                  # Toolkit version
+├── CHANGELOG.md             # Toolkit-local version history
+├── VERSION                  # Toolkit CalVer
+├── manifest.json            # Versioned component registry
+├── manifest.lock.json       # SHA-256 integrity lock
+├── DEPENDENCY_GRAPH.md      # Generated workflow → agent → skill graph
+├── schemas/                 # JSON contracts for registry and memory
 ├── agent/                  # 20 Specialist Agents
 ├── skills/                  # 47 Skills (with conditional loading)
 ├── workflows/               # 13 Slash Commands
@@ -227,6 +254,7 @@ name: skill-name
 description: What this skill does
 when_to_use: "When to activate. NOT for X."  # 2026.5.13
 allowed-tools: Read, Grep, Glob
+version: 1.0.0
 ---
 ```
 
@@ -240,7 +268,7 @@ allowed-tools: Read, Grep, Glob
 
 ## 🛠️ Runtime Scripts
 
-AG Kit includes **5 user-facing top-level utilities**, **1 internal runner module**, and **18 skill-level scripts**.
+AG Kit includes **7 user-facing top-level utilities**, **2 internal registry/runner modules**, and **18 skill-level scripts**.
 
 ### Top-level utilities
 
@@ -248,14 +276,21 @@ AG Kit includes **5 user-facing top-level utilities**, **1 internal runner modul
 |---|---|---|
 | `scripts/checklist.py` | Fast, priority-ordered validation | During development and pre-commit |
 | `scripts/verify_all.py` | Complete verification suite | Before release or deployment |
-| `scripts/validate_kit.py` | Self-check the toolkit structure and references | After editing `.agents/` |
+| `scripts/validate_kit.py` | Self-check versions, registry, memory, links, and references | After editing `.agents/` |
+| `scripts/generate_manifest.py` | Generate/check component registry and lock | After changing component metadata |
+| `scripts/dependency_graph.py` | Generate/check workflow-agent-skill graph | After changing dependencies |
 | `scripts/session_manager.py` | Summarize project/session context | At session start or status checks |
 | `scripts/auto_preview.py` | Start, stop, and inspect local preview servers | UI development |
 | `scripts/validation_runner.py` | Shared process runner used by checklist/verify | Internal module; do not invoke directly |
+| `scripts/component_registry.py` | Deterministic registry parser, SemVer resolver, and hasher | Internal module; do not invoke directly |
 
 ### Usage
 
 ```bash
+# Regenerate managed metadata after component edits
+python .agents/scripts/generate_manifest.py
+python .agents/scripts/dependency_graph.py
+
 # Validate the toolkit itself
 python .agents/scripts/validate_kit.py
 
@@ -288,7 +323,7 @@ For command details and prerequisites, see [scripts/README.md](scripts/README.md
 | **Total Agents**    | 20 (1 major upgrade in 2026.5.13) |
 | **Total Skills**    | 47                                |
 | **Total Workflows** | 13 (+2 new in 2026.5.13)          |
-| **Top-level Utilities** | 5 user-facing + 1 internal module |
+| **Top-level Utilities** | 7 user-facing + 2 internal modules |
 | **Total Skill Scripts** | 18                              |
 | **Coverage**        | Web, API, mobile, security, quality, runtime, orchestration |
 | **Token Efficiency**| Reduced via conditional skill loading |
