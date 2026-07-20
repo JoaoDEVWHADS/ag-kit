@@ -6,8 +6,8 @@ The default [`hooks.json`](hooks.json) is intentionally empty. It enables valida
 
 ## Contracts
 
-- [`lifecycle-event.schema.json`](../schemas/lifecycle-event.schema.json) defines the portable event envelope.
-- [`lifecycle-hooks.schema.json`](../schemas/lifecycle-hooks.schema.json) defines hook registrations.
+- [`lifecycle-event.schema.json`](schemas/lifecycle-event.schema.json) defines the portable event envelope.
+- [`lifecycle-hooks.schema.json`](schemas/lifecycle-hooks.schema.json) defines hook registrations.
 - `hooks.json` is the project-owned registration file.
 
 ## Portable events
@@ -53,7 +53,7 @@ OpenAI Agents SDK traces can be normalized into the same vocabulary for agent sp
 
 ```json
 {
-  "$schema": "../schemas/lifecycle-hooks.schema.json",
+  "$schema": "schemas/lifecycle-hooks.schema.json",
   "schemaVersion": "1.0.0",
   "defaults": {
     "timeoutMs": 5000,
