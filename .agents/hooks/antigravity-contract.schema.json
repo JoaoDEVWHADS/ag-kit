@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ag-kit.dev/schemas/antigravity-contract.schema.json",
+  "title": "AG Kit Antigravity Runtime Contract",
+  "type": "object",
+  "required": ["schemaVersion", "runtime", "phases"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schemaVersion": {"const": "1.0.0"},
+    "runtime": {"const": "antigravity"},
+    "minimumCliVersion": {"type": "string"},
+    "phases": {"type": "object"}
+  },
+  "additionalProperties": false
+}

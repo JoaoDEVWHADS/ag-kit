@@ -1,9 +1,0 @@
-{
-  "$schema": "schemas/lifecycle-hooks.schema.json",
-  "schemaVersion": "1.0.0",
-  "defaults": {
-    "timeoutMs": 5000,
-    "failureMode": "warn"
-  },
-  "hooks": []
-}

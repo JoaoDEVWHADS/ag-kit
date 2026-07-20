@@ -1,85 +1,114 @@
-# Portable Lifecycle Hooks
+# AG Kit — Antigravity Native Integration
 
-AG Kit defines a runtime-neutral lifecycle contract so policy checks, audit logging, validation, and automation can be described once and adapted to multiple agent runtimes.
+AG Kit now treats Google Antigravity as its primary runtime. The integration is intentionally built from Antigravity's workspace-native conventions instead of a cross-runtime abstraction.
 
-The default [`hooks.json`](hooks.json) is intentionally empty. It enables validation and safe opt-in without executing commands merely because `.agents/` was installed.
+## What is active
 
-## Contracts
+| Phase | Native surface | AG Kit implementation |
+| --- | --- | --- |
+| 1. Discovery | `.agents/rules/`, `.agents/skills/`, `.agents/workflows/` | Doctor validates discovery paths and required frontmatter |
+| 2. MCP | `.agents/mcp_config.json` | Workspace validation plus explicit, backup-aware sync helper |
+| 3. Hooks | `.agents/hooks.json` | `PreToolUse` gate for clearly destructive `run_command` calls |
+| 4. Orchestration | workflows, specialist definitions, Antigravity subagents | Validates `/coordinate`, `/orchestrate`, core roles, and routing skills |
+| 5. Plugin | Antigravity CLI plugin import | Deterministic local plugin bundle builder |
+| 6. Validation | CI and smoke tests | Doctor, hook regression tests, MCP tests, and plugin build tests |
 
-- [`lifecycle-event.schema.json`](schemas/lifecycle-event.schema.json) defines the portable event envelope.
-- [`lifecycle-hooks.schema.json`](schemas/lifecycle-hooks.schema.json) defines hook registrations.
-- `hooks.json` is the project-owned registration file.
+## Quick verification
 
-## Portable events
+```bash
+node .agents/hooks/antigravity-doctor.mjs
+node --test .agents/hooks/tests/antigravity.test.mjs
+```
 
-| AG Kit event | Typical runtime lifecycle point |
-| --- | --- |
-| `session.started` | Session begins or resumes |
-| `instructions.loaded` | Project instructions or rules enter context |
-| `prompt.received` | User prompt accepted before model processing |
-| `permission.requested` | A tool or action needs approval |
-| `permission.denied` | A policy or user denies an action |
-| `tool.before_call` | Before tool execution; may block |
-| `tool.after_call` | Tool execution succeeded |
-| `tool.failed` | Tool execution failed |
-| `agent.started` | A subagent or delegated role starts |
-| `agent.completed` | A subagent or delegated role finishes |
-| `task.created` | A durable task is created |
-| `task.completed` | A durable task reaches completion |
-| `worktree.created` | An isolated Git worktree is created |
-| `worktree.removed` | An isolated Git worktree is removed |
-| `context.pre_compact` | Before context compaction |
-| `context.post_compact` | After context compaction |
-| `turn.completed` | An agent turn ends successfully |
-| `turn.failed` | An agent turn ends because of an error |
-| `session.completed` | The session terminates |
+The doctor checks the installed workspace without changing files. Use `--json` for machine-readable output and `--strict` to treat unresolved configuration placeholders as failures.
 
-## Adapter guidance
+## Native safety hook
 
-Claude Code exposes direct equivalents for most events, including `SessionStart`, `InstructionsLoaded`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `SubagentStart`, `TaskCreated`, `WorktreeCreate`, `PreCompact`, `PostCompact`, and `SessionEnd`. Other runtimes may expose traces, callbacks, plugin hooks, or streamed events instead. Adapters should normalize runtime payloads into the AG Kit event envelope rather than leaking runtime-specific field names into project policy.
-
-OpenAI Agents SDK traces can be normalized into the same vocabulary for agent spans, tool spans, handoffs, and guardrail checks. Events that cannot block execution should be treated as observational even when the portable registration uses `mode: "blocking"`.
-
-## Security defaults
-
-- No hook runs unless it is explicitly registered and enabled.
-- Use `fail_closed` only for deterministic policy checks with bounded execution time.
-- Redact secrets, credentials, prompts, source code, and tool outputs before exporting telemetry.
-- Prefer executable-plus-argument arrays over shell interpolation for command hooks.
-- Keep network destinations allowlisted and avoid embedding credentials in hook targets.
-- Runtime adapters must preserve the runtime's native permission system; hooks are not a substitute for sandboxing or least-privilege tool grants.
-
-## Example
+Antigravity reads `.agents/hooks.json`. AG Kit registers one native hook:
 
 ```json
 {
-  "$schema": "schemas/lifecycle-hooks.schema.json",
-  "schemaVersion": "1.0.0",
-  "defaults": {
-    "timeoutMs": 5000,
-    "failureMode": "warn"
-  },
-  "hooks": [
+  "enabled": true,
+  "PreToolUse": [
     {
-      "id": "block-destructive-shell",
-      "event": "tool.before_call",
-      "runtime": "portable",
-      "mode": "blocking",
-      "failureMode": "fail_closed",
-      "matcher": {"tool": "shell"},
-      "handler": {
-        "type": "command",
-        "target": ".agents/hooks/block-destructive-shell.py"
-      }
+      "matcher": "run_command",
+      "command": "node .agents/hooks/validate-tool-call.mjs",
+      "timeout": 10
     }
   ]
 }
 ```
 
-This example is documentation only; the referenced handler is not shipped.
+The policy blocks only high-confidence destructive operations such as deleting a filesystem root, formatting a drive, or overwriting a raw disk. It deliberately allows normal cleanup such as deleting `dist/` or `node_modules/`.
 
-## Primary references
+The hook is not a sandbox and does not replace Antigravity's permission settings. Invalid or unknown payload shapes fail open with a warning to prevent a runtime-wide lockout after upstream payload changes.
 
-- Claude Code hooks reference: <https://code.claude.com/docs/en/hooks>
-- OpenAI Agents SDK tracing: <https://openai.github.io/openai-agents-js/guides/tracing/>
-- MCP roadmap: <https://modelcontextprotocol.io/development/roadmap>
+## MCP setup
+
+Antigravity CLI supports workspace MCP configuration at `.agents/mcp_config.json`. Antigravity IDE and the wider suite may also use a shared global configuration.
+
+Inspect the merge plan:
+
+```bash
+node .agents/hooks/sync-mcp.mjs --check
+node .agents/hooks/sync-mcp.mjs --print
+```
+
+Apply only after replacing placeholders such as `YOUR_API_KEY`:
+
+```bash
+node .agents/hooks/sync-mcp.mjs --apply --target suite
+node .agents/hooks/sync-mcp.mjs --apply --target cli
+```
+
+The helper never overwrites an existing server with the same name unless `--force` is supplied. It creates a timestamped backup before writing.
+
+## Orchestration
+
+AG Kit uses the existing Antigravity-native workflows:
+
+- `/coordinate` for parallel read/research and synthesis;
+- `/orchestrate` for plan approval followed by specialist implementation;
+- `.agents/agent/*.md` as role definitions;
+- `coordinator-mode`, `parallel-agents`, `intelligent-routing`, and `verify-changes` as orchestration skills.
+
+Antigravity's `/agents` and `/tasks` views remain the runtime source of truth for active work. AG Kit does not create a second scheduler.
+
+## Build a plugin bundle
+
+```bash
+node .agents/hooks/build-plugin.mjs
+# or
+npm run build:antigravity-plugin
+```
+
+The generated `dist/antigravity-plugin/` contains:
+
+- a `gemini-extension.json` compatible manifest used by Antigravity CLI's plugin importer;
+- packaged skills and specialist definitions;
+- workflows converted into namespaced command TOML files;
+- rules, native hooks, and an MCP example;
+- `PLUGIN_CONTENTS.json` with deterministic SHA-256 inventory data.
+
+Install the local build after reviewing it:
+
+```bash
+agy plugin install ./dist/antigravity-plugin
+agy plugin list
+```
+
+## Security boundaries
+
+- No MCP configuration is copied to the home directory without explicit `--apply`.
+- Placeholder credentials block MCP application.
+- The plugin builder does not include secrets from environment variables or home-directory configuration.
+- The hook only reads one tool payload from stdin and performs no network calls.
+- AG Kit does not weaken Antigravity permission prompts or workspace trust controls.
+
+## Primary Antigravity references
+
+- Workspace rules and workflows: Google Antigravity IDE codelab.
+- Workspace skills: Google Antigravity skills codelab.
+- Workspace MCP: Antigravity CLI codelab.
+- Native `PreToolUse` hooks: Secure agentic coding codelab.
+- Plugin installation: Antigravity CLI and Conductor plugin codelabs.
