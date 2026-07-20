@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ag-kit.local/schemas/lifecycle-event.schema.json",
+  "title": "AG Kit Portable Lifecycle Event",
+  "description": "Runtime-neutral envelope for agent lifecycle, tool, task, compaction, worktree, and session events.",
+  "type": "object",
+  "required": ["schemaVersion", "id", "event", "occurredAt", "source", "payload"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "event": {
+      "enum": [
+        "session.started",
+        "instructions.loaded",
+        "prompt.received",
+        "permission.requested",
+        "permission.denied",
+        "tool.before_call",
+        "tool.after_call",
+        "tool.failed",
+        "agent.started",
+        "agent.completed",
+        "task.created",
+        "task.completed",
+        "worktree.created",
+        "worktree.removed",
+        "context.pre_compact",
+        "context.post_compact",
+        "turn.completed",
+        "turn.failed",
+        "session.completed"
+      ]
+    },
+    "occurredAt": {"type": "string", "format": "date-time"},
+    "source": {
+      "type": "object",
+      "required": ["runtime", "sessionId"],
+      "properties": {
+        "runtime": {"type": "string", "minLength": 1},
+        "runtimeVersion": {"type": "string"},
+        "sessionId": {"type": "string", "minLength": 1},
+        "turnId": {"type": "string"},
+        "taskId": {"type": "string"},
+        "agent": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "payload": {"type": "object"},
+    "redactions": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}
