@@ -8,6 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..", "..");
 
 const read = (relativePath) => fse.readFile(path.join(repoRoot, relativePath), "utf8");
+const readJson = (relativePath) => fse.readJson(path.join(repoRoot, relativePath));
 
 test("all GitHub Actions are pinned to immutable commit SHAs", async () => {
     const workflowDir = path.join(repoRoot, ".github", "workflows");
@@ -38,28 +39,38 @@ test("release workflows do not disable TLS or use a long-lived npm token", async
     assert.match(publish, /Trusted Publishing/);
 });
 
-test("package versions stay aligned", async () => {
+test("release versions stay aligned across packages, locks, and toolkit", async () => {
     const manifests = await Promise.all([
-        fse.readJson(path.join(repoRoot, "package.json")),
-        fse.readJson(path.join(repoRoot, "cli", "package.json")),
-        fse.readJson(path.join(repoRoot, "web", "package.json")),
+        readJson("package.json"),
+        readJson("cli/package.json"),
+        readJson("web/package.json"),
+        readJson("package-lock.json"),
+        readJson("cli/package-lock.json"),
+        readJson("web/package-lock.json"),
     ]);
+    const toolkitVersion = (await read(".agents/VERSION")).trim();
+    const expected = manifests[0].version;
 
-    assert.equal(manifests[0].version, manifests[1].version);
-    assert.equal(manifests[1].version, manifests[2].version);
+    for (const manifest of manifests) {
+        assert.equal(manifest.version, expected);
+        if (manifest.packages?.[""]?.version) {
+            assert.equal(manifest.packages[""].version, expected);
+        }
+    }
+    assert.equal(toolkitVersion, expected);
 });
 
 test("public documentation reflects current paths and inventory", async () => {
     for (const file of ["README.md", "README-VI.md"]) {
         const content = await read(file);
-        assert.match(content, /\| \*\*Skills\*\* \| 47 \|/);
+        assert.match(content, /\|\s*(?:\*\*)?Skills(?:\*\*)?\s*\|\s*47\s*\|/);
         assert.doesNotMatch(content, /ln -s ~\/\.ag-kit\/\.agents \.agent(?:\s|$)/);
         assert.match(content, /ag-kit rollback/);
     }
 });
 
 test("published CLI package includes its runtime library", async () => {
-    const cliPackage = await fse.readJson(path.join(repoRoot, "cli", "package.json"));
+    const cliPackage = await readJson("cli/package.json");
     assert.ok(cliPackage.files.includes("bin"));
     assert.ok(cliPackage.files.includes("lib"));
 });
