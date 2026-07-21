@@ -28,6 +28,9 @@ jobs:
           ref: automation/agkit-next-20260721
           fetch-depth: 0
 
+      - name: Preserve temporary workflow
+        run: cp .github/workflows/antigravity.yml /tmp/antigravity-temporary.yml
+
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
@@ -113,7 +116,7 @@ jobs:
           node --test .agents/hooks/tests/antigravity.test.mjs
           node .agents/hooks/build-plugin.mjs --output .tmp/antigravity-plugin
 
-      - name: Remove one-time staging files
+      - name: Remove staging files and restore temporary workflow
         shell: bash
         run: |
           rm -f \
@@ -123,8 +126,8 @@ jobs:
             .github/agkit-release-payload.rempart01 \
             .github/agkit-release-payload.rempart02 \
             .github/agkit-release-payload.rempart03 \
-            .github/agkit-release-payload.rempart04 \
-            .github/workflows/apply-release-payload.yml
+            .github/agkit-release-payload.rempart04
+          cp /tmp/antigravity-temporary.yml .github/workflows/antigravity.yml
           rm -rf .tmp
 
       - name: Commit production candidate
