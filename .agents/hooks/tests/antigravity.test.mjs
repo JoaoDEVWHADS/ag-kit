@@ -48,6 +48,12 @@ test('doctor recognizes all six implementation phases', () => {
   assert.equal(report.passed, true);
 });
 
+test('runtime contract uses documented CLI capabilities instead of an invented version floor', () => {
+  const contract = JSON.parse(fs.readFileSync(path.join(root, '.agents/antigravity.json'), 'utf8'));
+  assert.equal('minimumCliVersion' in contract, false);
+  assert.deepEqual(contract.requiredCliCommands, ['changelog', 'plugin', 'update']);
+});
+
 test('MCP sync detects placeholders and plans without writing', () => {
   const plan = planSync({root, target: 'suite', force: false});
   assert.equal(plan.placeholders, true);
