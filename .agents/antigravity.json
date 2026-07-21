@@ -2,7 +2,11 @@
   "$schema": "hooks/antigravity-contract.schema.json",
   "schemaVersion": "1.0.0",
   "runtime": "antigravity",
-  "minimumCliVersion": "1.0.0",
+  "requiredCliCommands": [
+    "changelog",
+    "plugin",
+    "update"
+  ],
   "phases": {
     "discovery": {
       "rules": ".agents/rules",
