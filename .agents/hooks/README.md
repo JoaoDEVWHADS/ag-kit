@@ -105,10 +105,17 @@ agy plugin list
 - The hook only reads one tool payload from stdin and performs no network calls.
 - AG Kit does not weaken Antigravity permission prompts or workspace trust controls.
 
+## Release and operations
+
+- [Root README](../../README.md) — installation and production quick start.
+- [Migration guide](../../MIGRATION.md) — upgrade and rollback from earlier AG Kit versions.
+- [Production checklist](../../PRODUCTION_CHECKLIST.md) — automated and hands-on release gates.
+- [Security policy](../../SECURITY.md) — threat model, incident handling, and hook recovery.
+
 ## Primary Antigravity references
 
-- Workspace rules and workflows: Google Antigravity IDE codelab.
-- Workspace skills: Google Antigravity skills codelab.
-- Workspace MCP: Antigravity CLI codelab.
-- Native `PreToolUse` hooks: Secure agentic coding codelab.
-- Plugin installation: Antigravity CLI and Conductor plugin codelabs.
+- Workspace rules and workflows: <https://codelabs.developers.google.com/antigravity-ide>
+- Workspace skills: <https://codelabs.developers.google.com/antigravity-skills>
+- Workspace MCP: <https://codelabs.developers.google.com/antigravity-cli>
+- Native `PreToolUse` hooks: <https://codelabs.developers.google.com/secure-agentic-coding>
+- Plugin installation: <https://codelabs.developers.google.com/antigravity-cli-plugins> and <https://codelabs.developers.google.com/antigravity-conductor>

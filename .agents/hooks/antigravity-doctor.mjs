@@ -195,6 +195,41 @@ function checkPlugin(root, report) {
   }
 }
 
+function checkValidation(root, report) {
+  const requiredFiles = [
+    '.agents/hooks/tests/antigravity.test.mjs',
+    'MIGRATION.md',
+    'PRODUCTION_CHECKLIST.md',
+    'SECURITY.md'
+  ];
+  for (const file of requiredFiles) {
+    if (!fs.existsSync(path.join(root, file))) add(report, 'error', 'validation', 'validation.file_missing', file, 'Production validation or operator documentation is missing.');
+  }
+
+  const versionFiles = [
+    ['.agents/VERSION', value => value.trim()],
+    ['package.json', value => JSON.parse(value).version],
+    ['cli/package.json', value => JSON.parse(value).version],
+    ['web/package.json', value => JSON.parse(value).version]
+  ];
+  const versions = [];
+  for (const [file, parse] of versionFiles) {
+    const target = path.join(root, file);
+    if (!fs.existsSync(target)) {
+      add(report, 'error', 'validation', 'validation.version_missing', file, 'Version source is missing.');
+      continue;
+    }
+    try {
+      versions.push([file, parse(fs.readFileSync(target, 'utf8'))]);
+    } catch (error) {
+      add(report, 'error', 'validation', 'validation.version_invalid', file, error.message);
+    }
+  }
+  const unique = new Set(versions.map(([, value]) => value));
+  if (unique.size > 1) add(report, 'error', 'validation', 'validation.version_mismatch', 'VERSION', `Release versions are not synchronized: ${versions.map(([file, value]) => `${file}=${value}`).join(', ')}`);
+  report.counts.releaseVersions = Object.fromEntries(versions);
+}
+
 export function diagnose(root) {
   const report = {runtime: 'antigravity', root, passed: true, counts: {}, phases: {}, findings: []};
   const contractFile = path.join(root, '.agents', 'antigravity.json');
@@ -211,8 +246,9 @@ export function diagnose(root) {
   checkHooks(root, report);
   checkOrchestration(root, report, contract);
   checkPlugin(root, report);
+  checkValidation(root, report);
 
-  for (const phase of ['discovery', 'mcp', 'hooks', 'orchestration', 'plugin']) {
+  for (const phase of ['discovery', 'mcp', 'hooks', 'orchestration', 'plugin', 'validation']) {
     report.phases[phase] = !report.findings.some(item => item.phase === phase && item.severity === 'error');
   }
   report.passed = !report.findings.some(item => item.severity === 'error');

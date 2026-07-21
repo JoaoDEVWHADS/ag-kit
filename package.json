@@ -1,7 +1,7 @@
 {
   "name": "ag-kit",
-  "version": "2026.7.18",
-  "description": "AI Agent templates - Skills, Agents, and Workflows for enhanced coding assistance",
+  "version": "2026.7.21",
+  "description": "Antigravity-first AI agent engineering kit with rules, skills, workflows, orchestration, MCP guidance, and safety hooks",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vudovn/ag-kit.git"
@@ -12,11 +12,12 @@
   },
   "keywords": [
     "ag-kit",
+    "antigravity",
     "ai",
     "agent",
-    "gemini",
+    "orchestration",
     "skills",
-    "templates"
+    "workflows"
   ],
   "author": "vudovn",
   "license": "MIT",

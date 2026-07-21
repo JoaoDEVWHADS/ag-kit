@@ -110,7 +110,6 @@ export function buildPlugin(root, output) {
     name: 'ag-kit',
     version,
     runtime: 'antigravity',
-    generatedAt: new Date().toISOString(),
     counts,
     files: inventory(output)
   };

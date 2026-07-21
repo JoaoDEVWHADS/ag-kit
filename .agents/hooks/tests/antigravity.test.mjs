@@ -45,6 +45,7 @@ test('doctor recognizes all six implementation phases', () => {
   assert.equal(report.phases.hooks, true);
   assert.equal(report.phases.orchestration, true);
   assert.equal(report.phases.plugin, true);
+  assert.equal(report.phases.validation, true);
   assert.equal(report.passed, true);
 });
 
@@ -71,5 +72,9 @@ test('plugin builder creates manifest, commands, skills, and hook', () => {
   assert.ok(fs.existsSync(path.join(output, 'commands/ag-kit/orchestrate.toml')));
   assert.ok(fs.existsSync(path.join(output, 'hooks/hooks.json')));
   assert.ok(fs.existsSync(path.join(output, 'PLUGIN_CONTENTS.json')));
+  const firstInventory = fs.readFileSync(path.join(output, 'PLUGIN_CONTENTS.json'), 'utf8');
+  buildPlugin(root, output);
+  const secondInventory = fs.readFileSync(path.join(output, 'PLUGIN_CONTENTS.json'), 'utf8');
+  assert.equal(secondInventory, firstInventory);
   fs.rmSync(temporary, {recursive: true, force: true});
 });

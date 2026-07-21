@@ -9,6 +9,42 @@ Starting with `2026.5.13`, this project uses calendar versioning in `YYYY.M.D` f
 
 No unreleased changes.
 
+## [2026.7.21] - 2026-07-21
+
+> Antigravity-native production release: six-phase runtime integration, native tool safety, MCP synchronization, optional plugin packaging, dedicated compatibility CI, and complete operator/release documentation.
+
+### Added
+- `.agents/antigravity.json` as the machine-readable Antigravity runtime contract.
+- Native `.agents/hooks.json` registration with a `PreToolUse` gate for `run_command`.
+- Destructive-command policy covering Unix root deletion, filesystem formatting, raw-disk overwrite, Windows drive formatting, and forced Windows root deletion.
+- Antigravity Doctor with read-only discovery, MCP, hook, orchestration, plugin, and release-readiness diagnostics.
+- Explicit MCP plan/sync helper with placeholder blocking, conflict preservation, opt-in force, and timestamped backups.
+- Antigravity plugin builder for skills, agents, rules, workflow commands, hooks, MCP example, and SHA-256 artifact inventory.
+- Regression tests for hook payloads, destructive patterns, runtime capabilities, MCP planning, doctor checks, and plugin output.
+- Dedicated `Antigravity Compatibility` GitHub Actions workflow.
+- Root migration guide and production release checklist.
+
+### Changed
+- Google Antigravity is the primary supported production runtime; cross-runtime Markdown portability remains best-effort.
+- Root, CLI, web, lock files, toolkit version, web changelog, manifest, and integrity lock are synchronized at `2026.7.21`.
+- Managed integrity coverage now includes the Antigravity contract, native hook configuration, hook tooling, schemas, plugin templates, and tests.
+- README documentation now provides complete English and Vietnamese production setup, validation, MCP, plugin, rollback, and support-boundary guidance.
+- Agent flow and toolkit architecture documentation now show the Antigravity runtime boundary and six integration phases.
+- Release setup requires the Antigravity native contract check and hands-on Antigravity smoke-test evidence before leaving Draft.
+- Dependency Review Action is pinned to the Node 24-compatible v5 release while preserving severity and license policy.
+
+### Security
+- The default hook blocks only high-confidence destructive operations and does not replace Antigravity permission or workspace-trust controls.
+- Invalid, oversized, or unrecognized hook payloads fail open with a warning to avoid runtime-wide lockout after upstream payload changes.
+- MCP synchronization never writes without `--apply`, rejects unresolved placeholders, preserves conflicts unless forced, and backs up existing target files.
+- Plugin generation reads repository files only and excludes environment variables and home-directory configuration.
+- Security documentation now includes the Antigravity runtime threat model, false-positive response, secret handling, artifact review, and rollback boundaries.
+
+### Compatibility
+- Existing agent, skill, rule, workflow, and memory names remain compatible.
+- The native safety hook is newly enabled by default and can be temporarily disabled with `"enabled": false` for compatibility diagnosis.
+- Plugin installation remains optional; the repository `.agents/` directory is the project source of truth.
+
 ## [2026.7.18] - 2026-07-18
 
 > Managed-component release for `.agents`: strict component SemVer, deterministic registry and lock files, generated dependency graph, memory schema, and stronger validation against drift.
@@ -316,8 +352,7 @@ No unreleased changes.
 - CLI tool for easy installation and updates.
 - Comprehensive documentation and architecture guide.
 
-[Unreleased]: https://github.com/vudovn/ag-kit/compare/v2026.7.18...HEAD
-[2026.7.18]: https://github.com/vudovn/ag-kit/compare/v2026.7.12...v2026.7.18
+[Unreleased]: https://github.com/vudovn/ag-kit/compare/v2026.7.12...HEAD
 [2026.7.12]: https://github.com/vudovn/ag-kit/compare/v2026.7.10...v2026.7.12
 [2026.7.10]: https://github.com/vudovn/ag-kit/compare/v2026.6.29...v2026.7.10
 [2026.6.29]: https://github.com/vudovn/ag-kit/compare/v2026.6.23...v2026.6.29

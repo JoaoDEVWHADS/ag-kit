@@ -1,189 +1,238 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/vudovn/ag-kit/main/web/public/images/logo.png" width="128" height="128" alt="AGKIT">
+  <img src="https://raw.githubusercontent.com/vudovn/ag-kit/main/web/public/images/logo.png" width="128" height="128" alt="AG Kit">
 </p>
 
 <h1 align="center">AG KIT</h1>
 
 <p align="center">
-    AI Agent templates with Skills, Agents, and Workflows — featuring Coordinator Mode, Persistent Memory, and Context Compression.
+  Antigravity-first agent engineering kit with rules, skills, specialist agents, workflows, persistent memory, MCP guidance, orchestration, and a native safety hook.
 </p>
 
 <div align="center">
-    <a href="https://unikorn.vn/p/antigravity-kit?ref=unikorn" target="_blank"><img src="https://unikorn.vn/api/widgets/badge/antigravity-kit?theme=dark" alt="AG Kit - Nổi bật trên Unikorn.vn" style="width: 210px; height: 54px;" width="210" height="54" /></a>
-    <a href="https://trendshift.io/repositories/21490" target="_blank"><img src="https://trendshift.io/api/badge/repositories/21490" alt="vudovn%2Fantigravity-kit | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-    <a href="https://launch.j2team.dev/products/antigravity-kit" target="_blank"><img src="https://launch.j2team.dev/badge/antigravity-kit/dark" alt="AG Kit on J2TEAM Launch" width="250" height="54" /></a>
+  <a href="https://unikorn.vn/p/antigravity-kit?ref=unikorn" target="_blank"><img src="https://unikorn.vn/api/widgets/badge/antigravity-kit?theme=dark" alt="AG Kit on Unikorn.vn" width="210" height="54" /></a>
+  <a href="https://trendshift.io/repositories/21490" target="_blank"><img src="https://trendshift.io/api/badge/repositories/21490" alt="AG Kit on Trendshift" width="250" height="55" /></a>
+  <a href="https://launch.j2team.dev/products/antigravity-kit" target="_blank"><img src="https://launch.j2team.dev/badge/antigravity-kit/dark" alt="AG Kit on J2TEAM Launch" width="250" height="54" /></a>
 </div>
 
 <p align="center">
-  <strong>🇻🇳 <a href="./README-VI.md">Tiếng Việt (Vietnamese Version)</a></strong>
+  <strong>Primary runtime: Google Antigravity</strong><br/>
+  <a href="./README-VI.md">Tiếng Việt</a> · <a href="./MIGRATION.md">Migration guide</a> · <a href="./PRODUCTION_CHECKLIST.md">Production checklist</a> · <a href="./SECURITY.md">Security</a>
 </p>
 
 ---
 
-## ⚡ Quick Start
+## Production profile
 
-Install and initialize AG Kit to inject the `.agents/` configuration folder directly into your local project.
+AG Kit installs a complete `.agents/` workspace contract. Antigravity is the supported production runtime for this release. Other tools may read the Markdown components, but runtime behavior outside Antigravity is not part of the production compatibility guarantee.
 
-### Method 1: On-demand Execution (Recommended)
+| Capability | Production implementation |
+| --- | --- |
+| Rules and skill discovery | `.agents/rules/`, `.agents/skills/`, `.agents/workflows/` |
+| Specialist routing | 20 role definitions and intelligent-routing skills |
+| Persistent context | `.agents/memory/` and context-compression guidance |
+| Orchestration | `/coordinate`, `/orchestrate`, Antigravity `/agents` and `/tasks` |
+| MCP | Workspace config plus explicit, backup-aware sync helper |
+| Tool safety | Native `PreToolUse` gate for high-confidence destructive commands |
+| Packaging | Local Antigravity plugin bundle with a SHA-256 content inventory |
+| Validation | Toolkit CI, Antigravity Doctor, regression tests, Dependency Review, CLI and web checks |
+
+The native hook is deliberately narrow. It blocks root-filesystem deletion, drive formatting, and raw-disk overwrite patterns while allowing normal project cleanup such as deleting `dist/` or `node_modules/`. It does not replace Antigravity permissions, workspace trust, sandboxing, or human approval.
+
+## Requirements
+
+- Node.js 22 or newer for repository-level Antigravity tooling.
+- Python 3.10 or newer for AG Kit validators and utility scripts.
+- A trusted Google Antigravity workspace.
+- Git for safe update, review, and rollback workflows.
+
+The published CLI currently supports Node.js 18 or newer; the Antigravity integration checks run on Node.js 22.
+
+## Quick start
+
+### Install into a project
 
 ```bash
 npx @vudovn/ag-kit init
 ```
 
-### Method 2: Global Installation
+Or install the CLI globally:
 
 ```bash
 npm install -g @vudovn/ag-kit
 ag-kit init
 ```
 
----
+Do not add `.agents/` to the project `.gitignore` when Antigravity needs to index rules, skills, or workflows. To keep it local without disabling discovery, add `.agents/` to `.git/info/exclude` instead.
 
-## 🛡️ Safe Updates and Rollback
-
-AG Kit updates are merge-aware by default. Files you created or changed locally are preserved, while clean managed files receive upstream updates.
+### Verify the workspace
 
 ```bash
-ag-kit update --dry-run          # Preview the exact update plan
-ag-kit update                    # Safe merge with backup and conflict report
-ag-kit update --strategy replace # Explicit full replacement, with backup
+npm run check:agents
+npm run check:antigravity
+npm run test:antigravity
+```
+
+`check:antigravity` is read-only. The default MCP example contains `YOUR_API_KEY`, so the normal doctor reports a warning until the example is configured. Use strict mode only after all placeholders have been resolved:
+
+```bash
+node .agents/hooks/antigravity-doctor.mjs --strict
+```
+
+### Open in Antigravity
+
+After opening the repository as a trusted workspace:
+
+1. Confirm slash commands such as `/plan`, `/coordinate`, and `/orchestrate` are discovered.
+2. Confirm relevant skills are selected from `.agents/skills/`.
+3. Run a normal command such as `npm test` and confirm it is allowed.
+4. Verify the safety hook with a mocked payload rather than executing a destructive command:
+
+```bash
+printf '%s' '{"tool_args":{"CommandLine":"rm -rf /"}}' \
+  | node .agents/hooks/validate-tool-call.mjs
+```
+
+The command must exit non-zero and print `BLOCKED by AG Kit`.
+
+## Safe updates and rollback
+
+AG Kit updates are merge-aware. User-owned files and locally modified managed files are preserved by default.
+
+```bash
+ag-kit update --dry-run          # Preview the exact plan
+ag-kit update                    # Merge safely and create a backup
+ag-kit update --strategy replace # Explicit full replacement, still backed up
 ag-kit rollback                  # Restore the newest pre-update backup
 ```
 
-Update metadata is stored in `.agents/.ag-kit/`. Backups are stored outside the toolkit at `.ag-kit-backups/`, so an interrupted or conflicting update can be reviewed or rolled back safely.
+Update metadata is stored in `.agents/.ag-kit/`. Backups are stored in `.ag-kit-backups/` outside the managed toolkit tree. Read [MIGRATION.md](MIGRATION.md) before upgrading an existing installation to the Antigravity-native release.
 
----
+## Antigravity-native integration
 
-## 🌍 Global Shared Setup (Symlinks)
+### Runtime contract
 
-If you work across multiple repositories and want to avoid duplicating the `.agents/` folder in every single project, you can centralize AG Kit and use symbolic links.
+`.agents/antigravity.json` declares the six supported integration phases and the documented Antigravity CLI capabilities used by AG Kit. It avoids inventing a minimum semantic version when upstream documentation does not define one.
 
-1. **Install centrally** (e.g., to a global folder like `~/.ag-kit`):
-   ```bash
-   mkdir -p ~/.ag-kit && cd ~/.ag-kit
-   npx @vudovn/ag-kit init
-   ```
+### Native safety hook
 
-2. **Link it locally** from inside your project root:
-   - **macOS / Linux:**
-     ```bash
-     ln -s ~/.ag-kit/.agents .agents
-     ```
-   - **Windows (CMD - Run as Administrator):**
-     ```cmd
-     mklink /D .agents "%USERPROFILE%\.ag-kit\.agents"
-     ```
-   - **Windows (PowerShell - Run as Administrator):**
-     ```powershell
-     New-Item -ItemType SymbolicLink -Path ".agents" -Target "$env:USERPROFILE\.ag-kit\.agents"
-     ```
+Antigravity loads `.agents/hooks.json`, which registers:
 
----
+```json
+{
+  "enabled": true,
+  "PreToolUse": [
+    {
+      "matcher": "run_command",
+      "command": "node .agents/hooks/validate-tool-call.mjs",
+      "timeout": 10
+    }
+  ]
+}
+```
 
-## ⚠️ Important Note on `.gitignore`
+To temporarily disable the AG Kit hook while diagnosing a compatibility issue, set `"enabled": false`, reopen the workspace, and report the payload shape privately if it may contain sensitive data. Do not delete Antigravity's own permission controls.
 
-If you are using AI-native code editors (like **Antigravity**), adding the `.agents/` directory to `.gitignore` will prevent the editor's language server from indexing the workflows, which disables autocomplete for slash commands (e.g. `/plan`, `/debug`).
+### MCP configuration
 
-### Recommended Solution:
-To keep `.agents/` out of your remote repository without losing editor integration:
-1. Ensure `.agents/` is **NOT** listed in your project's `.gitignore`.
-2. Add `.agents/` to your local Git exclude file: `.git/info/exclude` instead.
-
----
-
-## 📦 What's Included
-
-AG Kit packages domain-specific knowledge, specialized agent personas, and automated workflows optimized for modern AI coding tools.
-
-| Component | Count | Description |
-| :--- | :--- | :--- |
-| **Agents** | 20 | Specialist AI personas (Frontend, Backend, Security, PM, QA, etc.) |
-| **Skills** | 47 | Domain-specific context modules with conditional loading rules |
-| **Workflows** | 13 | Pre-configured interactive developer procedures (slash commands) |
-
----
-
-
-## 🔐 Versioned Agent Components
-
-Starting with `2026.7.18`, every agent, skill, workflow, and rule has a strict SemVer contract. The `.agents/manifest.json` registry and `.agents/manifest.lock.json` integrity lock make dependencies machine-readable and prevent documentation/configuration drift.
+Review the workspace MCP plan without writing to the home directory:
 
 ```bash
-npm run generate:agents # regenerate registry, lock, and dependency graph
-npm run check:agents    # non-mutating release/CI verification
+node .agents/hooks/sync-mcp.mjs --check
+node .agents/hooks/sync-mcp.mjs --print
 ```
 
-The generated `.agents/DEPENDENCY_GRAPH.md` shows workflow → agent → skill relationships. Official runtime support remains Gemini CLI and Google Antigravity; the registry format is portable by design.
+After replacing placeholders, explicitly apply to one supported target:
 
----
-
-## 🛠️ Usage
-
-### 1. Zero-Setup Agent Auto-Routing
-
-You don't need to manually orchestrate agents. The system silently classifies your request, auto-routes to the best domain experts, and applies their rules instantly:
-
-```
-You: "Add JWT authentication to the login API"
-Agent: Applying @security-auditor + @backend-specialist...
-
-You: "Align the checkout button to the center and fix dark mode"
-Agent: Using @frontend-specialist...
+```bash
+node .agents/hooks/sync-mcp.mjs --apply --target suite
+node .agents/hooks/sync-mcp.mjs --apply --target cli
 ```
 
-### 2. Interactive Workflows (Slash Commands)
+Existing servers with the same name are preserved unless `--force` is supplied. A timestamped backup is created before an existing target file is changed. Never commit real MCP credentials.
 
-Execute structured development workflows by typing slash commands in your AI agent chat:
+### Build and inspect the plugin
 
-| Command | Description |
-| :--- | :--- |
-| `/brainstorm` | Structured exploration of options and architecture before coding |
-| `/coordinate` | Orchestrate multiple agents in parallel for complex reviews |
-| `/create` | Create new features or full applications from scratch |
-| `/debug` | Activate evidence-based systematic debugging |
-| `/deploy` | Execute pre-flight checks and deploy to production |
-| `/enhance` | Safely add or update features in an existing codebase |
-| `/plan` | Generate a structured implementation plan and checklist |
-| `/preview` | Start, stop, or check status of local preview servers |
-| `/remember` | Save custom project conventions to persistent memory |
-| `/status` | Generate a clear status report of the agent's progress |
-| `/test` | Generate and execute comprehensive tests |
-| `/verify` | Prove code works via execution rather than simple inspection |
+```bash
+npm run build:antigravity-plugin
+```
 
----
+Review `dist/antigravity-plugin/` before local installation. The bundle contains packaged skills, agents, rules, converted workflow commands, the native hook, an MCP example, and `PLUGIN_CONTENTS.json` with SHA-256 entries.
 
-## 🧠 Core Architectural Concepts
+```bash
+agy plugin install ./dist/antigravity-plugin
+agy plugin list
+```
 
-AG Kit is built on production-tested agentic design patterns designed to reduce token usage by **13% to 33%** while yielding higher output quality:
+Plugin installation is optional; the repository-native `.agents/` workspace remains the source of truth for project development.
 
-*   **Coordinator Mode:** Multi-agent orchestration with parallel workers and synthesis, avoiding expensive sequential retries.
-*   **Persistent Memory:** A 4-type taxonomy memory engine index (`MEMORY.md`) to prevent re-explaining project guidelines across sessions.
-*   **Context Compression:** Automated summarization and micro-compaction routines to prevent context degradation in long-lived sessions.
-*   **Conditional Skill Loading:** Context-aware loading of rules via custom frontmatter, preventing your context window from bloating with idle instructions.
+## Included components
 
----
+| Component | Count | Purpose |
+| --- | ---: | --- |
+| Agents | 20 | Domain specialist and orchestration role definitions |
+| Skills | 47 | Progressive domain knowledge and executable validation helpers |
+| Workflows | 13 | Repeatable slash-command procedures |
+| Rules | 6 | Workspace-wide routing, safety, design, and coding constraints |
+| Memory topics | 4 required topics plus index | Durable project conventions, decisions, preferences, and feedback |
 
-## 📚 References & Attribution
+Every agent, skill, workflow, and rule has a SemVer contract. `.agents/manifest.json`, `.agents/manifest.lock.json`, and `.agents/DEPENDENCY_GRAPH.md` make the managed toolkit reproducible and detect drift.
 
-AG Kit represents an original implementation of markdown-based prompt and rules engineering. It was built by analyzing production agent patterns to distill core agentic behaviors:
-*   *No proprietary code or files were copied.*
-*   All templates, rules, and scripts are rewritten as original, open-source implementations under the MIT license.
+```bash
+npm run generate:agents
+npm run check:agents
+```
 
----
+## Common workflows
 
-## ☕ Support the Project
+| Command | Purpose |
+| --- | --- |
+| `/brainstorm` | Explore options and architecture before implementation |
+| `/coordinate` | Run separable research or review tasks in parallel, then synthesize |
+| `/create` | Create a feature or application with structured gates |
+| `/debug` | Perform evidence-based root-cause analysis |
+| `/deploy` | Execute production pre-flight checks and deployment workflow |
+| `/enhance` | Safely modify an existing codebase |
+| `/orchestrate` | Plan, obtain approval, delegate to specialists, and verify |
+| `/plan` | Create a detailed implementation plan and checklist |
+| `/preview` | Manage local preview servers |
+| `/remember` | Save durable project information to memory |
+| `/status` | Summarize active work and blockers |
+| `/test` | Design and execute tests |
+| `/verify` | Prove changes by running checks instead of relying on inspection |
 
-If AG Kit has made your AI programming sessions more productive, consider supporting the project:
+## Release and production gates
+
+A release candidate is not production-approved until all automated checks and the hands-on Antigravity smoke test in [PRODUCTION_CHECKLIST.md](PRODUCTION_CHECKLIST.md) are complete.
+
+Required GitHub checks:
+
+- Toolkit validation
+- CLI tests and package validation
+- Web lint, typecheck, build, and audit
+- Antigravity native contract
+- Dependency Review
+
+AG Kit never requires automatic merge, automatic deployment, or automatic MCP synchronization. Production changes should remain reviewable and reversible.
+
+## Documentation
+
+- [Antigravity implementation details](.agents/hooks/README.md)
+- [Migration guide](MIGRATION.md)
+- [Production release checklist](PRODUCTION_CHECKLIST.md)
+- [Security policy and runtime threat model](SECURITY.md)
+- [Agent flow architecture](AGENT_FLOW.md)
+- [Toolkit architecture](.agents/ARCHITECTURE.md)
+- [Changelog](CHANGELOG.md)
+- [Release setup](.github/RELEASE_SETUP.md)
+
+## References and attribution
+
+AG Kit is an original open-source implementation of Markdown-based agent engineering patterns. No proprietary source files are included. Runtime integration decisions are based on public Antigravity documentation and codelabs linked in [.agents/hooks/README.md](.agents/hooks/README.md).
+
+## Support the project
 
 <a href="https://buymeacoffee.com/vudovn" target="_blank"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee" /></a>
 
-**Vietnamese Bank (MBBank QR):**<br/>
-<img src="https://img.vietqr.io/image/mbbank-0779440918-compact.jpg" alt="Donate QR" width="140" style="border-radius: 8px; margin-top: 10px;" />
-
----
-
-CA: Gjpatn3d24dCRhUng7F37K6xJba4R8SDBC18xs1Apump
-
-## 📄 License
+## License
 
 Released under the [MIT License](LICENSE) © [Vudovn](https://github.com/vudovn).

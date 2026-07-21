@@ -1,9 +1,57 @@
 # 🔄 Agent Flow Architecture
 
-> **AG Kit 2026.7.18** — Comprehensive AI Agent Workflow Documentation
+> **AG Kit 2026.7.21** — Antigravity-native production workflow documentation
 
 ---
 
+## Antigravity runtime boundary
+
+AG Kit defines project behavior in `.agents/`; Google Antigravity is the production runtime that discovers and executes it.
+
+```text
+User request
+    ↓
+Antigravity workspace discovery
+    ├── .agents/rules/       persistent constraints
+    ├── .agents/skills/      progressive domain context
+    ├── .agents/workflows/   slash-command procedures
+    ├── .agents/agent/       specialist role definitions
+    └── .agents/memory/      durable project context
+    ↓
+Routing and orchestration
+    ├── direct specialist selection
+    ├── /coordinate → parallel read/research + synthesis
+    └── /orchestrate → plan → user approval → delegated implementation
+    ↓
+Tool boundary
+    ├── Antigravity permissions and workspace trust
+    └── .agents/hooks.json → PreToolUse safety gate
+    ↓
+Execution, validation, evidence, and result delivery
+    ├── /agents and /tasks are runtime state
+    ├── toolkit validators and project tests are evidence
+    └── memory is updated only for durable accepted information
+```
+
+### Six production integration phases
+
+| Phase | Responsibility | Source of truth |
+| --- | --- | --- |
+| 1. Discovery | Load rules, skills, and workflows | `.agents/rules/`, `.agents/skills/`, `.agents/workflows/` |
+| 2. MCP | Validate workspace servers and explicitly sync reviewed config | `.agents/mcp_config.json` |
+| 3. Hooks | Gate high-confidence destructive command patterns | `.agents/hooks.json` and `.agents/hooks/validate-tool-call.mjs` |
+| 4. Orchestration | Coordinate specialist roles without creating a second scheduler | workflows, agent definitions, Antigravity `/agents` and `/tasks` |
+| 5. Plugin | Package reviewed components for optional local installation | `.agents/hooks/build-plugin.mjs` |
+| 6. Validation | Prove structure, compatibility, security, CLI, and web health | CI, Doctor, regression tests, and `PRODUCTION_CHECKLIST.md` |
+
+### Runtime safety rules
+
+1. Antigravity permission and workspace-trust controls remain enabled.
+2. The AG Kit hook supplements those controls; it is not a sandbox.
+3. Destructive behavior is tested with mocked payloads, never by executing a real destructive command.
+4. MCP writes require explicit `--apply`; unresolved placeholders block the write.
+5. The repository `.agents/` tree remains the source of truth even when a plugin bundle is installed.
+6. Planning, deployment, destructive operations, and security-sensitive work retain human approval gates.
 
 ## 🔐 Version Resolution Layer
 
@@ -43,15 +91,15 @@ The generated dependency graph is available at `.agents/DEPENDENCY_GRAPH.md`.
               ▼                         ▼
     ┌───────────────────┐      ┌──────────────────┐
     │ /brainstorm       │      │ Agent Selection  │
-    │ /create           │      │ Based on Domain  │
-    │ /debug            │      │                  │
-    │ /deploy           │      │ • frontend-*     │
-    │ /enhance          │      │ • backend-*      │
-    │ /orchestrate      │      │ • mobile-*       │
-    │ /plan             │      │ • database-*     │
-    │ /preview          │      │ • devops-*       │
-    │ /status           │      │ • test-*         │
-    │ /test             │      │ • security-*     │
+    │ /coordinate       │      │ Based on Domain  │
+    │ /create           │      │                  │
+    │ /debug            │      │ • frontend-*     │
+    │ /deploy           │      │ • backend-*      │
+    │ /enhance          │      │ • mobile-*       │
+    │ /orchestrate      │      │ • database-*     │
+    │ /plan             │      │ • devops-*       │
+    │ /remember         │      │ • test-*         │
+    │ /verify           │      │ • security-*     │
     └─────────┬─────────┘      └────────┬─────────┘
               │                         │
               └────────────┬────────────┘
