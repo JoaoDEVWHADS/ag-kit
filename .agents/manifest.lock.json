@@ -1,7 +1,7 @@
 {
   "$schema": "schemas/manifest-lock.schema.json",
   "components": {
-    "ARCHITECTURE.md": "2eff65ad2b9fbf54f92cf4bfe10f7df8953616b0bdd4e513bdf2be6a32c44d40",
+    "ARCHITECTURE.md": "7c7a25d170668270a5d3a50d073fa391148adf560e9efd440098d4eb280ebb88",
     "CHANGELOG.md": "89fe6c47e75b7ddcd3021cc46c46dd4b2c7904fbc0304efe80a0652f9d74c255",
     "README.md": "3759151f72c02329f4969a9d9554aba4b109fc1fe745662e3346bdd18a00ed54",
     "VERSION": "24f529d5a9030ab9a004555b3890dc18e6466031fef00b5adfbafcec932e04cf",
@@ -24,6 +24,7 @@
     "agent/qa-automation-engineer.md": "e2ab31b6b355c786bd5a1670ba61afe5cf0adde38dcc093c11a8e3a5da54633a",
     "agent/security-auditor.md": "a526994748a427bf906459664ecdd0131aeb29b8f3dae8a09969af2f75c8a752",
     "agent/seo-specialist.md": "13bba95dd76154f16f9ecbf52d20f8e9cb946085e209dc1339f1f68dcea4c2f0",
+    "agent/teamtalk-developer.md": "0c801c6d342fc3f9a83612d95bd72746c24777c7f9762dfb5e679b654962aff6",
     "agent/test-engineer.md": "3e12917431abd98809198d0d167b75ae7f4e5c4c27862a010227dda8d71724d7",
     "mcp_config.json": "cb41a099a03068860be9da7cc94c8eb9914f84d487cd8f8c1fffd7d021ff7688",
     "memory/MEMORY.md": "b553a654b8a59d7dcc102d4e38e77474e060c6a718cfed1ffe09528caa7abcfa",
@@ -36,6 +37,7 @@
     "rules/design-rules.md": "73ee8f120e85939d04a7153bd7d2336cfb7d3025c9c6fc4b9003eca97e3f228b",
     "rules/quick-reference.md": "f077e962ea7ad1a5afc51efca8f3d27c68b895398e0f0f153c118a9cb635593c",
     "rules/request-routing.md": "2e5e04fc7b500e77c41d3875e4cf3769c83243d78dc419e441b2944aceecbb4d",
+    "rules/teamtalk-rules.md": "e619ebabda667c34a968190fd3ef491244b1faa2081a313e6e6917bdb3fb9bd8",
     "rules/universal-rules.md": "8f03f437aa32909f473573c75754b671cb47344de82a18c4f8926db6a41c2388",
     "schemas/component-frontmatter.schema.json": "8fed5bf3e4b374589b48a95086d864d186424202ef011d39a698e475089fef7e",
     "schemas/manifest-lock.schema.json": "0f55921773dca0e66aa814ecb78e1414a28a907d401bc3b948755323a4213dc0",
@@ -134,7 +136,7 @@
     "skills/geo-fundamentals/scripts/geo_checker.py": "8731bf8ac07209f68fe2f5d2d61df7bb7dfb6cf6a7bb98d061424c0bfed8f78b",
     "skills/i18n-localization/SKILL.md": "356847a4d612633c2531b0c49367cc82ac6d88546b97a3fe4aea05dc515a017f",
     "skills/i18n-localization/scripts/i18n_checker.py": "f01da31b02cfdc45d899efb351867f36be6812f4466406b7cf5a3f3f14c4e1b2",
-    "skills/intelligent-routing/SKILL.md": "d0ad66b14912955ed6c74f25db17c440b839d9ea1be058f0f698fc111d27f0ea",
+    "skills/intelligent-routing/SKILL.md": "ec55c7e1c021b2a4703089cde53770aee5ed7d03c2b8afc21122787319bb8e5e",
     "skills/lint-and-validate/SKILL.md": "f56e3bc04bd64e01c23e451ce4523ec7ae4c3efc56476c22bf97f4bcec21d947",
     "skills/lint-and-validate/scripts/lint_runner.py": "822c8185ad1df47fdbea2cafaa7141c5477e4c8227ee059749db80816cd1c486",
     "skills/lint-and-validate/scripts/type_coverage.py": "442f1559edd31dcd320eaaf2ecfc03d2e99f0dc8c42b7fd3ae5c3263073c7993",
@@ -184,6 +186,7 @@
     "skills/systematic-debugging/SKILL.md": "b41274eb9a63576dedf3df94b7cae59d6e1c62bff522a9114565f5768631f8de",
     "skills/tailwind-patterns/SKILL.md": "01b89bc9fd4750ec293934d343b0f49bc369157bf71a45fd109a0f631ed8e076",
     "skills/tdd-workflow/SKILL.md": "c758378bc135150af5cc5fc990c1612a19541631c064d69388397ef9e514323a",
+    "skills/teamtalk-sdk/SKILL.md": "4ab42ba9474ce9f5fdff48bd4e334d8aa6a82e63b2049e991fea5571344d8075",
     "skills/testing-patterns/SKILL.md": "72f7e12eff41c4bad55b37fbcd734be23420e4e4473cf7a90876487477aecfc7",
     "skills/testing-patterns/scripts/test_runner.py": "e09b21e2334913fbb6b2e840faa229874283fd76c79b3dd0f81c504f41585c8d",
     "skills/verify-changes/SKILL.md": "a4ab56f9b3e8f4dce5295fd8497a97a7e82e16036eaf93fff2a25f1e0ef9b495",
@@ -196,6 +199,7 @@
     "skills/webapp-testing/scripts/playwright_runner.py": "8c476485e415a63fa3b278e09b205d26aa08a8edbed12dc3293d1cdcafd0d063",
     "workflows/brainstorm.md": "ea1afbfdf20318962fe18e067ff779b560325aa85b2378a9024f31d789dda399",
     "workflows/coordinate.md": "f786cd07db35d49849f4d4155df378b9a4bd1539f3501a90547056683535b268",
+    "workflows/create-tt-bot.md": "0eb3bac1119c11075a3a5800460544c290b2865bad978f94d60d2b9294cc7d38",
     "workflows/create.md": "11d5cb3a60b71db9d6a8184bcc3f5c6e27f3b005a8b9c38c2ea6d60c6623a553",
     "workflows/debug.md": "1a6fbfe0ea48a3590d08c8db842b7cf9b7906f953b10e24cd525b7fd6b53070d",
     "workflows/deploy.md": "f3141b4125f8c49c6cb34986a75473589a2b4d53ca9ac092b9677a0c0186c158",
@@ -209,6 +213,6 @@
     "workflows/verify.md": "2dc26bcbe24c7e71571953da75629521ea3d7a0a444a7101e3601b39864971fc"
   },
   "kitVersion": "2026.7.18",
-  "manifestSha256": "446f2d2ef50f14d2593c73ac75d26dd066948eff6962cada29eee5a9c5b762ec",
+  "manifestSha256": "f35ea3c34f7cae53358e21bbcaab558589952b7e7b964169e8c017b9771298e4",
   "schemaVersion": "1.0.0"
 }

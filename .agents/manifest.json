@@ -399,6 +399,19 @@
       ],
       "version": "1.0.0"
     },
+    "teamtalk-developer": {
+      "model": "inherit",
+      "path": "agent/teamtalk-developer.md",
+      "requires": {
+        "skills": {
+          "api-patterns": "^1.0.0",
+          "clean-code": "^2.0.0",
+          "teamtalk-sdk": ""
+        }
+      },
+      "tools": [],
+      "version": ""
+    },
     "test-engineer": {
       "model": "inherit",
       "path": "agent/test-engineer.md",
@@ -459,6 +472,12 @@
       "path": "rules/request-routing.md",
       "priority": "P0",
       "trigger": "always_on",
+      "version": "1.0.0"
+    },
+    "teamtalk-rules": {
+      "path": "rules/teamtalk-rules.md",
+      "priority": "P0",
+      "trigger": "TeamTalk, TeamTalk5, TeamTalkPy, TT5, TeamTalk SDK, TeamTalkJNI, TeamTalkDotNet",
       "version": "1.0.0"
     },
     "universal-rules": {
@@ -974,6 +993,12 @@
       "scripts": [],
       "version": "1.0.0"
     },
+    "teamtalk-sdk": {
+      "allowedTools": [],
+      "path": "skills/teamtalk-sdk/SKILL.md",
+      "scripts": [],
+      "version": ""
+    },
     "testing-patterns": {
       "allowedTools": [
         "Read",
@@ -1101,6 +1126,15 @@
         ]
       },
       "version": "1.0.0"
+    },
+    "create-tt-bot": {
+      "artifactOutputs": [],
+      "path": "workflows/create-tt-bot.md",
+      "requires": {
+        "agents": [],
+        "skills": []
+      },
+      "version": ""
     },
     "debug": {
       "artifactOutputs": [

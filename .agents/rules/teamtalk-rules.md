@@ -2,7 +2,7 @@
 name: teamtalk-rules
 version: 1.0.0
 priority: P0
-trigger: keywords: ["TeamTalk", "TeamTalk5", "TeamTalkPy", "TT5", "TeamTalk SDK", "TeamTalkJNI", "TeamTalkDotNet"]
+trigger: "TeamTalk, TeamTalk5, TeamTalkPy, TT5, TeamTalk SDK, TeamTalkJNI, TeamTalkDotNet"
 ---
 
 # TeamTalk SDK Routing & Rules

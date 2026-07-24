@@ -123,6 +123,7 @@ Before I coordinate the agents, I need to understand your requirements better:
 | `project-planner` | Planning | Task breakdown, milestones, roadmap |
 | `seo-specialist` | SEO & Marketing | SEO optimization, meta tags, analytics |
 | `game-developer` | Game Development | Unity, Godot, Unreal, Phaser, multiplayer |
+| `teamtalk-developer` | TeamTalk 5 SDK | C++, Python, C#, Java/Android, audio/video streaming, bots |
 
 ---
 
