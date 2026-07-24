@@ -150,6 +150,7 @@ Before I coordinate the agents, I need to understand your requirements better:
 | `explorer-agent` | Codebase discovery | ❌ Write operations |
 | `penetration-tester` | Security testing | ❌ Feature code |
 | `game-developer` | Game logic, scenes, assets | ❌ Web/mobile components |
+| `teamtalk-developer` | TeamTalk 5 SDK, voice/audio streaming, bots | ❌ Web-only components |
 
 ### File Type Ownership
 
