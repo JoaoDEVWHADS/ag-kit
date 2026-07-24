@@ -107,6 +107,7 @@ Do you approve? (Y/N)
 | `documentation-writer` | Docs | README, API docs |
 | `debugger` | Debug | Error analysis |
 | `game-developer` | Games | Unity, Godot |
+| `teamtalk-developer` | TeamTalk 5 SDK | TeamTalk, Voice Bots, Streaming |
 | `code-archaeologist` | Legacy | Refactoring, legacy code |
 | `product-manager` | Product | Requirements, user stories |
 | `product-owner` | Product | Backlog, MVP, strategy |

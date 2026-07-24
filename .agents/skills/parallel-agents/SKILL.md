@@ -113,6 +113,7 @@ Agents: security-auditor → penetration-tester → synthesis
 | `project-planner` | Planning | "plan", "roadmap", "milestones" |
 | `seo-specialist` | SEO | "SEO", "meta tags", "search ranking" |
 | `game-developer` | Game Development | "game", "Unity", "Godot", "Phaser" |
+| `teamtalk-developer` | TeamTalk 5 SDK | "teamtalk", "teamtalk5", "tt5", "voice bot" |
 
 ---
 

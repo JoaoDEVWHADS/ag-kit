@@ -29,6 +29,11 @@ python .agents/scripts/validate_kit.py
 
 Use `--check` with the first two commands in CI to detect stale generated files without rewriting them.
 
+| Agent | Description |
+| :--- | :--- |
+| `game-developer.md` | Game developer (Unity, Godot, Phaser) |
+| `teamtalk-developer.md` | TeamTalk 5 SDK developer (C++, Python, C#, Java/Android) |
+
 ## Core concepts
 
 - **Agents** define role, boundaries, tools, SemVer, and skill dependencies.
