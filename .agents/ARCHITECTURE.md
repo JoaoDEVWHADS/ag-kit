@@ -59,7 +59,9 @@ Any component change that is not followed by registry regeneration fails validat
 
 ---
 
-## 🤖 Agents (20)
+## 🤖 Agents (21)
+
+- **teamtalk-developer** — Specialist in TeamTalk 5 SDK (v5.8.1+) development across C/C++, Python, C# (.NET), and Java/Android. Event loops, audio streaming, bots.
 
 Specialist AI personas for different domains.
 
@@ -191,6 +193,7 @@ Modular knowledge domains that agents can load on-demand based on task context. 
 | `code-review-graph`       | Token-efficient code review via Tree-sitter AST + MCP       |
 
 ### Other
+- **teamtalk-sdk**: Complete TeamTalk 5 SDK development guide (v5.8.1 to latest) for C/C++, Python, C# (.NET), and Java/Android.
 
 | Skill                     | Description               |
 | ------------------------- | ------------------------- |
