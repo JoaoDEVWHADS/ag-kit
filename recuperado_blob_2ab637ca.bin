@@ -1,0 +1,130 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "auto",
+  "compaction": {
+    "auto": false
+  },
+  "instructions": [
+    "AGENTS.md",
+    ".agents/rules/core-protocol.md",
+    ".agents/rules/request-routing.md",
+    ".agents/rules/code-rules.md",
+    ".agents/rules/universal-rules.md",
+    ".agents/rules/design-rules.md",
+    ".agents/rules/quick-reference.md",
+    ".agents/rules/teamtalk-rules.md",
+    ".agents/memory/MEMORY.md"
+  ],
+  "agent": {
+    "auto": {
+      "description": "Automatic agent selection based on user request keywords and domain",
+      "prompt": "{file:./.agents/skills/intelligent-routing/SKILL.md}"
+    },
+    "explorer": {
+      "description": "Codebase discovery, architectural analysis, and research agent",
+      "prompt": "{file:./.agents/agent/explorer-agent.md}"
+    },
+    "orchestrator": {
+      "description": "Multi-agent coordination and complex task breakdown",
+      "prompt": "{file:./.agents/agent/orchestrator.md}"
+    },
+    "frontend": {
+      "description": "Frontend UI/UX specialist",
+      "prompt": "{file:./.agents/agent/frontend-specialist.md}"
+    },
+    "backend": {
+      "description": "API and backend development specialist",
+      "prompt": "{file:./.agents/agent/backend-specialist.md}"
+    },
+    "debugger": {
+      "description": "Systematic debugging and root cause analysis",
+      "prompt": "{file:./.agents/agent/debugger.md}"
+    },
+    "code-archaeologist": {
+      "description": "Legacy code analysis, refactoring, and technical debt audit",
+      "prompt": "{file:./.agents/agent/code-archaeologist.md}"
+    },
+    "database-architect": {
+      "description": "Database design, schema optimization, and SQL expert",
+      "prompt": "{file:./.agents/agent/database-architect.md}"
+    },
+    "devops-engineer": {
+      "description": "CI/CD, Docker, deployment, and server management",
+      "prompt": "{file:./.agents/agent/devops-engineer.md}"
+    },
+    "documentation-writer": {
+      "description": "Technical documentation, manuals, and API docs",
+      "prompt": "{file:./.agents/agent/documentation-writer.md}"
+    },
+    "game-developer": {
+      "description": "Game logic, 2D/3D engines, and mechanics",
+      "prompt": "{file:./.agents/agent/game-developer.md}"
+    },
+    "mobile-developer": {
+      "description": "iOS, Android, React Native, and mobile design",
+      "prompt": "{file:./.agents/agent/mobile-developer.md}"
+    },
+    "penetration-tester": {
+      "description": "Offensive security testing and vulnerability exploits",
+      "prompt": "{file:./.agents/agent/penetration-tester.md}"
+    },
+    "performance-optimizer": {
+      "description": "Performance profiling, Web Vitals, and speed optimization",
+      "prompt": "{file:./.agents/agent/performance-optimizer.md}"
+    },
+    "product-manager": {
+      "description": "Requirements, user stories, and feature specs",
+      "prompt": "{file:./.agents/agent/product-manager.md}"
+    },
+    "product-owner": {
+      "description": "Product strategy, MVP scope, and backlog prioritization",
+      "prompt": "{file:./.agents/agent/product-owner.md}"
+    },
+    "project-planner": {
+      "description": "Project discovery, breakdown, and phase planning",
+      "prompt": "{file:./.agents/agent/project-planner.md}"
+    },
+    "qa-automation-engineer": {
+      "description": "E2E testing automation and Playwright suites",
+      "prompt": "{file:./.agents/agent/qa-automation-engineer.md}"
+    },
+    "security-auditor": {
+      "description": "Security audit, OWASP compliance, and code scanner",
+      "prompt": "{file:./.agents/agent/security-auditor.md}"
+    },
+    "seo-specialist": {
+      "description": "SEO, E-E-A-T, and search engine optimization",
+      "prompt": "{file:./.agents/agent/seo-specialist.md}"
+    },
+    "test-engineer": {
+      "description": "Unit testing, integration tests, and TDD workflow",
+      "prompt": "{file:./.agents/agent/test-engineer.md}"
+    },
+    "teamtalk-developer": {
+      "description": "TeamTalk 5 SDK specialist for C++, Python, C#, and Java/Android bots",
+      "prompt": "{file:./.agents/agent/teamtalk-developer.md}"
+    }
+  },
+  "command": {
+    "create-tt-bot": {
+      "description": "Create a new TeamTalk 5 bot or application across Python, C++, C#, or Java/Android",
+      "template": "{file:./.agents/workflows/create-tt-bot.md}"
+    },
+    "create": {
+      "description": "Create new application command",
+      "template": "{file:./.agents/workflows/create.md}"
+    },
+    "plan": {
+      "description": "Create project plan using project-planner agent",
+      "template": "{file:./.agents/workflows/plan.md}"
+    },
+    "debug": {
+      "description": "Debugging command - activates DEBUG mode",
+      "template": "{file:./.agents/workflows/debug.md}"
+    },
+    "orchestrate": {
+      "description": "Coordinate multiple agents for complex tasks",
+      "template": "{file:./.agents/workflows/orchestrate.md}"
+    }
+  }
+}
