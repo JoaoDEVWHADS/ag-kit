@@ -15,7 +15,7 @@
 - 🎯 **Strategy:** [What will be analyzed/executed and justification]
 - ⚡ **Action:** [Which commands, files, or tools will be used]
 ```
-> *(Note: Replace `[agent-name]` with the actual active agent name, e.g. `teamtalk-developer` or `backend-specialist`, and `[skill-name]` with the actual skill, e.g. `teamtalk-sdk` or `clean-code`).*
+> *(Note: Classify the user request domain FIRST. Replace `[agent-name]` dynamically with the matching specialist, e.g. `devops-engineer` for Git/Linux, `backend-specialist` for APIs, `frontend-specialist` for Web UI, or `teamtalk-developer` for TeamTalk SDK. Replace `[skill-name]` with the matching skill).*
 
 ❌ **CRITICAL FAILURE CONDITIONS:**
 1. Generating ANY response, text, tool execution, or code analysis WITHOUT starting with the exact header `🤖 Applying knowledge of...` and `🧠 Reasoning & Action Plan:`.
