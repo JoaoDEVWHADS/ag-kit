@@ -29,6 +29,7 @@ Agent activated → Check frontmatter "skills:" → Read SKILL.md (INDEX) → Re
 ```markdown
 📚 **Using skill: `@[skill-name]`...**
 ```
+> *(Replace `[skill-name]` dynamically with the actual loaded skill name, e.g., `@[teamtalk-sdk]`).*
 
 - List multiple skills together: `📚 Using skills: @frontend-design + @design-spec...`
 - Announce on-demand skills too (e.g. a companion skill pulled from a hub, or `app-builder` for a new app), not just frontmatter ones.
