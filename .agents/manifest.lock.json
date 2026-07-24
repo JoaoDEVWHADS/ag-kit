@@ -1,7 +1,7 @@
 {
   "$schema": "schemas/manifest-lock.schema.json",
   "components": {
-    "ARCHITECTURE.md": "7c7a25d170668270a5d3a50d073fa391148adf560e9efd440098d4eb280ebb88",
+    "ARCHITECTURE.md": "88018ad076273890ab2633fc96c50faaa414ed0c6a8e6029fb19f08e2f1b6133",
     "CHANGELOG.md": "89fe6c47e75b7ddcd3021cc46c46dd4b2c7904fbc0304efe80a0652f9d74c255",
     "README.md": "c0aa9e0ed6f03fabe18e27e9344e21159b5b76ac20ce4c338dbd2b48ae907e56",
     "VERSION": "24f529d5a9030ab9a004555b3890dc18e6466031fef00b5adfbafcec932e04cf",
@@ -24,7 +24,7 @@
     "agent/qa-automation-engineer.md": "e2ab31b6b355c786bd5a1670ba61afe5cf0adde38dcc093c11a8e3a5da54633a",
     "agent/security-auditor.md": "a526994748a427bf906459664ecdd0131aeb29b8f3dae8a09969af2f75c8a752",
     "agent/seo-specialist.md": "13bba95dd76154f16f9ecbf52d20f8e9cb946085e209dc1339f1f68dcea4c2f0",
-    "agent/teamtalk-developer.md": "0c801c6d342fc3f9a83612d95bd72746c24777c7f9762dfb5e679b654962aff6",
+    "agent/teamtalk-developer.md": "11a8a416ba0b21a7d9278d3fd45649585766e23b33eed6497d7bc207c1b4ac46",
     "agent/test-engineer.md": "3e12917431abd98809198d0d167b75ae7f4e5c4c27862a010227dda8d71724d7",
     "mcp_config.json": "cb41a099a03068860be9da7cc94c8eb9914f84d487cd8f8c1fffd7d021ff7688",
     "memory/MEMORY.md": "b553a654b8a59d7dcc102d4e38e77474e060c6a718cfed1ffe09528caa7abcfa",
@@ -186,7 +186,7 @@
     "skills/systematic-debugging/SKILL.md": "b41274eb9a63576dedf3df94b7cae59d6e1c62bff522a9114565f5768631f8de",
     "skills/tailwind-patterns/SKILL.md": "01b89bc9fd4750ec293934d343b0f49bc369157bf71a45fd109a0f631ed8e076",
     "skills/tdd-workflow/SKILL.md": "c758378bc135150af5cc5fc990c1612a19541631c064d69388397ef9e514323a",
-    "skills/teamtalk-sdk/SKILL.md": "4ab42ba9474ce9f5fdff48bd4e334d8aa6a82e63b2049e991fea5571344d8075",
+    "skills/teamtalk-sdk/SKILL.md": "6947ab026297304b4e8fcdc742e5f87cac6b9f0f6b56511a860031b194e9894f",
     "skills/teamtalk-sdk/examples/media_bot.py": "140a8accb2b3c7ae397fd1b6f52c229c5737b90bed9fa0112e434eaa0d306dd6",
     "skills/teamtalk-sdk/examples/voice_logger.py": "e83499a52011c350dfb629a5b0dc2eeae3ff6592a02d3a4ea338fe39da6869c1",
     "skills/teamtalk-sdk/references/cpp-teamtalklib.md": "6cf3d19d3dedd07acc62bcdb54314f1e077279ee701ce3f985fa3307e4fbcc83",
@@ -206,7 +206,7 @@
     "skills/webapp-testing/scripts/playwright_runner.py": "8c476485e415a63fa3b278e09b205d26aa08a8edbed12dc3293d1cdcafd0d063",
     "workflows/brainstorm.md": "ea1afbfdf20318962fe18e067ff779b560325aa85b2378a9024f31d789dda399",
     "workflows/coordinate.md": "f786cd07db35d49849f4d4155df378b9a4bd1539f3501a90547056683535b268",
-    "workflows/create-tt-bot.md": "0eb3bac1119c11075a3a5800460544c290b2865bad978f94d60d2b9294cc7d38",
+    "workflows/create-tt-bot.md": "2c10f902a1e868e3d108f94b8c41743210792f0b01b6c01a581efd4bb609ff55",
     "workflows/create.md": "11d5cb3a60b71db9d6a8184bcc3f5c6e27f3b005a8b9c38c2ea6d60c6623a553",
     "workflows/debug.md": "1a6fbfe0ea48a3590d08c8db842b7cf9b7906f953b10e24cd525b7fd6b53070d",
     "workflows/deploy.md": "f3141b4125f8c49c6cb34986a75473589a2b4d53ca9ac092b9677a0c0186c158",
@@ -220,6 +220,6 @@
     "workflows/verify.md": "2dc26bcbe24c7e71571953da75629521ea3d7a0a444a7101e3601b39864971fc"
   },
   "kitVersion": "2026.7.18",
-  "manifestSha256": "f35ea3c34f7cae53358e21bbcaab558589952b7e7b964169e8c017b9771298e4",
+  "manifestSha256": "747a0bfafa03a199061762b1358f3f706fb40eedc63faadd8c5c1088933139b2",
   "schemaVersion": "1.0.0"
 }

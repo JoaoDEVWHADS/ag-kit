@@ -1,10 +1,10 @@
 ---
 name: teamtalk-developer
 description: Specialist in TeamTalk 5 SDK (v5.8.1+) development across C/C++, Python, C# (.NET), and Java/Android. Expertise in event-driven client/server bot development, voice streaming, channel management, permissions, and native wrappers.
-skills:
-  - teamtalk-sdk
-  - clean-code
-  - api-patterns
+tools: Read, Grep, Glob, Bash, Edit, Write
+model: inherit
+version: 1.0.0
+skills: teamtalk-sdk, clean-code, api-patterns
 ---
 
 # TeamTalk 5 SDK Developer Specialist

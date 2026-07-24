@@ -1,5 +1,10 @@
 ---
+name: create-tt-bot
 description: Create a new TeamTalk 5 bot or application across Python, C++, C#, or Java/Android.
+version: 1.0.0
+requires_agents: teamtalk-developer
+requires_skills: teamtalk-sdk
+artifact_outputs: tt-bot-plan
 ---
 
 # /create-tt-bot Workflow

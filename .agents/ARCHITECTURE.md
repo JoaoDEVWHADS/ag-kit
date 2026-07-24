@@ -8,9 +8,9 @@
 
 AG Kit is a modular system consisting of:
 
-- **20 Specialist Agents** - Role-based AI personas (1 major upgrade in 2026.5.13)
-- **47 Skills** - Domain-specific knowledge modules with conditional loading
-- **13 Workflows** - Slash command procedures
+- **21 Specialist Agents** - Role-based AI personas (1 major upgrade in 2026.5.13)
+- **48 Skills** - Domain-specific knowledge modules with conditional loading
+- **14 Workflows** - Slash command procedures
 
 ---
 
@@ -49,9 +49,9 @@ Any component change that is not followed by registry regeneration fails validat
 ├── manifest.lock.json       # SHA-256 integrity lock
 ├── DEPENDENCY_GRAPH.md      # Generated workflow → agent → skill graph
 ├── schemas/                 # JSON contracts for registry and memory
-├── agent/                  # 20 Specialist Agents
-├── skills/                  # 47 Skills (with conditional loading)
-├── workflows/               # 13 Slash Commands
+├── agent/                  # 21 Specialist Agents
+├── skills/                  # 48 Skills (with conditional loading)
+├── workflows/               # 14 Slash Commands
 ├── rules/                   # Global Rules
 ├── memory/                  # Persistent Memory (2026.5.13)
 └── scripts/                 # Master Validation Scripts
@@ -90,7 +90,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (47)
+## 🧩 Skills (48)
 
 Modular knowledge domains that agents can load on-demand based on task context. Each skill has a `when_to_use` frontmatter field for conditional/intelligent loading.
 
@@ -209,7 +209,7 @@ Modular knowledge domains that agents can load on-demand based on task context. 
 
 ---
 
-## 🔄 Workflows (13)
+## 🔄 Workflows (14)
 
 Slash command procedures. Invoke with `/command`.
 
@@ -323,9 +323,9 @@ For command details and prerequisites, see [scripts/README.md](scripts/README.md
 
 | Metric              | Value                             |
 | ------------------- | --------------------------------- |
-| **Total Agents**    | 20 (1 major upgrade in 2026.5.13) |
-| **Total Skills**    | 47                                |
-| **Total Workflows** | 13 (+2 new in 2026.5.13)          |
+| **Total Agents**    | 21 (1 major upgrade in 2026.5.13) |
+| **Total Skills**    | 48                                |
+| **Total Workflows** | 14 (+2 new in 2026.5.13)          |
 | **Top-level Utilities** | 7 user-facing + 2 internal modules |
 | **Total Skill Scripts** | 18                              |
 | **Coverage**        | Web, API, mobile, security, quality, runtime, orchestration |

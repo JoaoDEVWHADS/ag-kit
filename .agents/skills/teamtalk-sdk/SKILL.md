@@ -1,6 +1,10 @@
 ---
 name: teamtalk-sdk
 description: Comprehensive TeamTalk 5 SDK development knowledge base (v5.8.1 to latest) for C/C++, Python, C# (.NET), and Java/Android. Event loops, sound streaming, channel management, bot creation, and voice logging.
+when_to_use: "Use when developing applications, bots, or integrations using the TeamTalk 5 SDK."
+allowed-tools: Read, Write, Edit, Bash
+version: 1.0.0
+priority: HIGH
 ---
 
 # TeamTalk 5 SDK Knowledge Base & Master Guide
@@ -45,7 +49,7 @@ while True:
     if client.getMessage(msg, 1000):
         if msg.nCMDID == cmd_id and msg.nClientEvent == tt.ClientEvent.CLIENTEVENT_CMD_SUCCESS:
             print("Logged in successfully!")
-            # Join root or custom channel
+            # Join root channel (ID 1)
             client.doJoinChannelByID(1, "")
 ```
 

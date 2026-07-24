@@ -406,11 +406,18 @@
         "skills": {
           "api-patterns": "^1.0.0",
           "clean-code": "^2.0.0",
-          "teamtalk-sdk": ""
+          "teamtalk-sdk": "^1.0.0"
         }
       },
-      "tools": [],
-      "version": ""
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash",
+        "Edit",
+        "Write"
+      ],
+      "version": "1.0.0"
     },
     "test-engineer": {
       "model": "inherit",
@@ -994,10 +1001,15 @@
       "version": "1.0.0"
     },
     "teamtalk-sdk": {
-      "allowedTools": [],
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash"
+      ],
       "path": "skills/teamtalk-sdk/SKILL.md",
       "scripts": [],
-      "version": ""
+      "version": "1.0.0"
     },
     "testing-patterns": {
       "allowedTools": [
@@ -1128,13 +1140,19 @@
       "version": "1.0.0"
     },
     "create-tt-bot": {
-      "artifactOutputs": [],
+      "artifactOutputs": [
+        "tt-bot-plan"
+      ],
       "path": "workflows/create-tt-bot.md",
       "requires": {
-        "agents": [],
-        "skills": []
+        "agents": [
+          "teamtalk-developer"
+        ],
+        "skills": [
+          "teamtalk-sdk"
+        ]
       },
-      "version": ""
+      "version": "1.0.0"
     },
     "debug": {
       "artifactOutputs": [
