@@ -196,8 +196,10 @@ Before assigning agents, determine project type:
 | Trigger | Project Type | Primary Agent | DO NOT USE |
 |---------|--------------|---------------|------------|
 | "mobile app", "iOS", "Android", "React Native", "Flutter", "Expo" | **MOBILE** | `mobile-developer` | ❌ frontend-specialist, backend-specialist |
+| "game", "Unity", "Godot" | **GAME** | `game-developer` | ❌ frontend-specialist |
+| "teamtalk", "teamtalk5", "tt5", "audio bot" | **TEAMTALK** | `teamtalk-developer` | ❌ web-only components, backend-specialist |
 | "website", "web app", "Next.js", "React" (web) | **WEB** | `frontend-specialist` | ❌ mobile-developer |
-| "API", "backend", "server", "database" (standalone) | **BACKEND** | `backend-specialist | - |
+| "API", "backend", "server", "database" (standalone) | **BACKEND** | `backend-specialist` | - |
 
 > 🔴 **CRITICAL:** Mobile project + frontend-specialist = WRONG. Mobile project = mobile-developer ONLY.
 

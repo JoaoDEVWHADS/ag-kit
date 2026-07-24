@@ -17,6 +17,8 @@ description: Apply when writing, building, refactoring, or fixing code — proje
 | Project Type                           | Primary Agent         | Skills                        |
 | -------------------------------------- | --------------------- | ----------------------------- |
 | **MOBILE** (iOS, Android, RN, Flutter) | `mobile-developer`    | mobile-design                 |
+| **GAME** (Unity, Godot)                | `game-developer`      | game-development              |
+| **TEAMTALK** (TeamTalk 5, Audio SDK)   | `teamtalk-developer`  | teamtalk-sdk                  |
 | **WEB** (Next.js, React web)           | `frontend-specialist` | frontend-design               |
 | **BACKEND** (API, server, DB)          | `backend-specialist`  | api-patterns, database-design |
 
