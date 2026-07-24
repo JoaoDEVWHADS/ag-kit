@@ -115,6 +115,7 @@ function analyzeRequest(userMessage) {
 | **Performance** | slow, lag, optimize, cache, performance    | `performance-optimizer` |
 | **SEO**         | seo, meta, analytics, sitemap, robots      | `seo-specialist`        |
 | **Game**        | unity, godot, phaser, game, multiplayer    | `game-developer`        |
+| **TeamTalk**    | teamtalk, teamtalk5, teamtalkpy, tt5, sdk   | `teamtalk-developer`    |
 
 ### Multi-Domain Tasks (Auto-invoke Orchestrator)
 
