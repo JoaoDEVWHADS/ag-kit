@@ -201,6 +201,7 @@
     "skills/teamtalk-sdk/references/sdk-events-catalog.md": "79ce6090805c6706eea0fc2609d6f88b1ef600117ee71f7ec6121806c07f8941",
     "skills/teamtalk-sdk/references/sdk-file-storage-pipelines.md": "780835e5a696439e13695069918f56a0e5edbc184c254effd8569448d9f431f3",
     "skills/teamtalk-sdk/references/sdk-functions-and-enums.md": "ec3c174fc5d4c3709ef550889247569d2aa0f24e7f46f102b98207848fa40839",
+    "skills/teamtalk-sdk/references/sdk-threading-proxy-performance.md": "295edb8bf104ca936d0d2b25fed1763637acd94910c707f3b56018e570cc29dd",
     "skills/teamtalk-sdk/references/troubleshooting-and-codecs.md": "e58b812a29eabe959862d3967a7003d3a8197313c0d68aad389fc23f2ee60dd7",
     "skills/testing-patterns/SKILL.md": "72f7e12eff41c4bad55b37fbcd734be23420e4e4473cf7a90876487477aecfc7",
     "skills/testing-patterns/scripts/test_runner.py": "e09b21e2334913fbb6b2e840faa229874283fd76c79b3dd0f81c504f41585c8d",
