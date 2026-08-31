@@ -1,7 +1,7 @@
 ---
 name: codex
 description: Capability adapter for AG Kit orchestration in Codex environments.
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Codex Platform Adapter
@@ -29,7 +29,7 @@ Only call capabilities present in the active tool set. Native names are mappings
 
 ## Dispatch Rules
 
-The coordinator MUST send a complete task envelope, select the fewest qualified workers, and enforce domain and writable-resource boundaries. Independent reads MAY be dispatched concurrently. Dependencies and overlapping writes MUST be sequential. Approval MUST follow the contract's low, medium, and high risk policy.
+Every executable multi-agent flow MUST create an Eager Analysis Triad of exactly three agents and issue all three dispatches before awaiting any result. Give each agent an independent perspective; if domains do not map one-to-one, use the contract role-filling or grouping rules. The coordinator MUST send complete task envelopes and enforce domain and writable-resource boundaries. Analysis starts eagerly, while dependent or overlapping writes are applied sequentially. Approval MUST follow the contract's low, medium, and high risk policy.
 
 ## Monitoring
 
@@ -37,7 +37,7 @@ Use available wait and listing capabilities to record assignments, state transit
 
 ## Fallback
 
-If a coordination capability is absent, execute ready tasks sequentially in the coordinator session or through another exposed capability with equivalent semantics. Fallback MUST preserve task/result envelopes, approval, bounded retries, audit trail, and independent verification. If independence or safety cannot be preserved, mark the task `blocked`.
+If real concurrency is absent, enqueue the three triad envelopes before consuming results, declare the sequential fallback, and never claim parallel execution. Any fallback MUST preserve independent perspectives, task/result envelopes, approval, bounded retries, audit trail, and independent verification. If independence or safety cannot be preserved, mark the task `blocked`.
 
 ## Limitations
 

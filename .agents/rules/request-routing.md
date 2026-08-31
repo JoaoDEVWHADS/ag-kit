@@ -1,6 +1,6 @@
 ---
 name: request-routing
-version: 1.1.0
+version: 1.2.0
 priority: P0
 trigger: always_on
 ---
@@ -28,7 +28,7 @@ Classify each request, select the smallest sufficient specialist set, and apply 
 4. For orchestration, select the available platform adapter and inspect its declared capabilities.
 5. Apply adaptive approval: low automatically; medium only when material ambiguity exists; high always before destructive or external execution.
 
-Do not force orchestration, a plan file, or a fixed agent count when one specialist can safely complete the task. Do not use vendor-specific modes as the routing contract; adapters translate platform capabilities into AG Kit lifecycle operations.
+Do not force orchestration when one specialist can safely complete a bounded task. Once an executable multi-agent flow is selected, it MUST form an Eager Analysis Triad of exactly three independent analysis agents, dispatch all three before awaiting results, and use primary, risk/edge, and verification-planning roles or grouped domains as needed. Analysis starts eagerly; dependent or conflicting writes are applied sequentially by ownership. Do not use vendor-specific modes as the routing contract; adapters translate platform capabilities into AG Kit lifecycle operations.
 
 ## Boundaries
 

@@ -222,10 +222,10 @@
           "brainstorming": "^1.0.0",
           "clean-code": "^2.0.0",
           "context-compression": "^1.0.0",
-          "coordinator-mode": "^1.1.0",
+          "coordinator-mode": "^1.2.0",
           "lint-and-validate": "^1.0.0",
           "memory-system": "^1.0.0",
-          "parallel-agents": "^1.1.0",
+          "parallel-agents": "^1.2.0",
           "plan-writing": "^1.0.0",
           "powershell-windows": "^1.0.0",
           "verify-changes": "^1.0.0"
@@ -240,7 +240,7 @@
         "Edit",
         "Agent"
       ],
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     "penetration-tester": {
       "model": "inherit",
@@ -446,7 +446,7 @@
   "contracts": {
     "componentApi": "1.0.0",
     "memorySchema": "1.0.0",
-    "orchestrationApi": "1.0.0",
+    "orchestrationApi": "1.1.0",
     "rulesApi": "1.0.0",
     "workflowApi": "1.0.0"
   },
@@ -457,13 +457,13 @@
         "compatibleHosts": [],
         "contract": "orchestrationApi",
         "path": "platforms/claude-code.md",
-        "version": "1.0.0"
+        "version": "1.1.0"
       },
       "codex": {
         "compatibleHosts": [],
         "contract": "orchestrationApi",
         "path": "platforms/codex.md",
-        "version": "1.0.0"
+        "version": "1.1.0"
       },
       "gemini": {
         "compatibleHosts": [
@@ -471,13 +471,13 @@
         ],
         "contract": "orchestrationApi",
         "path": "platforms/gemini.md",
-        "version": "1.0.0"
+        "version": "1.1.0"
       }
     },
     "contract": {
       "name": "orchestration-contract",
       "path": "platforms/orchestration-contract.md",
-      "version": "1.0.0"
+      "version": "1.1.0"
     }
   },
   "rules": {
@@ -485,7 +485,7 @@
       "path": "rules/code-rules.md",
       "priority": "P0",
       "trigger": "model_decision",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     "core-protocol": {
       "path": "rules/core-protocol.md",
@@ -509,7 +509,7 @@
       "path": "rules/request-routing.md",
       "priority": "P0",
       "trigger": "always_on",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     "teamtalk-rules": {
       "path": "rules/teamtalk-rules.md",
@@ -663,7 +663,7 @@
       ],
       "path": "skills/coordinator-mode/SKILL.md",
       "scripts": [],
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     "database-design": {
       "allowedTools": [
@@ -873,7 +873,7 @@
       ],
       "path": "skills/parallel-agents/SKILL.md",
       "scripts": [],
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     "performance-profiling": {
       "allowedTools": [
@@ -1155,7 +1155,7 @@
           "parallel-agents"
         ]
       },
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     "create": {
       "artifactOutputs": [
@@ -1264,7 +1264,7 @@
           "coordinator-mode"
         ]
       },
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     "plan": {
       "artifactOutputs": [

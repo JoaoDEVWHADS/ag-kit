@@ -1,7 +1,7 @@
 ---
 name: orchestration-contract
 description: Platform-neutral normative contract for multi-agent orchestration.
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Platform-Neutral Orchestration Contract
@@ -20,6 +20,17 @@ Every orchestration MUST execute these phases in order:
 6. **VERIFY** — Independently check acceptance criteria and report remaining risks.
 
 An orchestration MUST NOT skip synthesis or declare success before verification completes.
+
+## Eager Analysis Triad
+
+Every executable multi-agent flow MUST form an **Eager Analysis Triad** of exactly three agents. The coordinator MUST dispatch all three analysis envelopes before awaiting or consuming any result. Each agent MUST receive a distinct task or perspective and analyze independently; the coordinator then consumes and reviews the three results one by one before synthesis.
+
+- With fewer than three natural domains, use `primary analysis`, `risk/edge analysis`, and `verification planning` roles.
+- With more than three domains, group the domains into exactly three coherent analysis envelopes.
+- Dependencies and overlapping writes do not delay eager analysis: all three analyses start first, while implementation is applied sequentially according to dependency and ownership.
+- A host without real concurrency MUST enqueue all three envelopes before synthesis, declare the sequential fallback in the audit trail, and MUST NOT claim parallel execution.
+
+The triad requirement applies to executable multi-agent flows, not to a bounded single-agent task that does not invoke orchestration.
 
 ## Task Envelope
 

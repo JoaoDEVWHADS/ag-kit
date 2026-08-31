@@ -3,7 +3,7 @@ name: coordinator-mode
 description: Platform-neutral lifecycle for decomposing, dispatching, monitoring, synthesizing, and verifying multi-agent work.
 when_to_use: "When a request requires coordinated tasks, multiple domains, dependency management, or independent verification. NOT for a single bounded task."
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Agent
-version: 1.1.0
+version: 1.2.0
 effort: high
 ---
 
@@ -26,6 +26,10 @@ The coordinator MUST follow `.agents/platforms/orchestration-contract.md` and MU
 
 The coordinator coordinates; specialists implement. It may inspect context and integrate results, but it MUST delegate domain implementation to the proper specialist and preserve file ownership boundaries.
 
+## Eager Analysis Triad
+
+Every executable multi-agent flow uses exactly three independent analysis agents. Dispatch all three envelopes before awaiting any result; consume and review the results one by one, then synthesize. Fill missing domains with primary analysis, risk/edge analysis, and verification planning, or group larger scopes into three envelopes. Analysis starts eagerly even when writes have dependencies; apply those writes sequentially by ownership. If concurrency is unavailable, enqueue all three first, declare sequential fallback, and never claim parallelism.
+
 ## Approval
 
 - Low-risk, reversible, bounded work proceeds automatically.
@@ -36,7 +40,7 @@ Risk is reassessed whenever scope changes.
 
 ## Dispatch and Concurrency
 
-Use the smallest sufficient agent set. Independent reads may run in parallel. Writes run in parallel only with non-overlapping ownership. Dependencies and shared resources run sequentially. Never delegate vague understanding: every task envelope must identify the exact objective, context, scope, exclusions, dependencies, acceptance criteria, risk, attempts, and evidence.
+Use exactly three agents for the eager analysis triad. Dependencies and shared resources affect application order, not the initial analysis dispatch. Never delegate vague understanding: every task envelope must identify the exact objective, context, scope, exclusions, dependencies, acceptance criteria, risk, attempts, and evidence.
 
 ## Monitoring and Recovery
 

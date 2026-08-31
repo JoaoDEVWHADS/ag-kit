@@ -1,7 +1,7 @@
 ---
 name: claude-code
 description: Capability adapter for AG Kit orchestration in Claude Code environments.
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Claude Code Platform Adapter
@@ -28,7 +28,7 @@ The coordinator MUST use only facilities actually exposed. Labels such as Agent,
 
 ## Dispatch Rules
 
-Every invocation MUST carry the contract task envelope. Dispatch only ready tasks to qualified specialists. Concurrent reads require independence; concurrent writes require disjoint ownership. Dependencies and shared resources are sequential. Apply adaptive approval before dispatch and again after any scope expansion.
+Every executable multi-agent flow MUST form an Eager Analysis Triad of exactly three agents, dispatching all three independent analysis envelopes before awaiting a result. Fill missing domains with primary, risk/edge, and verification-planning roles or group broader domains into three envelopes. Every invocation MUST carry the contract task envelope. Analysis begins eagerly; dependencies and shared or overlapping writes are applied sequentially. Apply adaptive approval before dispatch and after scope expansion.
 
 ## Monitoring
 
@@ -36,7 +36,7 @@ Record task identity, assignment, state transitions, evidence, approvals, retrie
 
 ## Fallback
 
-When native multi-agent facilities are unavailable, execute tasks sequentially using the active session and preserve specialist boundaries through explicit scoped prompts. A fallback MUST preserve approval, task/result envelopes, bounded retries, audit trail, and independent verification. Mark work `blocked` when a compliant independent verification path is unavailable.
+When real concurrency is unavailable, enqueue all three triad envelopes before consuming results, explicitly declare sequential fallback, and do not claim parallelism. Preserve specialist boundaries, approval, task/result envelopes, bounded retries, audit trail, and independent verification. Mark work `blocked` when independent analysis or verification cannot be preserved.
 
 ## Limitations
 

@@ -1,7 +1,7 @@
 ---
 name: gemini
 description: Capability adapter for AG Kit orchestration in Gemini environments.
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Gemini Platform Adapter
@@ -28,7 +28,7 @@ Do not assume a command name or capability that is absent from the active tool s
 
 ## Dispatch Rules
 
-Send complete task envelopes and use the smallest sufficient specialist set. Parallelize only independent reads or disjoint writes. Serialize dependencies, shared resources, and overlapping writes. Enforce adaptive approval before execution and whenever risk increases.
+Every executable multi-agent flow MUST form an Eager Analysis Triad of exactly three agents and dispatch all three independent analysis envelopes before awaiting any result. Fill missing domains with primary, risk/edge, and verification-planning roles or group broader domains into three envelopes. Send complete task envelopes. Analysis begins eagerly; dependencies, shared resources, and overlapping writes are applied sequentially. Enforce adaptive approval before execution and whenever risk increases.
 
 ## Monitoring
 
@@ -36,7 +36,7 @@ Record assignments, lifecycle states, approvals, evidence, fallbacks, retries, b
 
 ## Fallback
 
-If native agent or subagent capabilities are unavailable, use sequential execution in the active Gemini session with explicit specialist scope. Fallback MUST preserve approval, task/result envelopes, bounded retries, audit trail, and independent verification. If those guarantees cannot be maintained, report the affected task as `blocked`.
+If real concurrency is unavailable, enqueue all three triad envelopes before consuming results, declare sequential fallback, and do not claim parallel execution. Preserve explicit specialist scope, approval, task/result envelopes, bounded retries, audit trail, and independent verification. If those guarantees cannot be maintained, report the affected task as `blocked`.
 
 ## Limitations
 

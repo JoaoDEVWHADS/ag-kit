@@ -3,7 +3,7 @@ name: parallel-agents
 description: Platform-neutral patterns for safe concurrent and sequential specialist work.
 when_to_use: "When independent tasks benefit from multiple specialists or parallel execution. NOT when one bounded specialist task is sufficient."
 allowed-tools: Read, Glob, Grep
-version: 1.1.0
+version: 1.2.0
 effort: medium
 ---
 
@@ -13,16 +13,20 @@ Follow `.agents/platforms/orchestration-contract.md`. Use the selected platform 
 
 ## Selection
 
-- Use the fewest qualified specialists required by the task graph. There is no minimum agent count.
+- Every executable multi-agent flow MUST use an Eager Analysis Triad of exactly three agents.
+- Dispatch all three independent analysis envelopes before awaiting any result, then review results one by one before synthesis.
+- With fewer than three domains use primary analysis, risk/edge analysis, and verification planning; with more, group domains into three envelopes.
 - The coordinator decomposes, dispatches, monitors, synthesizes, and decides completion.
 - Specialists perform bounded research, implementation, or verification work.
 - Assign ownership by domain and writable resource; never dispatch overlapping writes concurrently.
 
 ## Execution Patterns
 
-- Parallel: independent discovery, reviews, or verification checks.
+- Parallel: the three independent triad analyses are dispatched eagerly.
 - Sequential: dependencies, shared files, migrations before consumers, or any shared external state.
 - Mixed: parallel research, coordinator synthesis, bounded implementation, independent verification.
+
+When a host lacks real concurrency, enqueue all three analysis envelopes before consuming results, declare sequential fallback, and MUST NOT claim parallel execution.
 
 Every dispatch MUST carry the contract task envelope. Every worker MUST return the result envelope. Prompts must state objective, context, scope, exclusions, dependencies, acceptance criteria, risk, attempt limit, and expected evidence.
 

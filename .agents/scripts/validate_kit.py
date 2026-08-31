@@ -64,6 +64,25 @@ ADAPTER_SECTIONS = (
     "Fallback",
     "Limitations",
 )
+TRIAD_COMPONENTS = (
+    "platforms/orchestration-contract.md",
+    "platforms/codex.md",
+    "platforms/claude-code.md",
+    "platforms/gemini.md",
+    "agent/orchestrator.md",
+    "rules/code-rules.md",
+    "rules/request-routing.md",
+    "workflows/coordinate.md",
+    "workflows/orchestrate.md",
+    "skills/coordinator-mode/SKILL.md",
+    "skills/parallel-agents/SKILL.md",
+)
+TRIAD_REQUIREMENTS = {
+    "triad.policy_missing": r"Eager Analysis Triad",
+    "triad.count_missing": r"exactly three",
+    "triad.eager_dispatch_missing": r"before await",
+    "triad.sequential_writes_missing": r"sequential",
+}
 
 
 def add(findings: list[Finding], severity: str, code: str, path: Path, message: str, line: int = 1) -> None:
@@ -320,6 +339,29 @@ def validate_adapters(
         add(findings, "error", "adapter.compatible_host", Path("manifest.json"), "Google Antigravity must be a compatible Gemini host")
 
 
+def validate_eager_analysis_triad(root: Path, findings: list[Finding]) -> None:
+    """Require the normative eager-triad structure across orchestration components."""
+    for relative in TRIAD_COMPONENTS:
+        path = root / relative
+        if not path.is_file():
+            add(findings, "error", "triad.component_missing", Path(relative), "Required triad component is missing")
+            continue
+        text = path.read_text("utf-8", errors="replace")
+        for code, pattern in TRIAD_REQUIREMENTS.items():
+            if not re.search(pattern, text, re.IGNORECASE):
+                add(findings, "error", code, Path(relative), f"Missing eager triad requirement: {pattern}")
+        if relative.startswith("platforms/") and not re.search(
+            r"(?:do not|never|MUST NOT) claim parallel", text, re.IGNORECASE
+        ):
+            add(
+                findings,
+                "error",
+                "triad.fallback_disclosure_missing",
+                Path(relative),
+                "Platform contract and adapters must forbid claiming parallel execution during sequential fallback",
+            )
+
+
 def validate_generated_docs(root: Path, findings: list[Finding]) -> None:
     path = root / "DEPENDENCY_GRAPH.md"
     if not path.is_file():
@@ -436,6 +478,7 @@ def validate(root: Path) -> list[Finding]:
     validate_references(root, agents, skills, workflows, findings)
     validate_manifest(root, findings)
     validate_adapters(root, findings)
+    validate_eager_analysis_triad(root, findings)
     validate_generated_docs(root, findings)
     validate_markdown_links(root, findings)
     validate_memory(root, findings)

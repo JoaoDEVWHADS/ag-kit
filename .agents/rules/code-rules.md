@@ -1,6 +1,6 @@
 ---
 name: code-rules
-version: 1.1.0
+version: 1.2.0
 priority: P0
 trigger: model_decision
 description: Apply to code changes for domain routing, adaptive approval, scoped implementation, and relevant verification.
@@ -33,6 +33,8 @@ Do not ask questions whose answers are already available. A direct instruction t
 ## Planning and Execution
 
 Use planning proportional to complexity. A plan may be internal unless the workflow or user requires an artifact. Multi-agent work MUST use `DECOMPOSE → CLASSIFY → DISPATCH → MONITOR → SYNTHESIZE → VERIFY` and complete task/result envelopes.
+
+Every executable multi-agent flow MUST form an Eager Analysis Triad of exactly three agents. Dispatch all three independent analysis envelopes before awaiting results, then review each result and synthesize. Fill missing domains with primary analysis, risk/edge analysis, and verification planning; group larger scopes into three envelopes. Analysis begins eagerly, while dependent or overlapping writes are applied sequentially. Hosts without concurrency enqueue all three first and declare sequential fallback without claiming parallelism.
 
 ## Verification
 

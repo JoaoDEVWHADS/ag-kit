@@ -216,6 +216,30 @@ class ToolkitRegressionTests(unittest.TestCase):
                 any(item.code == "adapter.missing_section" and "Monitoring" in item.message for item in findings)
             )
 
+    def test_eager_analysis_triad_is_required_in_all_core_components(self):
+        findings = []
+        validate_kit.validate_eager_analysis_triad(TOOLKIT, findings)
+        self.assertEqual([], findings)
+
+    def test_eager_analysis_triad_validation_rejects_missing_eager_dispatch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for relative in validate_kit.TRIAD_COMPONENTS:
+                source = TOOLKIT / relative
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, target)
+            contract = root / "platforms/orchestration-contract.md"
+            contract.write_text(
+                contract.read_text("utf-8").replace("before awaiting", "after receiving"),
+                "utf-8",
+            )
+            findings = []
+            validate_kit.validate_eager_analysis_triad(root, findings)
+            self.assertTrue(
+                any(item.code == "triad.eager_dispatch_missing" for item in findings)
+            )
+
     def test_dependency_graph_is_synchronized(self):
         expected = dependency_graph.render(TOOLKIT)
         self.assertEqual(expected, (TOOLKIT / "DEPENDENCY_GRAPH.md").read_text("utf-8"))
