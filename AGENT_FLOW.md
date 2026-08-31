@@ -9,6 +9,8 @@
 
 Before an agent is invoked, AG Kit resolves the component contract recorded in `.agents/manifest.json`, verifies the selected skill version against the agent's SemVer range, and rejects stale registry/lock state during validation. Workflow metadata declares required agents, required skills, and expected artifacts, enabling deterministic orchestration without changing the existing Markdown-first runtime.
 
+The portable core officially supports Codex, Claude Code, and Gemini. Google Antigravity is a Gemini host. OpenCode has an experimental configuration but is not an officially supported orchestration runtime.
+
 ```text
 Request → Workflow metadata → Agent version → Skill range → Tool boundary → Verification artifact
 ```
@@ -312,8 +314,8 @@ Slash Command Flow:
     1. Load: parallel-agents skill
     2. Decompose: Task into subtasks
     3. Assign: Each subtask to specialist agent
-    4. Coordinate: Parallel execution
-    5. Merge: Combine results
+    4. Coordinate: Native workers when available; sequential fallback otherwise
+    5. Synthesize: Resolve dependencies and combine results
     6. Validate: Run full verification
 
 /plan
@@ -328,13 +330,13 @@ Slash Command Flow:
 ### 5️⃣ **Multi-Agent Orchestration**
 
 ```
-Complex Task → /orchestrate → Multiple Specialist Personas
+Complex Task → /orchestrate → Chief Coordinator → Specialist Agents
 
 Example: "Build a full-stack e-commerce app"
 
 ┌─────────────────────────────────────────────────────────────┐
 │                     ORCHESTRATOR AGENT                       │
-│  Decomposes task into sequential workstreams                │
+│  Decomposes, delegates, monitors, synthesizes, and verifies │
 └─────────────────────────────────────────────────────────────┘
                               │
         ┌─────────────────────┼─────────────────────┐
@@ -359,10 +361,10 @@ Example: "Build a full-stack e-commerce app"
                           │
                           ▼
         ┌─────────────────────────────────────┐
-        │      CODE COHERENCE                 │
-        │  • AI maintains consistency         │
-        │  • Sequential context switching     │
-        │  • Ensure API contracts match       │
+        │      SYNTHESIS                       │
+        │  • Resolve specialist findings      │
+        │  • Reconcile shared contracts       │
+        │  • Preserve dependency order        │
         └──────────────┬──────────────────────┘
                        │
                        ▼
@@ -379,6 +381,19 @@ Example: "Build a full-stack e-commerce app"
         │  • devops-engineer → Deploy         │
         └─────────────────────────────────────┘
 ```
+
+#### Capability and Approval Model
+
+| Host | Dispatch capability | Fallback | Support |
+| --- | --- | --- | --- |
+| Codex | Native subagents when exposed | Sequential specialist execution | Official |
+| Claude Code | Native agent/task facilities when exposed | Sequential specialist execution | Official |
+| Gemini / Antigravity | Native agent/subagent facilities when exposed | Sequential specialist execution | Official |
+| OpenCode | Configuration-dependent | No official guarantee | Experimental |
+
+Independent tasks may run concurrently only when the active host exposes a safe native capability. Dependencies, shared state, and overlapping writes remain sequential. The fallback must preserve task boundaries, adaptive approval, evidence, bounded retries, auditability, and independent verification.
+
+Adaptive approval is risk-based: low-risk bounded changes are automatic; medium-risk changes require approval when ambiguity materially affects scope or behavior; high-risk destructive, privileged, costly, production, publication, or other external actions always require explicit approval.
 
 ### 6️⃣ **Validation & Quality Gates**
 
@@ -475,9 +490,9 @@ User Request: "Build a Next.js dashboard with authentication"
    └─ test-engineer
        └─ Skills: testing-patterns, webapp-testing
 
-5. SEQUENTIAL MULTI-DOMAIN EXECUTION
-   Note: AI processes each domain sequentially, switching context between specialist "personas."
-   This is NOT true parallel execution but simulated multi-agent behavior.
+5. CAPABILITY-AWARE MULTI-DOMAIN EXECUTION
+   Native workers may execute independent tasks concurrently when the host exposes that capability.
+   Otherwise, the coordinator runs the same scoped specialist tasks sequentially.
 
    ├─ Frontend builds:
    │   ├─ app/dashboard/page.tsx (Server Component)
@@ -496,9 +511,8 @@ User Request: "Build a Next.js dashboard with authentication"
        ├─ tests/auth.spec.ts (Playwright)
        └─ tests/dashboard.spec.ts
 
-6. CODE INTEGRATION
-   Reality Note: AI writes code as a continuous stream, maintaining consistency.
-   There is no "merge" step - it's all generated coherently from the start.
+6. SYNTHESIS
+   The coordinator reconciles specialist outputs, shared contracts, dependencies, and conflicts.
 
    └─ AI maintains coherence across domains
        ├─ Resolves import paths
@@ -532,15 +546,15 @@ User Request: "Build a Next.js dashboard with authentication"
 ┌──────────────────────────────────────────────────────────┐
 │                    SYSTEM CAPABILITIES                    │
 ├──────────────────────────────────────────────────────────┤
-│ Total Agents:              20                            │
-│ Total Skills:              47                            │
-│ Total Workflows:           13                            │
+│ Total Agents:              21                            │
+│ Total Skills:              48                            │
+│ Total Workflows:           14                            │
 │ Master Scripts:            2 (checklist, verify_all)     │
 │ Skill-Level Scripts:       16                            │
 │ Coverage:                  ~95% web/mobile + orchestration│
 │                                                          │
 │ Orchestration & Memory:                                  │
-│ ├─ Coordinator Mode (parallel orchestration)             │
+│ ├─ Coordinator Mode (native workers + sequential fallback)│
 │ ├─ Persistent Memory System (MEMORY.md)                  │
 │ ├─ Context Compression (auto-compact)                    │
 │ ├─ Conditional Skill Loading (when_to_use)               │

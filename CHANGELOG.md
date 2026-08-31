@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- Portable multi-agent entrypoints and host guidance for Codex, Claude Code, and Gemini; Google Antigravity is treated as a Gemini host.
+- Capability-aware orchestration lifecycle: decompose, delegate, monitor, synthesize, and independently verify.
+- CLI management for `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` with baseline-aware preservation and conflict reporting.
+
+### Changed
+- Public documentation now distinguishes native worker execution from the contract-preserving sequential fallback.
+- The chief coordinator now documents adaptive approval based on risk and material ambiguity.
+- Current inventory is 21 agents, 48 skills, and 14 workflows.
+- OpenCode is described as experimental configuration rather than officially supported runtime behavior.
+
 All notable changes to AG Kit will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/).

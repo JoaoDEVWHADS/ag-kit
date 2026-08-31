@@ -1,6 +1,6 @@
 # AG Kit CLI
 
-CLI for installing and safely updating [AG Kit](https://github.com/vudovn/ag-kit), a collection of agents, skills, workflows, rules, memory conventions, and validation tools for Google Antigravity.
+CLI for installing and safely updating [AG Kit](https://github.com/vudovn/ag-kit), a portable multi-agent engineering team for Codex, Claude Code, and Gemini. Google Antigravity uses the Gemini entrypoint.
 
 ## Installation
 
@@ -34,6 +34,7 @@ AG Kit records SHA-256 baselines in `.agents/.ag-kit/manifest.json`. During an u
 - Files changed both locally and upstream are reported as conflicts.
 - Incoming conflict copies are written under `.agents/.ag-kit/conflicts/`.
 - Existing root entrypoints are never overwritten unless their hash still matches the stored installation baseline.
+- Conflicting incoming entrypoints are preserved for review using the same managed-tree conflict model as `.agents/` files.
 - A full pre-update backup is stored under `.ag-kit-backups/` by default.
 
 ```bash
@@ -61,10 +62,13 @@ When `--quiet` is used against an existing installation, `--force` is required b
 
 ## Included toolkit
 
-- **20 specialist agents**
-- **47 skills**
-- **13 workflows**
+- **21 agents**, including the chief coordinator
+- **48 skills**
+- **14 workflows**
 - Shared rules, persistent memory conventions, MCP configuration, and validation scripts
+- Root entrypoints for Codex (`AGENTS.md`), Claude Code (`CLAUDE.md`), and Gemini/Antigravity (`GEMINI.md`)
+
+Native multi-agent execution is used only when the active host exposes it. AG Kit otherwise preserves the same decompose → delegate → monitor → synthesize → verify lifecycle through sequential specialist execution. OpenCode configuration is experimental and is not an officially supported runtime.
 
 ## Exit codes
 

@@ -82,7 +82,7 @@ Nếu bạn làm việc trên nhiều dự án khác nhau và muốn tránh sao 
 
 ## ⚠️ Lưu ý Quan trọng về `.gitignore`
 
-Nếu bạn đang sử dụng các trình soạn thảo mã nguồn tích hợp sẵn AI (như **Antigravity**), việc thêm thư mục `.agents/` vào file `.gitignore` sẽ khiến trình phân tích ngôn ngữ của trình soạn thảo không thể lập chỉ mục (index) các workflow. Điều này sẽ làm mất tính năng gợi ý tự động (autocomplete) cho các lệnh slash (ví dụ: `/plan`, `/debug`).
+Nếu host lập trình AI của bạn đọc chỉ dẫn trực tiếp từ dự án (ví dụ Codex, Claude Code, Gemini hoặc Google Antigravity), việc thêm thư mục `.agents/` vào file `.gitignore` có thể khiến host không phát hiện được workflow hoặc không bật gợi ý tự động cho các lệnh slash (ví dụ: `/plan`, `/debug`).
 
 ### Giải pháp tối ưu:
 Để thư mục `.agents/` vừa không bị đẩy lên Git remote, vừa giữ nguyên khả năng hỗ trợ đắc lực từ AI editor:
@@ -97,9 +97,25 @@ AG Kit đóng gói sẵn kho tri thức chuyên sâu cho từng domain cụ th�
 
 | Thành phần | Số lượng | Mô tả |
 | :--- | :--- | :--- |
-| **Agents** | 20 | Các chuyên gia AI độc lập (Frontend, Backend, Security, PM, QA, v.v.) |
-| **Skills** | 47 | Các mô-đun tri thức chuyên sâu đi kèm các quy tắc kích hoạt tự động |
-| **Workflows** | 13 | Quy trình tương tác tự động hóa lập trình viên (lệnh Slash) |
+| **Agents** | 21 | Agent điều phối trưởng và các chuyên gia Frontend, Backend, Security, PM, QA, v.v. |
+| **Skills** | 48 | Các mô-đun tri thức chuyên sâu đi kèm các quy tắc kích hoạt tự động |
+| **Workflows** | 14 | Quy trình tương tác tự động hóa lập trình viên (lệnh Slash) |
+
+---
+
+## 🤝 Cách Đội ngũ Agent Hoạt động
+
+Agent điều phối trưởng quản lý toàn bộ vòng đời, còn mỗi agent chuyên gia chỉ làm việc trong phạm vi nhiệm vụ và file được giao:
+
+```text
+Yêu cầu → Phân rã → Giao việc → Theo dõi → Tổng hợp → Xác minh → Kết quả
+```
+
+AG Kit hỗ trợ chính thức Codex, Claude Code và Gemini; Google Antigravity được xem là một host Gemini. OpenCode hiện chỉ có cấu hình thử nghiệm và chưa thuộc phạm vi hỗ trợ runtime chính thức.
+
+Khi host cung cấp capability agent/subagent native, điều phối trưởng có thể giao các nhiệm vụ độc lập cho worker phù hợp. Nếu capability đó không có, hệ thống chuyển sang thực thi tuần tự nhưng vẫn giữ nguyên phạm vi, bằng chứng, số lần thử có giới hạn và bước xác minh độc lập. AG Kit không hứa rằng mọi host đều hỗ trợ chạy song song.
+
+Cơ chế phê duyệt thích ứng dựa trên mức rủi ro: công việc ít rủi ro và có thể hoàn tác được thực hiện tự động; công việc rủi ro trung bình cần phê duyệt khi sự mơ hồ có thể thay đổi đáng kể kết quả; hành động rủi ro cao, phá hủy dữ liệu, có đặc quyền, tốn chi phí hoặc tác động ra bên ngoài luôn cần sự đồng ý rõ ràng.
 
 ---
 
@@ -124,7 +140,7 @@ Thực hiện các quy trình phát triển mã nguồn bài bản bằng cách 
 | Lệnh | Mô tả chi tiết |
 | :--- | :--- |
 | `/brainstorm` | Lên ý tưởng, phân tích kiến trúc và giải pháp tối ưu trước khi viết code |
-| `/coordinate` | Điều phối song song nhiều Agent chuyên gia cho các tác vụ kiểm tra phức tạp |
+| `/coordinate` | Điều phối các Agent chuyên gia theo capability hiện có, sau đó tổng hợp kết quả |
 | `/create` | Tạo mới một tính năng hoặc xây dựng toàn bộ ứng dụng từ đầu |
 | `/debug` | Kích hoạt quy trình gỡ lỗi chuyên sâu và có bằng chứng xác thực |
 | `/deploy` | Thực hiện các kiểm tra an toàn pre-flight và triển khai lên production |
@@ -142,7 +158,7 @@ Thực hiện các quy trình phát triển mã nguồn bài bản bằng cách 
 
 AG Kit được xây dựng dựa trên các mô hình thiết kế AI Agent đã qua kiểm chứng thực tế, giúp giảm lượng tiêu thụ token từ **13% đến 33%** đồng thời cải thiện chất lượng phản hồi:
 
-*   **Coordinator Mode:** Cơ chế điều phối đa tác vụ song song, tránh việc thử lại tuần tự tốn kém tài nguyên.
+*   **Coordinator Mode:** Giao việc, theo dõi, tổng hợp và xác minh độc lập bằng worker native khi có, hoặc fallback tuần tự khi cần.
 *   **Bộ nhớ Dài hạn (Persistent Memory):** Cơ chế phân loại và lập chỉ mục qua `MEMORY.md`, loại bỏ việc phải giải thích lại các quy tắc dự án trong mỗi phiên chat mới.
 *   **Nén Ngữ cảnh (Context Compression):** Tự động tóm tắt và thu gọn dữ liệu lịch sử để ngăn chặn hiện tượng tràn bộ nhớ trong các phiên làm việc kéo dài.
 *   **Kích hoạt Skill có Điều kiện:** Chỉ tải các nguyên tắc lập trình có liên quan đến ngữ cảnh hiện tại nhờ cấu hình frontmatter thông minh, giữ cho cửa sổ ngữ cảnh luôn nhẹ nhàng nhất.
@@ -185,7 +201,6 @@ npm run generate:agents # tạo lại registry, lock và dependency graph
 npm run check:agents    # kiểm tra release/CI mà không sửa file
 ```
 
-File sinh tự động `.agents/DEPENDENCY_GRAPH.md` thể hiện quan hệ workflow → agent → skill. Nền tảng runtime được hỗ trợ chính thức vẫn là Gemini CLI và Google Antigravity; định dạng registry được thiết kế để có thể chuyển đổi.
+File sinh tự động `.agents/DEPENDENCY_GRAPH.md` thể hiện quan hệ workflow → agent → skill. Runtime được hỗ trợ chính thức gồm Codex, Claude Code và Gemini; Google Antigravity sử dụng adapter Gemini. Cấu hình OpenCode vẫn ở trạng thái thử nghiệm, còn định dạng registry được thiết kế để có thể chuyển đổi.
 
 ---
-

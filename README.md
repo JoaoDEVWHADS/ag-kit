@@ -5,7 +5,7 @@
 <h1 align="center">AG KIT</h1>
 
 <p align="center">
-    AI Agent templates with Skills, Agents, and Workflows — featuring Coordinator Mode, Persistent Memory, and Context Compression.
+    A portable multi-agent engineering team for Codex, Claude Code, and Gemini — with a chief coordinator, specialist agents, skills, and verified workflows.
 </p>
 
 <div align="center">
@@ -22,7 +22,7 @@
 
 ## ⚡ Quick Start
 
-Install and initialize AG Kit to inject the `.agents/` configuration folder directly into your local project.
+Install and initialize AG Kit to add the portable `.agents/` core and thin host entrypoints (`AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`) to your project.
 
 ### Method 1: On-demand Execution (Recommended)
 
@@ -42,6 +42,8 @@ ag-kit init
 ## 🛡️ Safe Updates and Rollback
 
 AG Kit updates are merge-aware by default. Files you created or changed locally are preserved, while clean managed files receive upstream updates.
+
+The CLI also manages unchanged root entrypoints. User-edited entrypoints are preserved and conflicting incoming copies are reported for manual review.
 
 ```bash
 ag-kit update --dry-run          # Preview the exact update plan
@@ -82,7 +84,7 @@ If you work across multiple repositories and want to avoid duplicating the `.age
 
 ## ⚠️ Important Note on `.gitignore`
 
-If you are using AI-native code editors (like **Antigravity**), adding the `.agents/` directory to `.gitignore` will prevent the editor's language server from indexing the workflows, which disables autocomplete for slash commands (e.g. `/plan`, `/debug`).
+If your AI coding host indexes project instructions (for example Codex, Claude Code, Gemini, or Google Antigravity), adding the `.agents/` directory to `.gitignore` may prevent it from discovering workflows or enabling slash-command autocomplete.
 
 ### Recommended Solution:
 To keep `.agents/` out of your remote repository without losing editor integration:
@@ -97,9 +99,9 @@ AG Kit packages domain-specific knowledge, specialized agent personas, and autom
 
 | Component | Count | Description |
 | :--- | :--- | :--- |
-| **Agents** | 20 | Specialist AI personas (Frontend, Backend, Security, PM, QA, etc.) |
-| **Skills** | 47 | Domain-specific context modules with conditional loading rules |
-| **Workflows** | 13 | Pre-configured interactive developer procedures (slash commands) |
+| **Agents** | 21 | Chief coordinator and specialist personas for frontend, backend, security, QA, and more |
+| **Skills** | 48 | Domain-specific context modules with conditional loading rules |
+| **Workflows** | 14 | Pre-configured interactive developer procedures (slash commands) |
 
 ---
 
@@ -113,7 +115,26 @@ npm run generate:agents # regenerate registry, lock, and dependency graph
 npm run check:agents    # non-mutating release/CI verification
 ```
 
-The generated `.agents/DEPENDENCY_GRAPH.md` shows workflow → agent → skill relationships. Official runtime support remains Gemini CLI and Google Antigravity; the registry format is portable by design.
+The generated `.agents/DEPENDENCY_GRAPH.md` shows workflow → agent → skill relationships. Official host support covers Codex, Claude Code, and Gemini; Google Antigravity uses the Gemini adapter. OpenCode configuration remains experimental and is not part of the official support matrix.
+
+## 🤝 How the Agent Team Works
+
+The chief coordinator owns the full lifecycle while specialists remain inside explicit task and file boundaries:
+
+```text
+Request → Decompose → Delegate → Monitor → Synthesize → Verify → Result
+```
+
+The coordinator assesses risk before dispatch. Low-risk, reversible work can proceed automatically; medium-risk work pauses when ambiguity would materially change the outcome; high-risk, destructive, privileged, costly, or external actions require explicit approval.
+
+| Host | Native worker capability | Safe fallback |
+| :--- | :--- | :--- |
+| Codex | Uses exposed subagent capabilities when available | Sequential specialist execution |
+| Claude Code | Uses exposed agent/task capabilities when available | Sequential specialist execution |
+| Gemini / Antigravity | Uses exposed agent/subagent capabilities when available | Sequential specialist execution |
+| OpenCode | Experimental configuration only | No official runtime guarantee |
+
+Native concurrency depends on the capabilities exposed by the active host. The sequential fallback preserves scope, approval, evidence, bounded retries, and independent verification; AG Kit does not promise universal parallel execution.
 
 ---
 
@@ -138,7 +159,7 @@ Execute structured development workflows by typing slash commands in your AI age
 | Command | Description |
 | :--- | :--- |
 | `/brainstorm` | Structured exploration of options and architecture before coding |
-| `/coordinate` | Orchestrate multiple agents in parallel for complex reviews |
+| `/coordinate` | Coordinate specialist agents with capability-aware dispatch and synthesis |
 | `/create` | Create new features or full applications from scratch |
 | `/debug` | Activate evidence-based systematic debugging |
 | `/deploy` | Execute pre-flight checks and deploy to production |
@@ -156,7 +177,7 @@ Execute structured development workflows by typing slash commands in your AI age
 
 AG Kit is built on production-tested agentic design patterns designed to reduce token usage by **13% to 33%** while yielding higher output quality:
 
-*   **Coordinator Mode:** Multi-agent orchestration with parallel workers and synthesis, avoiding expensive sequential retries.
+*   **Coordinator Mode:** Capability-aware delegation, monitoring, synthesis, and independent verification, with native workers when available and a sequential fallback otherwise.
 *   **Persistent Memory:** A 4-type taxonomy memory engine index (`MEMORY.md`) to prevent re-explaining project guidelines across sessions.
 *   **Context Compression:** Automated summarization and micro-compaction routines to prevent context degradation in long-lived sessions.
 *   **Conditional Skill Loading:** Context-aware loading of rules via custom frontmatter, preventing your context window from bloating with idle instructions.

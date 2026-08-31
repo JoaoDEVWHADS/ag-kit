@@ -1,7 +1,7 @@
 {
   "name": "@vudovn/ag-kit",
   "version": "2026.7.18",
-  "description": "CLI tool to install Antigravity Kit - AI Agent templates",
+  "description": "CLI to install and safely manage AG Kit multi-agent teams for Codex, Claude Code, and Gemini",
   "main": "bin/index.js",
   "type": "module",
   "engines": {
@@ -26,11 +26,14 @@
     "url": "https://github.com/vudovn/ag-kit/issues"
   },
   "keywords": [
-    "antigravity",
     "cli",
     "ai",
     "agent",
+    "multi-agent",
+    "codex",
+    "claude-code",
     "gemini",
+    "antigravity",
     "skills"
   ],
   "author": "Do Van Vu",

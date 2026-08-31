@@ -52,7 +52,9 @@ test("package versions stay aligned", async () => {
 test("public documentation reflects current paths and inventory", async () => {
     for (const file of ["README.md", "README-VI.md"]) {
         const content = await read(file);
-        assert.match(content, /\| \*\*Skills\*\* \| 47 \|/);
+        assert.match(content, /\| \*\*Agents\*\* \| 21 \|/);
+        assert.match(content, /\| \*\*Skills\*\* \| 48 \|/);
+        assert.match(content, /\| \*\*Workflows\*\* \| 14 \|/);
         assert.doesNotMatch(content, /ln -s ~\/\.ag-kit\/\.agents \.agent(?:\s|$)/);
         assert.match(content, /ag-kit rollback/);
     }

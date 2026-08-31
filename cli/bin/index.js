@@ -32,7 +32,7 @@ const showBanner = (quiet = false) => {
     console.log(
         chalk.blueBright(`
     ╔══════════════════════════════════════╗
-    ║        ANTIGRAVITY KIT CLI           ║
+    ║             AG KIT CLI               ║
     ╚══════════════════════════════════════╝
     `),
     );
@@ -343,7 +343,7 @@ export const statusCommand = async (options) => {
     const agentDir = path.join(targetDir, AGENT_FOLDER);
     const updatePromise = checkUpdate(options.quiet);
 
-    console.log(chalk.blueBright("\nAntigravity Kit Status\n"));
+    console.log(chalk.blueBright("\nAG Kit Status\n"));
     console.log(`CLI version: ${chalk.cyan(pkg.version)}`);
 
     if (await fse.pathExists(agentDir)) {
@@ -379,7 +379,7 @@ export const buildProgram = () => {
 
     program
         .name("ag-kit")
-        .description("CLI tool to install and safely manage Antigravity Kit")
+        .description("Install and safely manage AG Kit multi-agent teams")
         .version(pkg.version, "-v, --version", "Display version number");
 
     program
