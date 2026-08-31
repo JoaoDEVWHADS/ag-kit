@@ -1,6 +1,8 @@
 # Memory Index
 
 ## Project
-- [project] Always create a new dedicated branch for major code changes → project-conventions.md
-- [project] AG Kit only supports Gemini CLI and Google Antigravity (not other AI coding tools) → project-conventions.md
+- [project] Use logical local commits on the main branch for the current multi-agent initiative → project-conventions.md
+- [project] AG Kit officially supports Codex, Claude Code, and Gemini; Antigravity is a Gemini host → project-conventions.md
+- [project] Use a portable orchestration core, capability adapters, and sequential fallback → tech-decisions.md
+- [project] The chief coordinator applies adaptive approval based on risk → tech-decisions.md
 - [project] Component metadata uses SemVer while toolkit releases use CalVer → tech-decisions.md

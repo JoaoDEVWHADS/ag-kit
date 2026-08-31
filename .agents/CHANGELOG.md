@@ -1,10 +1,24 @@
 # AG Kit Toolkit Changelog
 
+## Unreleased
+
+### Added
+
+- Thin root entrypoints for Codex, Claude Code, and Gemini without duplicating the shared rules or specialist definitions.
+- A platform-neutral orchestration contract with native-capability adapters and a contract-preserving sequential fallback.
+
+### Changed
+
+- Official runtime support now covers Codex, Claude Code, and Gemini; Google Antigravity is documented as a Gemini host.
+- The chief coordinator uses adaptive approval: low-risk work is automatic, material ambiguity is conditional, and high-risk work requires explicit approval.
+- Project Git convention records logical local commits on the main branch for the current initiative.
+- Corrected the internal inventory to 21 agents, 48 skills, and 14 workflows.
+
 ## 2026.7.18
 
 ### Added
 
-- Strict SemVer metadata for all 20 agents, 47 skills, 13 workflows, and 6 rules.
+- Strict SemVer metadata for the managed agents, skills, workflows, and 6 rules.
 - Machine-readable `manifest.json` with agent-to-skill and workflow dependencies.
 - Deterministic `manifest.lock.json` with SHA-256 integrity hashes.
 - Generated `DEPENDENCY_GRAPH.md` for workflow → agent → skill orchestration.
@@ -20,8 +34,8 @@
 
 ### Compatibility
 
-- Official runtime support remains Gemini CLI and Google Antigravity.
-- The component metadata and dependency format are portable and avoid platform-specific runtime assumptions.
+- At this release, official runtime support was Gemini CLI and Google Antigravity.
+- The component metadata and dependency format were portable and avoided platform-specific runtime assumptions.
 
 ## 2026.7.12
 

@@ -2,6 +2,16 @@
 
 AG Kit is a modular `.agents/` toolkit for routing software-engineering tasks to specialist agents, loading focused skills, and verifying changes with executable checks.
 
+Its Markdown core is portable across Codex, Claude Code, and Gemini. Thin root entrypoints select a native-capability adapter without duplicating shared rules:
+
+| Host | Entrypoint | Adapter |
+| :--- | :--- | :--- |
+| Codex | `AGENTS.md` | `platforms/codex.md` |
+| Claude Code | `CLAUDE.md` | `platforms/claude-code.md` |
+| Gemini and Google Antigravity | `GEMINI.md` | `platforms/gemini.md` |
+
+All adapters implement `platforms/orchestration-contract.md`. They inspect capabilities at runtime and use a contract-preserving sequential fallback when native multi-agent execution is unavailable.
+
 ## Quick start
 
 1. Copy the `.agents/` directory into a project root.
@@ -43,6 +53,7 @@ Use `--check` with the first two commands in CI to detect stale generated files 
 - **Memory** stores durable project conventions and decisions.
 - **Registry and lock files** make dependencies machine-readable and detect drift.
 - **Runtime scripts** turn guidance into repeatable evidence.
+- **Platform adapters** map detected native capabilities to one portable orchestration contract.
 
 ## Configuration
 
@@ -51,6 +62,7 @@ Use `--check` with the first two commands in CI to detect stale generated files 
 ## Documentation
 
 - [Architecture and inventory](ARCHITECTURE.md)
+- [Platform-neutral orchestration contract](platforms/orchestration-contract.md)
 - [Generated dependency graph](DEPENDENCY_GRAPH.md)
 - [Runtime scripts](scripts/README.md)
 - [Toolkit change history](CHANGELOG.md)

@@ -26,7 +26,18 @@
 
 # AG Kit - Project Instructions
 
-> This project uses the AG Kit agent framework. OpenCode and all AI assistants must follow all rules below.
+> This project uses the AG Kit agent framework. This is the Codex entrypoint; shared behavior remains defined under `.agents/`.
+
+## Platform Entry Point
+
+Keep this file thin. Do not duplicate the shared orchestration contract, specialist definitions, or platform adapter here.
+
+1. Read the mandatory rules in `.agents/rules/` and `.agents/memory/MEMORY.md`.
+2. For multi-agent work, read `.agents/platforms/orchestration-contract.md`.
+3. Apply `.agents/platforms/codex.md` only after confirming the capabilities exposed by the active Codex host.
+4. Route coordination through `.agents/agent/orchestrator.md`.
+
+AG Kit has a portable Markdown core and native-capability adapters. When native worker capabilities are unavailable, use the contract's sequential fallback without weakening approval, scope, evidence, or independent verification requirements.
 
 ## System Map
 

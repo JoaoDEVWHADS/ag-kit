@@ -33,7 +33,25 @@ python .agents/scripts/dependency_graph.py --check
 python .agents/scripts/validate_kit.py
 ```
 
-Any component change that is not followed by registry regeneration fails validation and CI. Official runtime support remains Gemini CLI and Google Antigravity; the metadata format is intentionally portable.
+Any component change that is not followed by registry regeneration fails validation and CI. Official runtime support covers Codex, Claude Code, and Gemini; Google Antigravity is a Gemini host. The metadata and Markdown core remain portable.
+
+## Platform Architecture
+
+AG Kit separates portable orchestration semantics from host-specific capabilities:
+
+```text
+Root entrypoint → shared rules and memory → orchestrator → orchestration contract → detected platform adapter
+                                                                    ↓
+                                                    native workers or sequential fallback
+```
+
+- `../AGENTS.md` selects the Codex adapter.
+- `../CLAUDE.md` selects the Claude Code adapter.
+- `../GEMINI.md` selects the Gemini adapter, including Google Antigravity hosts.
+- `platforms/orchestration-contract.md` defines lifecycle, task/result envelopes, adaptive approval, concurrency safety, bounded retries, audit trail, and independent verification.
+- `platforms/*.md` map only capabilities detected in the active host. They do not duplicate agents or create a separate runtime.
+
+Native concurrency is capability-dependent, not guaranteed by the platform name. When compliant native worker facilities are absent, the coordinator executes tasks sequentially while preserving the contract. If approval, isolation, evidence, or independent verification cannot be preserved, the task is blocked rather than reported as successful.
 
 ---
 
@@ -53,6 +71,7 @@ Any component change that is not followed by registry regeneration fails validat
 ├── skills/                  # 48 Skills (with conditional loading)
 ├── workflows/               # 14 Slash Commands
 ├── rules/                   # Global Rules
+├── platforms/               # Neutral contract and native-capability adapters
 ├── memory/                  # Persistent Memory (2026.5.13)
 └── scripts/                 # Master Validation Scripts
 ```
