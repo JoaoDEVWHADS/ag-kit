@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import shutil
 import sys
 import tempfile
 import unittest
@@ -180,6 +181,40 @@ class ToolkitRegressionTests(unittest.TestCase):
         lock = component_registry.build_lock(TOOLKIT, manifest)
         self.assertEqual(manifest, json.loads((TOOLKIT / "manifest.json").read_text("utf-8")))
         self.assertEqual(lock, json.loads((TOOLKIT / "manifest.lock.json").read_text("utf-8")))
+
+    def test_platform_adapters_are_registered_and_locked(self):
+        manifest = component_registry.build_manifest(TOOLKIT)
+        self.assertEqual({"Codex", "Claude Code", "Gemini"}, set(manifest["support"]["official"]))
+        self.assertEqual(["Google Antigravity"], manifest["support"]["compatibleHosts"]["gemini"])
+        self.assertEqual({"codex", "claude-code", "gemini"}, set(manifest["platforms"]["adapters"]))
+        self.assertEqual(
+            manifest["contracts"]["orchestrationApi"],
+            manifest["platforms"]["contract"]["version"],
+        )
+        lock = component_registry.build_lock(TOOLKIT, manifest)
+        for path in (
+            "platforms/orchestration-contract.md",
+            "platforms/codex.md",
+            "platforms/claude-code.md",
+            "platforms/gemini.md",
+        ):
+            self.assertIn(path, lock["components"])
+
+    def test_adapter_validation_rejects_missing_standard_section(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copytree(TOOLKIT / "platforms", root / "platforms")
+            codex = root / "platforms/codex.md"
+            codex.write_text(codex.read_text("utf-8").replace("## Monitoring", "## Observing"), "utf-8")
+            findings = []
+            validate_kit.validate_adapters(
+                root,
+                findings,
+                component_registry.build_manifest(TOOLKIT),
+            )
+            self.assertTrue(
+                any(item.code == "adapter.missing_section" and "Monitoring" in item.message for item in findings)
+            )
 
     def test_dependency_graph_is_synchronized(self):
         expected = dependency_graph.render(TOOLKIT)

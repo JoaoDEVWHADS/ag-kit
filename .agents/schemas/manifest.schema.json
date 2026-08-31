@@ -8,7 +8,30 @@
     "schemaVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
     "kitVersion": {"type": "string", "pattern": "^[0-9]{4}\\.[0-9]+\\.[0-9]+$"},
     "contracts": {"type": "object", "additionalProperties": {"type": "string"}},
-    "support": {"type": "object"},
+    "support": {
+      "type": "object",
+      "properties": {
+        "official": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "compatibleHosts": {
+          "type": "object",
+          "additionalProperties": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        },
+        "portableFormat": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    },
+    "platforms": {
+      "type": "object",
+      "required": ["contract", "adapters"],
+      "properties": {
+        "contract": {"$ref": "#/$defs/platformContract"},
+        "adapters": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/platformAdapter"}
+        }
+      },
+      "additionalProperties": false
+    },
     "agents": {"type": "object", "additionalProperties": {"$ref": "#/$defs/component"}},
     "skills": {"type": "object", "additionalProperties": {"$ref": "#/$defs/component"}},
     "workflows": {"type": "object", "additionalProperties": {"$ref": "#/$defs/component"}},
@@ -23,6 +46,27 @@
         "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"}
       },
       "additionalProperties": true
+    },
+    "platformContract": {
+      "type": "object",
+      "required": ["name", "path", "version"],
+      "properties": {
+        "name": {"const": "orchestration-contract"},
+        "path": {"type": "string"},
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"}
+      },
+      "additionalProperties": false
+    },
+    "platformAdapter": {
+      "type": "object",
+      "required": ["path", "version", "contract", "compatibleHosts"],
+      "properties": {
+        "path": {"type": "string"},
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "contract": {"const": "orchestrationApi"},
+        "compatibleHosts": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": true

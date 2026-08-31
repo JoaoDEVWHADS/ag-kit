@@ -152,6 +152,22 @@ def build_manifest(root: Path) -> dict[str, Any]:
             "trigger": str(data.get("trigger", "")),
         }
 
+    contract_path = root / "platforms" / "orchestration-contract.md"
+    contract_data = load_frontmatter(contract_path)
+    adapters: dict[str, dict[str, Any]] = {}
+    compatible_hosts = {"gemini": ["Google Antigravity"]}
+    for path in sorted((root / "platforms").glob("*.md")):
+        if path == contract_path:
+            continue
+        data = load_frontmatter(path)
+        name = path.stem
+        adapters[name] = {
+            "path": _relative(root, path),
+            "version": str(data.get("version", "")),
+            "contract": "orchestrationApi",
+            "compatibleHosts": compatible_hosts.get(name, []),
+        }
+
     return {
         "$schema": "schemas/manifest.schema.json",
         "schemaVersion": "1.0.0",
@@ -159,12 +175,22 @@ def build_manifest(root: Path) -> dict[str, Any]:
         "contracts": {
             "componentApi": "1.0.0",
             "memorySchema": "1.0.0",
+            "orchestrationApi": str(contract_data.get("version", "")),
             "rulesApi": "1.0.0",
             "workflowApi": "1.0.0",
         },
         "support": {
-            "official": ["Gemini CLI", "Google Antigravity"],
+            "official": ["Codex", "Claude Code", "Gemini"],
+            "compatibleHosts": {"gemini": ["Google Antigravity"]},
             "portableFormat": True,
+        },
+        "platforms": {
+            "contract": {
+                "name": str(contract_data.get("name", "")),
+                "path": _relative(root, contract_path),
+                "version": str(contract_data.get("version", "")),
+            },
+            "adapters": adapters,
         },
         "agents": agents,
         "skills": skills,
@@ -185,7 +211,7 @@ def component_files(root: Path) -> list[Path]:
         path = root / name
         if path.is_file():
             files.append(path)
-    for directory in ("agent", "skills", "workflows", "rules", "memory", "schemas", "scripts"):
+    for directory in ("agent", "skills", "workflows", "rules", "memory", "platforms", "schemas", "scripts"):
         base = root / directory
         if not base.is_dir():
             continue

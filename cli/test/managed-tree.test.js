@@ -32,6 +32,10 @@ test("fresh install writes a managed-file manifest", async (t) => {
     const currentDir = path.join(projectDir, ".agents");
     await writeFiles(incomingDir, {
         "agent/orchestrator.md": "orchestrator-v1",
+        "platforms/codex.md": "codex-adapter-v1",
+        "platforms/claude-code.md": "claude-adapter-v1",
+        "platforms/gemini.md": "gemini-adapter-v1",
+        "platforms/orchestration-contract.md": "contract-v1",
         "skills/example/SKILL.md": "skill-v1",
     });
 
@@ -48,6 +52,10 @@ test("fresh install writes a managed-file manifest", async (t) => {
     assert.equal(manifest.toolkitVersion, "1.0.0");
     assert.deepEqual(Object.keys(manifest.files).sort(), [
         "agent/orchestrator.md",
+        "platforms/claude-code.md",
+        "platforms/codex.md",
+        "platforms/gemini.md",
+        "platforms/orchestration-contract.md",
         "skills/example/SKILL.md",
     ]);
 });

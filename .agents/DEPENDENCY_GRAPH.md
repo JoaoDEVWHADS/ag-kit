@@ -234,5 +234,6 @@ flowchart LR
 
 - `componentApi`: `1.0.0`
 - `memorySchema`: `1.0.0`
+- `orchestrationApi`: `1.0.0`
 - `rulesApi`: `1.0.0`
 - `workflowApi`: `1.0.0`

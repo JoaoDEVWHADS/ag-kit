@@ -55,6 +55,16 @@ REQUIRED_FIELDS = {
     "rule": {"name", "trigger", "version", "priority"},
 }
 
+REQUIRED_ADAPTERS = {"codex", "claude-code", "gemini"}
+ADAPTER_SECTIONS = (
+    "Detection",
+    "Capability Map",
+    "Dispatch Rules",
+    "Monitoring",
+    "Fallback",
+    "Limitations",
+)
+
 
 def add(findings: list[Finding], severity: str, code: str, path: Path, message: str, line: int = 1) -> None:
     findings.append(Finding(severity, code, path.as_posix(), line, message))
@@ -242,6 +252,74 @@ def validate_manifest(root: Path, findings: list[Finding]) -> None:
                 )
 
 
+def validate_adapters(
+    root: Path,
+    findings: list[Finding],
+    manifest: dict[str, object] | None = None,
+) -> None:
+    platforms_root = root / "platforms"
+    contract_path = platforms_root / "orchestration-contract.md"
+    if not contract_path.is_file():
+        add(findings, "error", "adapter.contract_missing", Path("platforms/orchestration-contract.md"), "Orchestration contract is missing")
+        return
+
+    contract_data = parse_frontmatter(contract_path, findings)
+    if contract_data is None:
+        return
+    for field in ("name", "description", "version"):
+        if field not in contract_data:
+            add(findings, "error", "adapter.frontmatter_field", contract_path.relative_to(root), f"Missing required field: {field}")
+    if contract_data.get("name") != "orchestration-contract":
+        add(findings, "error", "adapter.contract_name", contract_path.relative_to(root), "Contract name must be orchestration-contract")
+    if not is_semver(str(contract_data.get("version", ""))):
+        add(findings, "error", "adapter.invalid_semver", contract_path.relative_to(root), "Contract version must be SemVer")
+
+    manifest_data = manifest or build_manifest(root)
+    platforms = manifest_data.get("platforms", {})
+    manifest_contract = platforms.get("contract", {}) if isinstance(platforms, dict) else {}
+    manifest_adapters = platforms.get("adapters", {}) if isinstance(platforms, dict) else {}
+    if manifest_contract.get("path") != "platforms/orchestration-contract.md":
+        add(findings, "error", "adapter.manifest_contract", Path("manifest.json"), "Manifest does not register the orchestration contract")
+    contracts = manifest_data.get("contracts", {})
+    if not isinstance(contracts, dict) or contracts.get("orchestrationApi") != contract_data.get("version"):
+        add(findings, "error", "adapter.contract_version", Path("manifest.json"), "orchestrationApi does not match the contract version")
+
+    discovered = {path.stem for path in platforms_root.glob("*.md") if path != contract_path}
+    for missing in sorted(REQUIRED_ADAPTERS - discovered):
+        add(findings, "error", "adapter.missing", Path("platforms") / f"{missing}.md", f"Required adapter is missing: {missing}")
+    for extra in sorted(discovered - REQUIRED_ADAPTERS):
+        add(findings, "error", "adapter.unexpected", Path("platforms") / f"{extra}.md", f"Unexpected platform adapter: {extra}")
+
+    for name in sorted(REQUIRED_ADAPTERS & discovered):
+        path = platforms_root / f"{name}.md"
+        data = parse_frontmatter(path, findings)
+        if data is None:
+            continue
+        for field in ("name", "description", "version"):
+            if field not in data:
+                add(findings, "error", "adapter.frontmatter_field", path.relative_to(root), f"Missing required field: {field}")
+        if data.get("name") != name:
+            add(findings, "error", "adapter.name_mismatch", path.relative_to(root), f"name={data.get('name')!r}, expected {name!r}")
+        if not is_semver(str(data.get("version", ""))):
+            add(findings, "error", "adapter.invalid_semver", path.relative_to(root), f"Invalid SemVer: {data.get('version')!r}")
+        text = path.read_text("utf-8", errors="replace")
+        for section in ADAPTER_SECTIONS:
+            if not re.search(rf"^## {re.escape(section)}\s*$", text, re.MULTILINE):
+                add(findings, "error", "adapter.missing_section", path.relative_to(root), f"Missing required section: {section}")
+        if ".agents/platforms/orchestration-contract.md" not in text:
+            add(findings, "error", "adapter.contract_reference", path.relative_to(root), "Adapter must reference the orchestration contract")
+        entry = manifest_adapters.get(name, {}) if isinstance(manifest_adapters, dict) else {}
+        if entry.get("path") != f"platforms/{name}.md" or entry.get("version") != data.get("version") or entry.get("contract") != "orchestrationApi":
+            add(findings, "error", "adapter.manifest_mismatch", Path("manifest.json"), f"Manifest entry does not match adapter: {name}")
+
+    support = manifest_data.get("support", {})
+    if not isinstance(support, dict) or set(support.get("official", [])) != {"Codex", "Claude Code", "Gemini"}:
+        add(findings, "error", "adapter.official_support", Path("manifest.json"), "Official support must list Codex, Claude Code, and Gemini")
+    compatible = support.get("compatibleHosts", {}) if isinstance(support, dict) else {}
+    if "Google Antigravity" not in compatible.get("gemini", []):
+        add(findings, "error", "adapter.compatible_host", Path("manifest.json"), "Google Antigravity must be a compatible Gemini host")
+
+
 def validate_generated_docs(root: Path, findings: list[Finding]) -> None:
     path = root / "DEPENDENCY_GRAPH.md"
     if not path.is_file():
@@ -357,6 +435,7 @@ def validate(root: Path) -> list[Finding]:
     agents, skills, workflows, _rules = validate_frontmatter(root, findings)
     validate_references(root, agents, skills, workflows, findings)
     validate_manifest(root, findings)
+    validate_adapters(root, findings)
     validate_generated_docs(root, findings)
     validate_markdown_links(root, findings)
     validate_memory(root, findings)

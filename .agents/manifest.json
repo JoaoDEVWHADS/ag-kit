@@ -446,10 +446,40 @@
   "contracts": {
     "componentApi": "1.0.0",
     "memorySchema": "1.0.0",
+    "orchestrationApi": "1.0.0",
     "rulesApi": "1.0.0",
     "workflowApi": "1.0.0"
   },
   "kitVersion": "2026.7.18",
+  "platforms": {
+    "adapters": {
+      "claude-code": {
+        "compatibleHosts": [],
+        "contract": "orchestrationApi",
+        "path": "platforms/claude-code.md",
+        "version": "1.0.0"
+      },
+      "codex": {
+        "compatibleHosts": [],
+        "contract": "orchestrationApi",
+        "path": "platforms/codex.md",
+        "version": "1.0.0"
+      },
+      "gemini": {
+        "compatibleHosts": [
+          "Google Antigravity"
+        ],
+        "contract": "orchestrationApi",
+        "path": "platforms/gemini.md",
+        "version": "1.0.0"
+      }
+    },
+    "contract": {
+      "name": "orchestration-contract",
+      "path": "platforms/orchestration-contract.md",
+      "version": "1.0.0"
+    }
+  },
   "rules": {
     "code-rules": {
       "path": "rules/code-rules.md",
@@ -1079,9 +1109,15 @@
     }
   },
   "support": {
+    "compatibleHosts": {
+      "gemini": [
+        "Google Antigravity"
+      ]
+    },
     "official": [
-      "Gemini CLI",
-      "Google Antigravity"
+      "Codex",
+      "Claude Code",
+      "Gemini"
     ],
     "portableFormat": true
   },
