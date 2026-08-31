@@ -9,6 +9,7 @@ import {
     installFreshTree,
     listBackups,
     loadManifest,
+    getEntrypointStatus,
     restoreBackup,
 } from "../lib/managed-tree.js";
 
@@ -24,6 +25,17 @@ const writeFiles = async (root, files) => {
         await fse.ensureDir(path.dirname(destination));
         await fse.writeFile(destination, content, "utf8");
     }
+};
+
+const writeToolkit = async (root, version) => {
+    const incomingDir = path.join(root, ".agents");
+    await writeFiles(incomingDir, { "agent/orchestrator.md": `orchestrator-${version}` });
+    await writeFiles(root, {
+        "AGENTS.md": `agents-${version}`,
+        "CLAUDE.md": `claude-${version}`,
+        "GEMINI.md": `gemini-${version}`,
+    });
+    return incomingDir;
 };
 
 test("fresh install writes a managed-file manifest", async (t) => {
@@ -236,4 +248,110 @@ test("replace creates a backup that can be rolled back", async (t) => {
     assert.equal(await fse.readFile(path.join(currentDir, "old.txt"), "utf8"), "old");
     assert.equal(await fse.readFile(path.join(currentDir, "local-only.txt"), "utf8"), "local");
     assert.equal(await fse.pathExists(path.join(currentDir, "new.txt")), false);
+});
+
+test("fresh install creates missing root entrypoints and preserves pre-existing files", async (t) => {
+    const root = await makeTempProject(t);
+    const projectDir = path.join(root, "project");
+    const incomingRoot = path.join(root, "toolkit");
+    const incomingDir = await writeToolkit(incomingRoot, "v1");
+    const currentDir = path.join(projectDir, ".agents");
+    await fse.ensureDir(projectDir);
+    await fse.writeFile(path.join(projectDir, "CLAUDE.md"), "local-claude", "utf8");
+
+    const report = await installFreshTree({
+        projectDir,
+        incomingDir,
+        incomingRoot,
+        currentDir,
+        toolkitVersion: "1.0.0",
+        runId: "entrypoint-install",
+    });
+
+    assert.equal(await fse.readFile(path.join(projectDir, "AGENTS.md"), "utf8"), "agents-v1");
+    assert.equal(await fse.readFile(path.join(projectDir, "CLAUDE.md"), "utf8"), "local-claude");
+    assert.equal(await fse.readFile(path.join(projectDir, "GEMINI.md"), "utf8"), "gemini-v1");
+    assert.equal(report.summary.entrypointConflicts, 1);
+    const manifest = await loadManifest(currentDir);
+    assert.deepEqual(Object.keys(manifest.entrypoints).sort(), ["AGENTS.md", "GEMINI.md"]);
+    const status = await getEntrypointStatus(projectDir, manifest);
+    assert.equal(status.find((item) => item.name === "CLAUDE.md").state, "conflicting");
+});
+
+test("clean entrypoints update and rollback with the managed tree", async (t) => {
+    const root = await makeTempProject(t);
+    const projectDir = path.join(root, "project");
+    const incomingRootV1 = path.join(root, "toolkit-v1");
+    const incomingRootV2 = path.join(root, "toolkit-v2");
+    const incomingV1 = await writeToolkit(incomingRootV1, "v1");
+    const incomingV2 = await writeToolkit(incomingRootV2, "v2");
+    const currentDir = path.join(projectDir, ".agents");
+    await fse.ensureDir(projectDir);
+    await installFreshTree({
+        projectDir,
+        incomingDir: incomingV1,
+        incomingRoot: incomingRootV1,
+        currentDir,
+        toolkitVersion: "1.0.0",
+        runId: "entrypoint-v1",
+    });
+
+    const manifest = await loadManifest(currentDir);
+    const plan = await createUpdatePlan({
+        currentDir,
+        incomingDir: incomingV2,
+        manifest,
+        strategy: "replace",
+    });
+    const report = await applyUpdatePlan({
+        projectDir,
+        currentDir,
+        incomingDir: incomingV2,
+        incomingRoot: incomingRootV2,
+        plan,
+        toolkitVersion: "2.0.0",
+        runId: "entrypoint-v2",
+    });
+
+    assert.equal(report.summary.entrypointConflicts, 0);
+    assert.equal(await fse.readFile(path.join(projectDir, "AGENTS.md"), "utf8"), "agents-v2");
+    await restoreBackup({
+        projectDir,
+        agentDir: currentDir,
+        backupId: "entrypoint-v2",
+        keepCurrent: false,
+    });
+    assert.equal(await fse.readFile(path.join(projectDir, "AGENTS.md"), "utf8"), "agents-v1");
+    assert.equal((await loadManifest(currentDir)).toolkitVersion, "1.0.0");
+});
+
+test("update preserves a locally changed managed entrypoint and reports conflict", async (t) => {
+    const root = await makeTempProject(t);
+    const projectDir = path.join(root, "project");
+    const incomingRootV1 = path.join(root, "toolkit-v1");
+    const incomingRootV2 = path.join(root, "toolkit-v2");
+    const incomingV1 = await writeToolkit(incomingRootV1, "v1");
+    const incomingV2 = await writeToolkit(incomingRootV2, "v2");
+    const currentDir = path.join(projectDir, ".agents");
+    await fse.ensureDir(projectDir);
+    await installFreshTree({ projectDir, incomingDir: incomingV1, incomingRoot: incomingRootV1, currentDir, runId: "conflict-v1" });
+    await fse.writeFile(path.join(projectDir, "AGENTS.md"), "local-agents", "utf8");
+
+    const manifest = await loadManifest(currentDir);
+    const plan = await createUpdatePlan({ currentDir, incomingDir: incomingV2, manifest });
+    const report = await applyUpdatePlan({
+        projectDir,
+        currentDir,
+        incomingDir: incomingV2,
+        incomingRoot: incomingRootV2,
+        plan,
+        runId: "conflict-v2",
+    });
+
+    assert.equal(await fse.readFile(path.join(projectDir, "AGENTS.md"), "utf8"), "local-agents");
+    assert.equal(report.summary.entrypointConflicts, 1);
+    assert.equal(
+        await fse.readFile(path.join(currentDir, ".ag-kit/conflicts/conflict-v2/entrypoints/AGENTS.md.incoming"), "utf8"),
+        "agents-v2",
+    );
 });

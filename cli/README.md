@@ -19,8 +19,8 @@ ag-kit init
 
 | Command | Description |
 |---|---|
-| `ag-kit init` | Install `.agents`; safely merges when an installation already exists |
-| `ag-kit update` | Update managed files while preserving local changes |
+| `ag-kit init` | Install `.agents` and missing root entrypoints (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`) |
+| `ag-kit update` | Update managed files and unchanged root entrypoints while preserving local changes |
 | `ag-kit rollback` | Restore the newest or a selected pre-update backup |
 | `ag-kit status` | Show installation, manifest, toolkit version, backups, and CLI status |
 
@@ -33,6 +33,7 @@ AG Kit records SHA-256 baselines in `.agents/.ag-kit/manifest.json`. During an u
 - User-created files are preserved.
 - Files changed both locally and upstream are reported as conflicts.
 - Incoming conflict copies are written under `.agents/.ag-kit/conflicts/`.
+- Existing root entrypoints are never overwritten unless their hash still matches the stored installation baseline.
 - A full pre-update backup is stored under `.ag-kit-backups/` by default.
 
 ```bash

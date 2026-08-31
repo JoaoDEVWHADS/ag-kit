@@ -6,6 +6,7 @@ export const MANIFEST_SCHEMA_VERSION = 1;
 export const METADATA_DIR = ".ag-kit";
 export const MANIFEST_FILE = path.join(METADATA_DIR, "manifest.json");
 export const BACKUP_ROOT = ".ag-kit-backups";
+export const ROOT_ENTRYPOINTS = ["AGENTS.md", "CLAUDE.md", "GEMINI.md"];
 
 const INTERNAL_PREFIXES = [
     `${METADATA_DIR}/`,
@@ -52,6 +53,57 @@ export const hashFile = async (filePath) => {
     const data = await fse.readFile(filePath);
     hash.update(data);
     return hash.digest("hex");
+};
+
+const snapshotEntrypoints = async (projectDir) => {
+    const snapshot = {};
+    for (const name of ROOT_ENTRYPOINTS) {
+        const filePath = path.join(projectDir, name);
+        if (await fse.pathExists(filePath)) snapshot[name] = await hashFile(filePath);
+    }
+    return snapshot;
+};
+
+export const getEntrypointStatus = async (projectDir, manifest = null) => {
+    const current = await snapshotEntrypoints(projectDir);
+    const managed = manifest?.entrypoints || {};
+    return ROOT_ENTRYPOINTS.map((name) => ({
+        name,
+        state: !current[name]
+            ? "missing"
+            : !managed[name]
+                ? "conflicting"
+                : current[name] === managed[name] ? "managed" : "conflicting",
+    }));
+};
+
+const applyEntrypoints = async ({ projectDir, incomingRoot, previous = {}, conflictRoot = null }) => {
+    const next = { ...previous };
+    const results = [];
+
+    for (const name of ROOT_ENTRYPOINTS) {
+        const source = path.join(incomingRoot, name);
+        if (!(await fse.pathExists(source))) throw new Error(`Could not find root entrypoint ${name}`);
+        const destination = path.join(projectDir, name);
+        const incomingHash = await hashFile(source);
+        const currentHash = await fse.pathExists(destination) ? await hashFile(destination) : null;
+        const oldHash = previous[name] || null;
+
+        if (currentHash === null || (oldHash && currentHash === oldHash)) {
+            if (currentHash !== incomingHash) await fse.copyFile(source, destination);
+            next[name] = incomingHash;
+            results.push({ name, state: currentHash === incomingHash ? "unchanged" : currentHash ? "updated" : "added" });
+            continue;
+        }
+
+        results.push({ name, state: "conflict", reason: oldHash ? "changed locally" : "pre-existing unmanaged file" });
+        if (conflictRoot) {
+            const incomingCopy = path.join(conflictRoot, "entrypoints", `${name}.incoming`);
+            await fse.ensureDir(path.dirname(incomingCopy));
+            await fse.copyFile(source, incomingCopy);
+        }
+    }
+    return { baseline: next, results };
 };
 
 export const snapshotTree = async (rootDir) => {
@@ -107,7 +159,7 @@ export const loadManifest = async (agentDir) => {
 export const writeManifest = async (
     agentDir,
     incomingSnapshot,
-    { toolkitVersion = "unknown", previousManifest = null, runId = createRunId() } = {},
+    { toolkitVersion = "unknown", previousManifest = null, runId = createRunId(), entrypoints = null } = {},
 ) => {
     const metadataDir = path.join(agentDir, METADATA_DIR);
     await fse.ensureDir(metadataDir);
@@ -120,6 +172,7 @@ export const writeManifest = async (
         updatedAt: now,
         lastRunId: runId,
         files: incomingSnapshot,
+        entrypoints: entrypoints || previousManifest?.entrypoints || {},
     };
 
     await fse.writeJson(path.join(agentDir, MANIFEST_FILE), manifest, { spaces: 2 });
@@ -277,12 +330,24 @@ export const createBackup = async ({ projectDir, agentDir, runId = createRunId()
         overwrite: true,
         errorOnExist: false,
     });
+    const entrypoints = {};
+    for (const name of ROOT_ENTRYPOINTS) {
+        const source = path.join(projectDir, name);
+        const exists = await fse.pathExists(source);
+        entrypoints[name] = { exists };
+        if (exists) {
+            const destination = path.join(backupDir, "entrypoints", name);
+            await fse.ensureDir(path.dirname(destination));
+            await fse.copyFile(source, destination);
+        }
+    }
     await fse.writeJson(
         path.join(backupDir, "backup.json"),
         {
             schemaVersion: 1,
             createdAt: new Date().toISOString(),
             source: agentDir,
+            entrypoints,
         },
         { spaces: 2 },
     );
@@ -317,6 +382,7 @@ export const applyUpdatePlan = async ({
     backup = true,
     runId = createRunId(),
     conflictReportPath = null,
+    incomingRoot = null,
 }) => {
     const backupDir = backup
         ? await createBackup({ projectDir, agentDir: currentDir, runId })
@@ -342,6 +408,17 @@ export const applyUpdatePlan = async ({
         }
     }
 
+    const previousManifest = await loadManifest(currentDir);
+    const entrypointUpdate = incomingRoot
+        ? await applyEntrypoints({
+            projectDir,
+            incomingRoot,
+            previous: previousManifest?.entrypoints || {},
+            conflictRoot,
+        })
+        : { baseline: previousManifest?.entrypoints || {}, results: [] };
+    const entrypointConflicts = entrypointUpdate.results.filter((item) => item.state === "conflict").length;
+
     const report = {
         schemaVersion: 1,
         runId,
@@ -351,13 +428,15 @@ export const applyUpdatePlan = async ({
         backupDir,
         summary: {
             actions: plan.actions.length,
-            conflicts: plan.conflicts.length,
+            conflicts: plan.conflicts.length + entrypointConflicts,
+            entrypointConflicts,
             preserved: plan.preserved.length,
             unchanged: plan.unchanged.length,
         },
         actions: plan.actions,
         conflicts: plan.conflicts,
         preserved: plan.preserved,
+        entrypoints: entrypointUpdate.results,
     };
 
     const defaultReportPath = path.join(
@@ -372,11 +451,11 @@ export const applyUpdatePlan = async ({
     await fse.ensureDir(path.dirname(resolvedReportPath));
     await fse.writeJson(resolvedReportPath, report, { spaces: 2 });
 
-    const previousManifest = await loadManifest(currentDir);
     await writeManifest(currentDir, plan.incoming, {
         toolkitVersion,
         previousManifest,
         runId,
+        entrypoints: entrypointUpdate.baseline,
     });
 
     return { ...report, reportPath: resolvedReportPath };
@@ -388,10 +467,24 @@ export const installFreshTree = async ({
     currentDir,
     toolkitVersion = "unknown",
     runId = createRunId(),
+    incomingRoot = null,
 }) => {
     await fse.copy(incomingDir, currentDir, { overwrite: false, errorOnExist: true });
     const incomingSnapshot = await snapshotTree(incomingDir);
-    await writeManifest(currentDir, incomingSnapshot, { toolkitVersion, runId });
+    const conflictRoot = path.join(currentDir, METADATA_DIR, "conflicts", runId);
+    const entrypointUpdate = incomingRoot
+        ? await applyEntrypoints({ projectDir, incomingRoot, conflictRoot })
+        : { baseline: {}, results: [] };
+    await writeManifest(currentDir, incomingSnapshot, {
+        toolkitVersion,
+        runId,
+        entrypoints: entrypointUpdate.baseline,
+    });
+    const entrypointConflicts = entrypointUpdate.results.filter((item) => item.state === "conflict").length;
+
+    const reportPath = path.join(currentDir, METADATA_DIR, "reports", `install-${runId}.json`);
+    await fse.ensureDir(path.dirname(reportPath));
+    await fse.writeJson(reportPath, { runId, strategy: "install", entrypoints: entrypointUpdate.results }, { spaces: 2 });
 
     return {
         schemaVersion: 1,
@@ -402,11 +495,13 @@ export const installFreshTree = async ({
         backupDir: null,
         summary: {
             actions: Object.keys(incomingSnapshot).length,
-            conflicts: 0,
+            conflicts: entrypointConflicts,
+            entrypointConflicts,
             preserved: 0,
             unchanged: 0,
         },
-        reportPath: null,
+        reportPath,
+        entrypoints: entrypointUpdate.results,
         projectDir,
     };
 };
@@ -464,6 +559,24 @@ export const restoreBackup = async ({
 
     await fse.remove(agentDir);
     await fse.copy(source, agentDir, { overwrite: true });
+
+    try {
+        const metadata = await fse.readJson(path.join(selected.path, "backup.json"));
+        const restoredManifest = await loadManifest(source);
+        for (const name of ROOT_ENTRYPOINTS) {
+            const destination = path.join(projectDir, name);
+            const existed = metadata.entrypoints?.[name]?.exists;
+            if (restoredManifest?.entrypoints?.[name] && existed) {
+                await fse.copyFile(path.join(selected.path, "entrypoints", name), destination);
+            } else if (!restoredManifest?.entrypoints?.[name] && existed) {
+                continue;
+            } else if (metadata.entrypoints?.[name]) {
+                await fse.remove(destination);
+            }
+        }
+    } catch {
+        // Legacy backups did not include root entrypoints.
+    }
 
     return {
         restoredBackupId: selected.id,

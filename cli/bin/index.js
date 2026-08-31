@@ -11,6 +11,7 @@ import {
     applyUpdatePlan,
     createRunId,
     createUpdatePlan,
+    getEntrypointStatus,
     installFreshTree,
     listBackups,
     loadManifest,
@@ -104,7 +105,12 @@ const downloadToolkit = async ({ tempDir, branch, spinner }) => {
     if (!(await fse.pathExists(incomingDir))) {
         throw new Error(`Could not find ${AGENT_FOLDER} in the downloaded repository`);
     }
-    return incomingDir;
+    for (const name of ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]) {
+        if (!(await fse.pathExists(path.join(tempDir, name)))) {
+            throw new Error(`Could not find root entrypoint ${name} in the downloaded repository`);
+        }
+    }
+    return { incomingDir, incomingRoot: tempDir };
 };
 
 const printPlan = (plan, { dryRun = false, quiet = false } = {}) => {
@@ -172,7 +178,7 @@ export const installOrUpdate = async (options = {}, mode = "init") => {
         : ora({ text: "Preparing...", color: "cyan" }).start();
 
     try {
-        const incomingDir = await downloadToolkit({
+        const { incomingDir, incomingRoot } = await downloadToolkit({
             tempDir,
             branch: options.branch,
             spinner,
@@ -202,6 +208,7 @@ export const installOrUpdate = async (options = {}, mode = "init") => {
                 projectDir: targetDir,
                 incomingDir,
                 currentDir: agentDir,
+                incomingRoot,
                 toolkitVersion,
                 runId,
             });
@@ -233,6 +240,7 @@ export const installOrUpdate = async (options = {}, mode = "init") => {
             backup,
             runId,
             conflictReportPath: options.conflictReport,
+            incomingRoot,
         });
 
         if (spinner) {
@@ -342,6 +350,7 @@ export const statusCommand = async (options) => {
         const stats = await fse.stat(agentDir);
         const manifest = await loadManifest(agentDir);
         const backups = await listBackups(targetDir);
+        const entrypoints = await getEntrypointStatus(targetDir, manifest);
         console.log(chalk.green("[OK] Installed"));
         console.log(chalk.gray("────────────────────────────────────────"));
         console.log(`Path:        ${chalk.cyan(agentDir)}`);
@@ -349,6 +358,7 @@ export const statusCommand = async (options) => {
         console.log(`Managed:     ${manifest ? chalk.green("yes") : chalk.yellow("legacy/no manifest")}`);
         console.log(`Kit version: ${chalk.cyan(manifest?.toolkitVersion || "unknown")}`);
         console.log(`Backups:     ${chalk.yellow(backups.length)}`);
+        console.log(`Entrypoints: ${entrypoints.map((item) => `${item.name}=${item.state}`).join(", ")}`);
         console.log(chalk.gray("────────────────────────────────────────\n"));
     } else {
         console.log(chalk.red("[X] Not installed"));
@@ -374,7 +384,7 @@ export const buildProgram = () => {
 
     program
         .command("init")
-        .description("Install .agents into a project; safely merges when it already exists")
+        .description("Install .agents and safe root entrypoints into a project")
         .option("-f, --force", "Skip confirmation prompt", false)
         .option("-p, --path <dir>", "Path to the project directory", process.cwd())
         .option("-b, --branch <name>", "Select repository branch")
@@ -387,7 +397,7 @@ export const buildProgram = () => {
 
     program
         .command("update")
-        .description("Safely update .agents while preserving local changes")
+        .description("Safely update .agents and unchanged managed entrypoints")
         .option("-f, --force", "Skip confirmation prompt", false)
         .option("-p, --path <dir>", "Path to the project directory", process.cwd())
         .option("-b, --branch <name>", "Select repository branch")
