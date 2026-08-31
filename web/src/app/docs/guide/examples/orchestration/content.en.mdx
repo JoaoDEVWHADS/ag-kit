@@ -9,6 +9,12 @@ Build entire SaaS platforms by coordinating specialist agents with the `/orchest
 Most AI interactions are 1-on-1. The `orchestrator` agent changes this by acting as a **Project Manager**.
 It breaks down a large request (e.g., "Build a SaaS MVP") into tasks and assigns them to the best specialist for the job.
 
+The coordinator follows a portable lifecycle: **decompose, delegate, monitor, synthesize, and verify**. It uses native agent capabilities when the active host exposes them and preserves the same lifecycle with sequential specialist execution otherwise. Approval is adaptive: safe, bounded work can proceed automatically, while ambiguous, high-impact, or destructive actions require confirmation.
+
+<Callout type="info">
+  Codex, Claude Code, and Gemini are officially supported. Google Antigravity uses the Gemini adapter; OpenCode support is experimental. Concurrency depends on capabilities detected in the active host and is never assumed.
+</Callout>
+
 <FeatureGrid>
   <Feature title="Backend" description="API & DB Architect" />
   <Feature title="Frontend" description="UI/UX Specialist" />
@@ -42,7 +48,7 @@ It breaks down a large request (e.g., "Build a SaaS MVP") into tasks and assigns
     </div>
   </Step>
   <Step number={3} title="Phase 2: Execution">
-    Agents work in parallel. The Orchestrator monitors progress and unblocks dependencies.
+    The Orchestrator delegates to native agents when available, runs independent tasks concurrently only when supported, and otherwise uses sequential specialist execution. It monitors progress, synthesizes results, and requires independent verification before completion.
   </Step>
 </StepList>
 

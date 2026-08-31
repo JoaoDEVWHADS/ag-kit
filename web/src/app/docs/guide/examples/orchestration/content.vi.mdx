@@ -9,6 +9,12 @@ Xây dựng cả nền tảng SaaS bằng cách điều phối các tác tử ch
 Hầu hết tương tác với AI đều là 1-đối-1. Tác tử `orchestrator` thay đổi điều này bằng cách đóng vai trò **Quản lý dự án**.
 Nó phân rã một yêu cầu lớn (ví dụ "Xây dựng SaaS MVP") thành các tác vụ và giao cho chuyên gia phù hợp nhất với từng việc.
 
+Coordinator tuân theo lifecycle dùng chung: **phân rã, ủy quyền, giám sát, tổng hợp và xác minh**. Hệ thống dùng khả năng agent native khi host hiện tại cung cấp, nếu không sẽ giữ nguyên lifecycle bằng cách chạy tuần tự từng chuyên gia. Việc phê duyệt mang tính thích ứng: công việc an toàn, giới hạn rõ có thể tự động tiếp tục; hành động mơ hồ, ảnh hưởng lớn hoặc phá hủy cần được xác nhận.
+
+<Callout type="info">
+  Codex, Claude Code và Gemini được hỗ trợ chính thức. Google Antigravity dùng adapter Gemini; OpenCode đang ở mức thử nghiệm. Khả năng chạy đồng thời phụ thuộc vào capability được phát hiện trên host và không bao giờ được giả định.
+</Callout>
+
 <FeatureGrid>
   <Feature title="Backend" description="Kiến trúc sư API & DB" />
   <Feature title="Frontend" description="Chuyên gia UI/UX" />
@@ -42,7 +48,7 @@ Nó phân rã một yêu cầu lớn (ví dụ "Xây dựng SaaS MVP") thành c�
     </div>
   </Step>
   <Step number={3} title="Giai đoạn 2: Thực thi">
-    Các tác tử làm việc song song. Orchestrator theo dõi tiến độ và gỡ các phụ thuộc bị nghẽn.
+    Orchestrator ủy quyền cho agent native khi có, chỉ chạy đồng thời các tác vụ độc lập khi host hỗ trợ, và dùng thực thi tuần tự theo chuyên gia khi không hỗ trợ. Sau đó hệ thống giám sát tiến độ, tổng hợp kết quả và yêu cầu xác minh độc lập trước khi hoàn tất.
   </Step>
 </StepList>
 

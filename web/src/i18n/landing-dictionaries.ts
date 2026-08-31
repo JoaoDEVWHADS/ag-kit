@@ -116,16 +116,16 @@ export const landingEn: LandingDictionary = {
   hero: {
     title: "Expand your AI coding agents with",
     subtitle:
-      "47 skills, 20 specialist agents, and production workflows you can install in one command. Safe merge updates keep your local changes.",
+      "48 skills, 21 specialist agents, and 14 production workflows you can install in one command. Safe merge updates keep your local changes.",
     getStarted: "Get started",
     github: "GitHub",
   },
   stack: {
     title: "Everything in one toolkit",
     items: [
-      "20 Agents",
-      "47 Skills",
-      "13 Workflows",
+      "21 Agents",
+      "48 Skills",
+      "14 Workflows",
       "CLI",
       "Merge-safe",
       "Open source",
@@ -173,7 +173,7 @@ export const landingEn: LandingDictionary = {
       {
         title: "Domain skills",
         description:
-          "47 skills covering architecture, testing, i18n, SEO, GEO, deployment, and clean code standards.",
+          "48 skills covering architecture, testing, i18n, SEO, GEO, deployment, and clean code standards.",
       },
       {
         title: "Guided workflows",
@@ -225,7 +225,7 @@ export const landingEn: LandingDictionary = {
       {
         title: "/orchestrate",
         description:
-          "Coordinate parallel specialist agents on complex multi-domain work.",
+          "Decompose, delegate, monitor, synthesize, and verify complex work, using native agent capabilities when available and a sequential fallback otherwise.",
       },
       {
         title: "/deploy",
@@ -365,7 +365,7 @@ export const landingEn: LandingDictionary = {
         value: "works-with",
         question: "Which AI assistants work with AG Kit?",
         answer:
-          "AG Kit targets modern coding agents that can load project skills and rules (for example Gemini CLI / Antigravity-style setups). The docs cover structure and workflows independent of a single vendor chat UI.",
+          "Codex, Claude Code, and Gemini are officially supported; Google Antigravity uses the Gemini adapter. OpenCode support is experimental. Native agent capabilities are used when available, with a contract-preserving sequential fallback otherwise.",
       },
       {
         value: "license",
@@ -412,16 +412,16 @@ export const landingVi: LandingDictionary = {
   hero: {
     title: "Mở rộng AI coding agent của bạn với",
     subtitle:
-      "47 kỹ năng, 20 agent chuyên biệt và các quy trình production cài chỉ bằng một lệnh. Cập nhật merge an toàn, giữ nguyên chỉnh sửa cục bộ của bạn.",
+      "48 kỹ năng, 21 agent chuyên biệt và 14 quy trình production cài chỉ bằng một lệnh. Cập nhật merge an toàn, giữ nguyên chỉnh sửa cục bộ của bạn.",
     getStarted: "Bắt đầu",
     github: "GitHub",
   },
   stack: {
     title: "Mọi thứ trong một bộ toolkit",
     items: [
-      "20 Agent",
-      "47 Kỹ năng",
-      "13 Quy trình",
+      "21 Agent",
+      "48 Kỹ năng",
+      "14 Quy trình",
       "CLI",
       "Cập nhật an toàn",
       "Mã nguồn mở",
@@ -469,7 +469,7 @@ export const landingVi: LandingDictionary = {
       {
         title: "Skill theo domain",
         description:
-          "47 skill gồm kiến trúc, testing, i18n, SEO, GEO, triển khai và chuẩn clean code.",
+          "48 skill gồm kiến trúc, testing, i18n, SEO, GEO, triển khai và chuẩn clean code.",
       },
       {
         title: "Workflow có hướng dẫn",
@@ -524,7 +524,7 @@ export const landingVi: LandingDictionary = {
       {
         title: "/orchestrate",
         description:
-          "Điều phối agent chuyên biệt song song cho công việc đa domain.",
+          "Phân rã, ủy quyền, giám sát, tổng hợp và xác minh công việc phức tạp; dùng khả năng agent native khi có và fallback tuần tự khi không có.",
       },
       {
         title: "/deploy",
@@ -664,7 +664,7 @@ export const landingVi: LandingDictionary = {
         value: "works-with",
         question: "AG Kit dùng với trợ lý AI nào?",
         answer:
-          "AG Kit hướng tới coding agent hiện đại có thể nạp skill và rule dự án (ví dụ Gemini CLI / Antigravity). Tài liệu mô tả cấu trúc và workflow độc lập với một UI chat duy nhất.",
+          "Codex, Claude Code và Gemini được hỗ trợ chính thức; Google Antigravity dùng adapter Gemini. OpenCode đang ở mức thử nghiệm. AG Kit dùng khả năng agent native khi có và fallback tuần tự vẫn giữ nguyên contract khi không có.",
       },
       {
         value: "license",
@@ -713,13 +713,13 @@ export const landingZh: LandingDictionary = {
   hero: {
     title: "用以下工具扩展你的 AI 编程助手",
     subtitle:
-      "47 项技能、20 位专业 agent 与生产级工作流，一条命令即可安装。安全合并更新，保留你的本地修改。",
+      "48 项技能、21 位专业 agent 与 14 个生产级工作流，一条命令即可安装。安全合并更新，保留你的本地修改。",
     getStarted: "开始使用",
     github: "GitHub",
   },
   stack: {
     title: "一站式工具包",
-    items: ["20 个 Agent", "47 项技能", "13 个工作流", "CLI", "安全更新", "开源"],
+    items: ["21 个 Agent", "48 项技能", "14 个工作流", "CLI", "安全更新", "开源"],
   },
   sponsored: {
     ...landingEn.sponsored,
@@ -781,16 +781,16 @@ export const landingJa: LandingDictionary = {
   hero: {
     title: "AI コーディングエージェントを拡張",
     subtitle:
-      "47 のスキル、20 の専門エージェント、本番向けワークフローを 1 コマンドで導入。安全なマージ更新でローカル変更を守ります。",
+      "48 のスキル、21 の専門エージェント、14 の本番向けワークフローを 1 コマンドで導入。安全なマージ更新でローカル変更を守ります。",
     getStarted: "はじめる",
     github: "GitHub",
   },
   stack: {
     title: "すべてが 1 つのツールキットに",
     items: [
-      "20 Agents",
-      "47 Skills",
-      "13 Workflows",
+      "21 Agents",
+      "48 Skills",
+      "14 Workflows",
       "CLI",
       "安全な更新",
       "オープンソース",

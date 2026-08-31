@@ -25,10 +25,10 @@ plans the architecture, and orchestrates specialist agents to build your app.
     ```
   </Step>
   <Step number={2} title="Review Plan">
-    The `project-planner` agent creates a detailed plan. Approve to proceed.
+    The `project-planner` agent creates a detailed plan. Approval is adaptive: safe, bounded work may continue automatically, while ambiguous, high-impact, or destructive actions require confirmation.
   </Step>
   <Step number={3} title="Agents Build">
-    Specialist agents work in parallel: database-architect, backend, frontend.
+    The coordinator delegates to database, backend, and frontend specialists. Independent tasks may run concurrently when the host exposes native agent capabilities; otherwise they run sequentially with the same monitoring and verification guarantees.
   </Step>
 </StepList>
 

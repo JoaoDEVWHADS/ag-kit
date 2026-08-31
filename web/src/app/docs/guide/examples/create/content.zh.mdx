@@ -25,10 +25,10 @@ import { Callout, StepList, Step, Terminal, TerminalLine, TerminalBlock, ProTips
     ```
   </Step>
   <Step number={2} title="审阅计划">
-    `project-planner` 智能体会生成一份详细的计划。批准后即可继续。
+    `project-planner` 智能体会生成一份详细的计划。审批会根据风险自适应：安全且范围明确的工作可自动继续，模糊、高影响或破坏性操作则需要确认。
   </Step>
   <Step number={3} title="智能体开始构建">
-    专家智能体并行工作：database-architect、backend、frontend。
+    协调器会委派给 database、backend 和 frontend 专家。仅当宿主提供原生 agent 能力时，独立任务才可并发执行；否则按顺序执行，同时保持相同的监控与验证保证。
   </Step>
 </StepList>
 

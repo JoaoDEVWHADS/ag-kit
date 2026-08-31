@@ -25,10 +25,10 @@ import { Callout, StepList, Step, Terminal, TerminalLine, TerminalBlock, ProTips
     ```
   </Step>
   <Step number={2} title="計画を確認する">
-    `project-planner` エージェントが詳細な計画を作成します。承認すると先へ進みます。
+    `project-planner` エージェントが詳細な計画を作成します。承認はリスクに応じて変わり、安全で範囲の明確な作業は自動で進みますが、曖昧・高影響・破壊的な操作には確認が必要です。
   </Step>
   <Step number={3} title="エージェントが構築する">
-    専門エージェントが並行して作業します：database-architect、backend、frontend。
+    コーディネーターが database、backend、frontend の専門家へ委任します。ホストがネイティブなエージェント機能を提供する場合に限り独立タスクを並行実行でき、それ以外は同じ監視・検証保証を保ちながら順番に実行します。
   </Step>
 </StepList>
 

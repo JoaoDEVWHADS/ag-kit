@@ -233,5 +233,10 @@
         "name": "intelligent-routing",
         "description": "Automatic agent selection and routing",
         "category": "Other"
+    },
+    {
+        "name": "teamtalk-sdk",
+        "description": "TeamTalk 5 SDK development for C/C++, Python, C#, and Java/Android",
+        "category": "Other"
     }
 ]

@@ -50,5 +50,9 @@
     {
         "command": "/verify",
         "description": "Prove code works by running it"
+    },
+    {
+        "command": "/create-tt-bot",
+        "description": "Create a TeamTalk 5 bot or application"
     }
 ]

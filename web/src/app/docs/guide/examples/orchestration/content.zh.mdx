@@ -9,6 +9,12 @@ import { Callout, StepList, Step, Terminal, TerminalLine, TerminalBlock, ProTips
 大多数 AI 交互都是一对一的。`orchestrator` 智能体改变了这一点，它扮演**项目经理**的角色。
 它会把一个庞大的需求（例如"构建一个 SaaS MVP"）拆解成多个任务，并分派给最擅长该任务的专家。
 
+协调器遵循统一生命周期：**分解、委派、监控、综合和验证**。当前宿主提供原生 agent 能力时就使用它们；否则通过顺序执行各专家来保持同一生命周期。审批会根据风险自适应：安全且范围明确的工作可以自动继续，模糊、高影响或破坏性操作则需要确认。
+
+<Callout type="info">
+  Codex、Claude Code 和 Gemini 获得官方支持。Google Antigravity 使用 Gemini 适配器；OpenCode 为实验性支持。并发能力取决于当前宿主实际检测到的能力，绝不默认存在。
+</Callout>
+
 <FeatureGrid>
   <Feature title="Backend" description="API 与数据库架构师" />
   <Feature title="Frontend" description="UI/UX 专家" />
@@ -42,7 +48,7 @@ import { Callout, StepList, Step, Terminal, TerminalLine, TerminalBlock, ProTips
     </div>
   </Step>
   <Step number={3} title="阶段 2：执行">
-    各智能体并行工作。Orchestrator 监控进度并疏通被阻塞的依赖。
+    Orchestrator 会在可用时委派给原生 agent，仅在宿主支持时并发执行独立任务，否则按顺序执行各专家。随后监控进度、综合结果，并在完成前要求独立验证。
   </Step>
 </StepList>
 

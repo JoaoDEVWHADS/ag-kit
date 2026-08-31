@@ -9,6 +9,12 @@ import { Callout, StepList, Step, Terminal, TerminalLine, TerminalBlock, ProTips
 ほとんどの AI とのやり取りは 1 対 1 です。`orchestrator` エージェントは**プロジェクトマネージャー**として振る舞うことで、これを変えます。
 大きなリクエスト（例：「SaaS の MVP を作る」）をタスクに分解し、その仕事に最適な専門家へ割り当てます。
 
+コーディネーターは、**分解、委任、監視、統合、検証**という共通ライフサイクルに従います。現在のホストがネイティブなエージェント機能を提供する場合はそれを利用し、提供しない場合は専門家を順番に実行して同じライフサイクルを維持します。承認はリスクに応じて変わり、安全で範囲の明確な作業は自動で進みますが、曖昧・高影響・破壊的な操作には確認が必要です。
+
+<Callout type="info">
+  Codex、Claude Code、Gemini を正式にサポートします。Google Antigravity は Gemini アダプターを使用し、OpenCode は試験的サポートです。並行実行は現在のホストで検出された機能に依存し、常に利用できるとは限りません。
+</Callout>
+
 <FeatureGrid>
   <Feature title="Backend" description="API とDBのアーキテクト" />
   <Feature title="Frontend" description="UI/UX の専門家" />
@@ -42,7 +48,7 @@ import { Callout, StepList, Step, Terminal, TerminalLine, TerminalBlock, ProTips
     </div>
   </Step>
   <Step number={3} title="フェーズ 2：実行">
-    各エージェントが並行して作業します。Orchestrator は進捗を監視し、依存関係のブロックを解消します。
+    Orchestrator は利用可能ならネイティブエージェントへ委任し、ホストが対応する場合に限り独立タスクを並行実行します。対応しない場合は専門家を順番に実行し、進捗監視、結果の統合、完了前の独立検証まで行います。
   </Step>
 </StepList>
 
