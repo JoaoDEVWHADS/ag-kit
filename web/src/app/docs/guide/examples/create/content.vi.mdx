@@ -28,7 +28,7 @@ lập kế hoạch kiến trúc và điều phối các tác tử chuyên biệt
     Tác tử `project-planner` tạo một kế hoạch chi tiết. Phê duyệt thích ứng theo rủi ro: công việc an toàn, giới hạn rõ có thể tự động tiếp tục; hành động mơ hồ, ảnh hưởng lớn hoặc phá hủy cần xác nhận.
   </Step>
   <Step number={3} title="Tác tử xây dựng">
-    Coordinator ủy quyền cho các chuyên gia database, backend và frontend. Tác vụ độc lập có thể chạy đồng thời khi host cung cấp khả năng agent native; nếu không, chúng chạy tuần tự với cùng cơ chế giám sát và xác minh.
+    Trước khi chờ, coordinator giao đúng ba envelope phân tích độc lập và xem xét từng kết quả trước khi tổng hợp. Ở đây chúng bao phủ database, backend và frontend; phạm vi nhỏ hơn dùng phân tích chính, rủi ro/trường hợp biên và kế hoạch xác minh, còn phạm vi lớn hơn được gom vào ba envelope. Host native có thể chạy phân tích độc lập đồng thời; host khác xếp hàng cả ba và công khai fallback tuần tự. Các thao tác ghi có phụ thuộc vẫn tuần tự.
   </Step>
 </StepList>
 

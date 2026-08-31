@@ -12,13 +12,15 @@ Turn AG Kit into a portable agent team with a risk-aware chief coordinator and n
 - [x] Align routing rules, memory, architecture catalog, and installation assets with multi-platform support. → Verify: generated manifests and dependency graph remain synchronized.
 - [x] Add automated checks for adapter completeness and orchestration invariants. → Verify: targeted tests and the full toolkit validation pass.
 - [x] Update user-facing documentation and examples. → Verify: documented commands and file paths match the shipped tree.
+- [x] Document the Eager Analysis Triad across internal and localized public guidance. → Verify: exactly three independent analysis envelopes are dispatched before waiting, individually reviewed before synthesis, and sequential fallback is disclosed.
 
 ## Done When
 
 - [x] One request can be routed through a chief coordinator to bounded specialists on all three supported platforms.
 - [x] Simple safe work runs automatically while ambiguous, destructive, or high-impact work requires approval.
 - [x] Every logical change is stored in its own local commit on `main`, with no remote push.
+- [x] Every orchestration uses exactly three eager analysis envelopes while keeping dependent writes sequential.
 
 ## Notes
 
-The implementation uses native agent capabilities first and a shared contract that leaves room for a future standalone runtime.
+The implementation uses native agent capabilities first and a shared contract that leaves room for a future standalone runtime. The Eager Analysis Triad always creates exactly three independent analysis envelopes; sequential-only hosts queue them and report the fallback without pretending concurrency.

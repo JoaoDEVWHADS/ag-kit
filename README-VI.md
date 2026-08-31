@@ -113,9 +113,11 @@ Yêu cầu → Phân rã → Giao việc → Theo dõi → Tổng hợp → Xác
 
 AG Kit hỗ trợ chính thức Codex, Claude Code và Gemini; Google Antigravity được xem là một host Gemini. OpenCode hiện chỉ có cấu hình thử nghiệm và chưa thuộc phạm vi hỗ trợ runtime chính thức.
 
-Khi host cung cấp capability agent/subagent native, điều phối trưởng có thể giao các nhiệm vụ độc lập cho worker phù hợp. Nếu capability đó không có, hệ thống chuyển sang thực thi tuần tự nhưng vẫn giữ nguyên phạm vi, bằng chứng, số lần thử có giới hạn và bước xác minh độc lập. AG Kit không hứa rằng mọi host đều hỗ trợ chạy song song.
+Khi host cung cấp capability agent/subagent native, điều phối trưởng có thể giao các nhiệm vụ độc lập cho worker phù hợp. Nếu capability đó không có, hệ thống xếp hàng ba envelope phân tích và thực thi các thao tác ghi phụ thuộc theo thứ tự, đồng thời vẫn giữ nguyên phạm vi, bằng chứng, số lần thử có giới hạn và bước xác minh độc lập. AG Kit không hứa rằng mọi host đều hỗ trợ chạy song song.
 
 Cơ chế phê duyệt thích ứng dựa trên mức rủi ro: công việc ít rủi ro và có thể hoàn tác được thực hiện tự động; công việc rủi ro trung bình cần phê duyệt khi sự mơ hồ có thể thay đổi đáng kể kết quả; hành động rủi ro cao, phá hủy dữ liệu, có đặc quyền, tốn chi phí hoặc tác động ra bên ngoài luôn cần sự đồng ý rõ ràng.
+
+Mỗi lần điều phối bắt đầu bằng **Eager Analysis Triad**: coordinator phải giao đúng ba envelope phân tích độc lập trước khi chờ bất kỳ kết quả nào, sau đó xem xét từng kết quả một trước khi tổng hợp. Nếu yêu cầu có ít hơn ba domain tự nhiên, ba envelope lần lượt bao phủ phân tích chính, rủi ro/trường hợp biên và kế hoạch xác minh. Nếu có nhiều hơn ba domain, các domain liên quan được gom vào đúng ba envelope. Các thao tác ghi có phụ thuộc vẫn chạy tuần tự. Host không hỗ trợ concurrency phải xếp hàng cả ba envelope và công khai fallback tuần tự, không được giả vờ rằng chúng chạy đồng thời.
 
 ---
 

@@ -3,11 +3,13 @@
 ## [Unreleased]
 
 ### Added
+- Mandatory Eager Analysis Triad: exactly three independent analysis envelopes are dispatched before waiting, reviewed individually, and only then synthesized.
 - Portable multi-agent entrypoints and host guidance for Codex, Claude Code, and Gemini; Google Antigravity is treated as a Gemini host.
 - Capability-aware orchestration lifecycle: decompose, delegate, monitor, synthesize, and independently verify.
 - CLI management for `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` with baseline-aware preservation and conflict reporting.
 
 ### Changed
+- Hosts without concurrency now queue the same three analysis envelopes and disclose sequential fallback; dependent writes remain sequential.
 - Public documentation now distinguishes native worker execution from the contract-preserving sequential fallback.
 - The chief coordinator now documents adaptive approval based on risk and material ambiguity.
 - Current inventory is 21 agents, 48 skills, and 14 workflows.

@@ -4,11 +4,13 @@
 
 ### Added
 
+- Mandatory Eager Analysis Triad with exactly three independent analysis envelopes, per-result coordinator review, and synthesis only after all three reviews.
 - Thin root entrypoints for Codex, Claude Code, and Gemini without duplicating the shared rules or specialist definitions.
 - A platform-neutral orchestration contract with native-capability adapters and a contract-preserving sequential fallback.
 
 ### Changed
 
+- Sequential-only hosts queue all three analysis envelopes and disclose the fallback; dependent writes remain sequential.
 - Official runtime support now covers Codex, Claude Code, and Gemini; Google Antigravity is documented as a Gemini host.
 - The chief coordinator uses adaptive approval: low-risk work is automatic, material ambiguity is conditional, and high-risk work requires explicit approval.
 - Project Git convention records logical local commits on the main branch for the current initiative.

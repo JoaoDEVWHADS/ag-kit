@@ -225,7 +225,7 @@ export const landingEn: LandingDictionary = {
       {
         title: "/orchestrate",
         description:
-          "Decompose, delegate, monitor, synthesize, and verify complex work, using native agent capabilities when available and a sequential fallback otherwise.",
+          "Dispatch exactly three independent analyses before waiting, review each one, then synthesize and verify; sequential-only hosts queue the triad and disclose the fallback.",
       },
       {
         title: "/deploy",
@@ -524,7 +524,7 @@ export const landingVi: LandingDictionary = {
       {
         title: "/orchestrate",
         description:
-          "Phân rã, ủy quyền, giám sát, tổng hợp và xác minh công việc phức tạp; dùng khả năng agent native khi có và fallback tuần tự khi không có.",
+          "Giao đúng ba phân tích độc lập trước khi chờ, xem xét từng kết quả rồi tổng hợp và xác minh; host tuần tự xếp hàng triad và công khai fallback.",
       },
       {
         title: "/deploy",

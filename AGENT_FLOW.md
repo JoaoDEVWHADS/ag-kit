@@ -384,11 +384,15 @@ Example: "Build a full-stack e-commerce app"
 
 #### Capability and Approval Model
 
+Before waiting for analysis results, the coordinator MUST dispatch exactly three independent analysis envelopes as the **Eager Analysis Triad**. It then reviews each result individually before synthesis. Fewer than three natural domains map to `primary analysis`, `risk and edge cases`, and `verification planning`; more than three domains are grouped into exactly three coherent envelopes. This triad governs analysis only: dependent writes and shared writable resources remain sequential.
+
+If the host cannot run workers concurrently, it queues the same three envelopes before consuming their results, records that execution is sequential, and MUST NOT imply simultaneous execution.
+
 | Host | Dispatch capability | Fallback | Support |
 | --- | --- | --- | --- |
-| Codex | Native subagents when exposed | Sequential specialist execution | Official |
-| Claude Code | Native agent/task facilities when exposed | Sequential specialist execution | Official |
-| Gemini / Antigravity | Native agent/subagent facilities when exposed | Sequential specialist execution | Official |
+| Codex | Native subagents when exposed | Queue three analysis envelopes; serialize dependent writes | Official |
+| Claude Code | Native agent/task facilities when exposed | Queue three analysis envelopes; serialize dependent writes | Official |
+| Gemini / Antigravity | Native agent/subagent facilities when exposed | Queue three analysis envelopes; serialize dependent writes | Official |
 | OpenCode | Configuration-dependent | No official guarantee | Experimental |
 
 Independent tasks may run concurrently only when the active host exposes a safe native capability. Dependencies, shared state, and overlapping writes remain sequential. The fallback must preserve task boundaries, adaptive approval, evidence, bounded retries, auditability, and independent verification.
@@ -480,7 +484,12 @@ User Request: "Build a Next.js dashboard with authentication"
    ├─ Database: User schema (Prisma)
    └─ Testing: E2E auth flow
 
-4. AGENT ASSIGNMENT
+4. EAGER ANALYSIS TRIAD
+   ├─ Envelope 1: Primary implementation analysis
+   ├─ Envelope 2: Risk and edge-case analysis
+   └─ Envelope 3: Verification planning
+
+5. AGENT ASSIGNMENT
    ├─ frontend-specialist
    │   └─ Skills: nextjs-react-expert, tailwind-patterns, frontend-design
    ├─ backend-specialist
@@ -490,7 +499,7 @@ User Request: "Build a Next.js dashboard with authentication"
    └─ test-engineer
        └─ Skills: testing-patterns, webapp-testing
 
-5. CAPABILITY-AWARE MULTI-DOMAIN EXECUTION
+6. CAPABILITY-AWARE MULTI-DOMAIN EXECUTION
    Native workers may execute independent tasks concurrently when the host exposes that capability.
    Otherwise, the coordinator runs the same scoped specialist tasks sequentially.
 
@@ -511,7 +520,8 @@ User Request: "Build a Next.js dashboard with authentication"
        ├─ tests/auth.spec.ts (Playwright)
        └─ tests/dashboard.spec.ts
 
-6. SYNTHESIS
+7. RESULT REVIEW AND SYNTHESIS
+   The coordinator reviews each triad result individually before synthesis.
    The coordinator reconciles specialist outputs, shared contracts, dependencies, and conflicts.
 
    └─ AI maintains coherence across domains
@@ -519,7 +529,7 @@ User Request: "Build a Next.js dashboard with authentication"
        ├─ Ensures type safety
        └─ Connects API routes to UI
 
-7. VALIDATION
+8. VALIDATION
    ├─ checklist.py
    │   ✓ Security: No leaked secrets
    │   ✓ Lint: No ESLint errors

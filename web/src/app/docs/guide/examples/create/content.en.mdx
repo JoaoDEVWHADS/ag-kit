@@ -28,7 +28,7 @@ plans the architecture, and orchestrates specialist agents to build your app.
     The `project-planner` agent creates a detailed plan. Approval is adaptive: safe, bounded work may continue automatically, while ambiguous, high-impact, or destructive actions require confirmation.
   </Step>
   <Step number={3} title="Agents Build">
-    The coordinator delegates to database, backend, and frontend specialists. Independent tasks may run concurrently when the host exposes native agent capabilities; otherwise they run sequentially with the same monitoring and verification guarantees.
+    Before waiting, the coordinator dispatches exactly three independent analysis envelopes and reviews them one by one before synthesis. Here they cover database, backend, and frontend; smaller scopes use primary analysis, risk/edge cases, and verification planning, while larger scopes are grouped into three envelopes. Native hosts may run independent analysis concurrently; others queue all three and disclose sequential fallback. Dependent writes remain sequential.
   </Step>
 </StepList>
 

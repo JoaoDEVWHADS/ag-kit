@@ -12,3 +12,5 @@ updated: 2026-08-31
 - Codex, Claude Code, and Gemini adapters map capabilities detected in the active host. Google Antigravity uses the Gemini adapter.
 - Native multi-agent execution is preferred when available. Otherwise, the coordinator uses a contract-preserving sequential fallback and blocks work when safety or independent verification cannot be maintained.
 - The chief coordinator uses adaptive approval: low-risk bounded work may proceed automatically, medium-risk work requires approval when ambiguity materially affects the outcome, and high-risk work always requires explicit approval.
+- Every orchestration starts with exactly three independent Eager Analysis Triad envelopes dispatched before waiting. With fewer than three natural domains they cover primary analysis, risk/edge cases, and verification planning; larger domain sets are grouped into exactly three envelopes.
+- The coordinator reviews triad results individually before synthesis. Dependent writes remain sequential; hosts without concurrency queue all three envelopes and explicitly report the fallback without claiming simultaneous execution.

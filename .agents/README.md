@@ -10,7 +10,9 @@ Its Markdown core is portable across Codex, Claude Code, and Gemini. Thin root e
 | Claude Code | `CLAUDE.md` | `platforms/claude-code.md` |
 | Gemini and Google Antigravity | `GEMINI.md` | `platforms/gemini.md` |
 
-All adapters implement `platforms/orchestration-contract.md`. They inspect capabilities at runtime and use a contract-preserving sequential fallback when native multi-agent execution is unavailable.
+All adapters implement `platforms/orchestration-contract.md`. They inspect capabilities at runtime and, when native concurrency is unavailable, queue the three analysis envelopes and serialize dependent writes without weakening the contract.
+
+Every coordinated request starts with the **Eager Analysis Triad**: exactly three independent analysis envelopes are dispatched before the coordinator waits, each result is reviewed individually, and synthesis begins only afterward. Use primary analysis, risk/edge cases, and verification planning when fewer than three domains exist; group larger domain sets into exactly three envelopes. Dependent writes remain sequential. Hosts without concurrency queue the three envelopes and declare the fallback without implying simultaneous execution.
 
 ## Quick start
 

@@ -9,7 +9,9 @@ Xây dựng cả nền tảng SaaS bằng cách điều phối các tác tử ch
 Hầu hết tương tác với AI đều là 1-đối-1. Tác tử `orchestrator` thay đổi điều này bằng cách đóng vai trò **Quản lý dự án**.
 Nó phân rã một yêu cầu lớn (ví dụ "Xây dựng SaaS MVP") thành các tác vụ và giao cho chuyên gia phù hợp nhất với từng việc.
 
-Coordinator tuân theo lifecycle dùng chung: **phân rã, ủy quyền, giám sát, tổng hợp và xác minh**. Hệ thống dùng khả năng agent native khi host hiện tại cung cấp, nếu không sẽ giữ nguyên lifecycle bằng cách chạy tuần tự từng chuyên gia. Việc phê duyệt mang tính thích ứng: công việc an toàn, giới hạn rõ có thể tự động tiếp tục; hành động mơ hồ, ảnh hưởng lớn hoặc phá hủy cần được xác nhận.
+Coordinator tuân theo lifecycle dùng chung: **phân rã, ủy quyền, giám sát, tổng hợp và xác minh**. Hệ thống dùng khả năng agent native khi host hiện tại cung cấp; nếu không, nó xếp hàng các envelope phân tích bắt buộc và thực thi thao tác ghi phụ thuộc theo thứ tự. Việc phê duyệt mang tính thích ứng: công việc an toàn, giới hạn rõ có thể tự động tiếp tục; hành động mơ hồ, ảnh hưởng lớn hoặc phá hủy cần được xác nhận.
+
+Trước khi chờ, coordinator giao đúng ba envelope **Eager Analysis Triad** độc lập và xem xét từng kết quả trước khi tổng hợp. Ít hơn ba domain sẽ dùng phân tích chính, rủi ro/trường hợp biên và kế hoạch xác minh; nhiều domain hơn được gom vào ba envelope. Các thao tác ghi có phụ thuộc vẫn tuần tự. Host không có concurrency phải xếp hàng cả ba và công khai fallback, không giả vờ chạy đồng thời.
 
 <Callout type="info">
   Codex, Claude Code và Gemini được hỗ trợ chính thức. Google Antigravity dùng adapter Gemini; OpenCode đang ở mức thử nghiệm. Khả năng chạy đồng thời phụ thuộc vào capability được phát hiện trên host và không bao giờ được giả định.

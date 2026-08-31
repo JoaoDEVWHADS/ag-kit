@@ -28,7 +28,7 @@ import { Callout, StepList, Step, Terminal, TerminalLine, TerminalBlock, ProTips
     `project-planner` 智能体会生成一份详细的计划。审批会根据风险自适应：安全且范围明确的工作可自动继续，模糊、高影响或破坏性操作则需要确认。
   </Step>
   <Step number={3} title="智能体开始构建">
-    协调器会委派给 database、backend 和 frontend 专家。仅当宿主提供原生 agent 能力时，独立任务才可并发执行；否则按顺序执行，同时保持相同的监控与验证保证。
+    等待结果前，协调器必须分派恰好三个独立分析信封，并在综合前逐一审阅。此处分别覆盖 database、backend 和 frontend；范围更小时使用主分析、风险／边界情况和验证规划，更大时则归并为三个信封。原生宿主可并发执行独立分析；其他宿主会将三个信封排队并明确说明顺序回退。存在依赖的写入仍按顺序执行。
   </Step>
 </StepList>
 

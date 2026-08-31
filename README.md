@@ -129,12 +129,14 @@ The coordinator assesses risk before dispatch. Low-risk, reversible work can pro
 
 | Host | Native worker capability | Safe fallback |
 | :--- | :--- | :--- |
-| Codex | Uses exposed subagent capabilities when available | Sequential specialist execution |
-| Claude Code | Uses exposed agent/task capabilities when available | Sequential specialist execution |
-| Gemini / Antigravity | Uses exposed agent/subagent capabilities when available | Sequential specialist execution |
+| Codex | Uses exposed subagent capabilities when available | Queue the three analysis envelopes; serialize dependent writes |
+| Claude Code | Uses exposed agent/task capabilities when available | Queue the three analysis envelopes; serialize dependent writes |
+| Gemini / Antigravity | Uses exposed agent/subagent capabilities when available | Queue the three analysis envelopes; serialize dependent writes |
 | OpenCode | Experimental configuration only | No official runtime guarantee |
 
 Native concurrency depends on the capabilities exposed by the active host. The sequential fallback preserves scope, approval, evidence, bounded retries, and independent verification; AG Kit does not promise universal parallel execution.
+
+Every orchestration begins with the **Eager Analysis Triad**: the coordinator dispatches exactly three independent analysis envelopes before waiting for any result, then reviews the three results one by one before synthesis. When the request has fewer than three natural domains, the envelopes cover primary analysis, risk/edge cases, and verification planning. When it has more, related domains are grouped into exactly three envelopes. Dependent writes remain sequential. A host without concurrent workers queues all three envelopes and explicitly reports the sequential fallback instead of pretending they ran simultaneously.
 
 ---
 

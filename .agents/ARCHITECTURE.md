@@ -51,7 +51,17 @@ Root entrypoint → shared rules and memory → orchestrator → orchestration c
 - `platforms/orchestration-contract.md` defines lifecycle, task/result envelopes, adaptive approval, concurrency safety, bounded retries, audit trail, and independent verification.
 - `platforms/*.md` map only capabilities detected in the active host. They do not duplicate agents or create a separate runtime.
 
-Native concurrency is capability-dependent, not guaranteed by the platform name. When compliant native worker facilities are absent, the coordinator executes tasks sequentially while preserving the contract. If approval, isolation, evidence, or independent verification cannot be preserved, the task is blocked rather than reported as successful.
+Native concurrency is capability-dependent, not guaranteed by the platform name. When compliant native worker facilities are absent, the coordinator queues the required three analysis envelopes and serializes dependent writes while preserving the contract. If approval, isolation, evidence, or independent verification cannot be preserved, the task is blocked rather than reported as successful.
+
+### Eager Analysis Triad
+
+Before waiting for any analysis result, the coordinator dispatches exactly three independent analysis envelopes. It reviews their results one at a time before synthesis:
+
+1. Use natural domain partitions when there are exactly three.
+2. With fewer than three domains, use `primary analysis`, `risk and edge cases`, and `verification planning`.
+3. With more than three domains, group related domains into exactly three coherent envelopes.
+
+The triad is an analysis fan-out, not permission for unsafe write concurrency. Dependent writes, overlapping file ownership, and shared external state remain sequential. A host without concurrent workers queues all three envelopes, records the sequential fallback, and never represents queued execution as simultaneous.
 
 ---
 
