@@ -222,10 +222,10 @@
           "brainstorming": "^1.0.0",
           "clean-code": "^2.0.0",
           "context-compression": "^1.0.0",
-          "coordinator-mode": "^1.0.0",
+          "coordinator-mode": "^1.1.0",
           "lint-and-validate": "^1.0.0",
           "memory-system": "^1.0.0",
-          "parallel-agents": "^1.0.0",
+          "parallel-agents": "^1.1.0",
           "plan-writing": "^1.0.0",
           "powershell-windows": "^1.0.0",
           "verify-changes": "^1.0.0"
@@ -240,7 +240,7 @@
         "Edit",
         "Agent"
       ],
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     "penetration-tester": {
       "model": "inherit",
@@ -455,7 +455,7 @@
       "path": "rules/code-rules.md",
       "priority": "P0",
       "trigger": "model_decision",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     "core-protocol": {
       "path": "rules/core-protocol.md",
@@ -479,7 +479,7 @@
       "path": "rules/request-routing.md",
       "priority": "P0",
       "trigger": "always_on",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     "teamtalk-rules": {
       "path": "rules/teamtalk-rules.md",
@@ -633,7 +633,7 @@
       ],
       "path": "skills/coordinator-mode/SKILL.md",
       "scripts": [],
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     "database-design": {
       "allowedTools": [
@@ -843,7 +843,7 @@
       ],
       "path": "skills/parallel-agents/SKILL.md",
       "scripts": [],
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     "performance-profiling": {
       "allowedTools": [
@@ -1105,7 +1105,9 @@
     "coordinate": {
       "artifactOutputs": [
         "coordination-plan",
-        "phase-status"
+        "phase-status",
+        "audit-trail",
+        "final-synthesis"
       ],
       "path": "workflows/coordinate.md",
       "requires": {
@@ -1117,7 +1119,7 @@
           "parallel-agents"
         ]
       },
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     "create": {
       "artifactOutputs": [
@@ -1213,6 +1215,7 @@
       "artifactOutputs": [
         "task-graph",
         "coordination-status",
+        "audit-trail",
         "final-synthesis"
       ],
       "path": "workflows/orchestrate.md",
@@ -1225,7 +1228,7 @@
           "coordinator-mode"
         ]
       },
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     "plan": {
       "artifactOutputs": [

@@ -1,77 +1,24 @@
 ---
 name: coordinate
-description: Advanced multi-agent coordination with parallel dispatch and synthesis. Use for complex tasks requiring multiple specialist perspectives.
-version: 1.0.0
+description: Coordinate bounded agent tasks with capability-aware dispatch and synthesis.
+version: 1.1.0
 requires_agents: orchestrator
 requires_skills: coordinator-mode, parallel-agents
-artifact_outputs: coordination-plan, phase-status
+artifact_outputs: coordination-plan, phase-status, audit-trail, final-synthesis
 ---
 
-# /coordinate — Advanced Multi-Agent Coordination
+# /coordinate — Capability-Aware Coordination
 
 $ARGUMENTS
 
----
+Use the `orchestrator` and follow `.agents/platforms/orchestration-contract.md`.
 
-## 🔴 CRITICAL RULES
+1. Select the available platform adapter and inspect its declared capabilities.
+2. Run `DECOMPOSE → CLASSIFY → DISPATCH → MONITOR → SYNTHESIZE → VERIFY`.
+3. Dispatch complete task envelopes to the smallest sufficient set of specialists.
+4. Run independent reads concurrently; serialize dependencies and overlapping writes.
+5. Apply adaptive approval: low automatically, medium only when material ambiguity exists, high always before destructive or external execution.
+6. Keep implementation with specialists; the coordinator owns decomposition, monitoring, conflict resolution, synthesis, and completion decisions.
+7. Require result envelopes, bounded retries, capability-safe fallback, independent verification, and an audit trail.
 
-1. **Load coordinator-mode skill** — Read `.agents/skills/coordinator-mode/SKILL.md` first
-2. **Phase-based execution** — Research → Synthesis → Implementation → Verification
-3. **Never delegate understanding** — Write specific prompts, not vague instructions
-4. **Parallel reads, sequential writes** — Read-only tasks can run in parallel
-
----
-
-## Task
-
-Use the `orchestrator` agent with this context:
-
-```
-CONTEXT:
-- User Request: $ARGUMENTS
-- Mode: COORDINATOR (advanced orchestration)
-- Skill: Load coordinator-mode skill for patterns
-
-WORKFLOW:
-1. DECOMPOSE the request into worker subtasks
-2. CLASSIFY each subtask: Research | Implementation | Verification
-3. DISPATCH workers (parallel for reads, sequential for writes)
-4. SYNTHESIZE results — don't copy-paste, add insight
-5. VERIFY completeness before reporting to user
-
-RULES:
-1. Follow coordinator-mode/SKILL.md protocol
-2. Brief workers like smart colleagues — full context, specific scope
-3. Never write "based on your findings, fix it" — prove YOU understood
-4. Start with 2-3 workers, add more after synthesis if needed
-5. Research before implementation — ALWAYS
-```
-
----
-
-## Expected Output
-
-| Deliverable | Description |
-|-------------|-------------|
-| Worker Dispatch | List of agents invoked with task descriptions |
-| Synthesis Report | Consolidated findings with YOUR analysis |
-| Action Items | Specific next steps with file paths |
-
----
-
-## After Coordination
-
-```
-[OK] Coordination complete
-
-Agents dispatched: [count]
-Phases completed: Research → Synthesis → [Implementation] → [Verification]
-
-Key findings:
-- [Finding 1]
-- [Finding 2]
-
-Next steps:
-- [ ] [Action item 1]
-- [ ] [Action item 2]
-```
+Return a concise coordination report containing task states, assignments, evidence, artifacts, approvals, fallbacks, verification, unresolved risks, and final synthesis.
